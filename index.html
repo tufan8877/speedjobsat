@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
 
+    <!-- Tailwind/CSS MUSS geladen werden -->
+    <link rel="stylesheet" href="/index.css" />
+
     <!-- Moderate Cache-Control -->
     <meta http-equiv="Cache-Control" content="no-cache" />
     <meta http-equiv="Pragma" content="no-cache" />
@@ -36,44 +39,35 @@
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   </head>
+
   <body>
     <div id="root"></div>
 
     <!-- ULTIMATIVE Cache-Clearing und Frame-busting -->
     <script>
       (function () {
-        // Sanftes Service Worker registrieren (optional)
         function registerServiceWorker() {
           if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(function (error) {
-              // Fehler ignorieren
-            });
+            navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(function () {});
           }
         }
 
-        // Prüfe ob es sich um Replit handelt
         function isReplit() {
           try {
-            return (
-              window.location.hostname.includes("replit.com") || window.location.hostname.includes("replit.app")
-            );
+            return window.location.hostname.includes("replit.com") || window.location.hostname.includes("replit.app");
           } catch (e) {
             return false;
           }
         }
 
-        // Sanftes Frame-busting nur bei fremden Domains
         function breakOutIfNeeded() {
           if (top !== self && !isReplit()) {
             try {
               top.location = self.location;
-            } catch (e) {
-              // Falls blockiert, nichts tun
-            }
+            } catch (e) {}
           }
         }
 
-        // Einfache Größenkorrektur
         function ensureFullSize() {
           document.documentElement.style.height = "100vh";
           document.documentElement.style.width = "100vw";
@@ -83,20 +77,14 @@
           document.body.style.padding = "0";
         }
 
-        // Alles beim Start ausführen
         registerServiceWorker();
         breakOutIfNeeded();
         ensureFullSize();
-
-        // Bei Resize korrigieren
         window.addEventListener("resize", ensureFullSize);
       })();
     </script>
 
-    <!-- FIX: main.tsx liegt im Root, nicht in /src -->
     <script type="module" src="/main.tsx"></script>
-
-    <!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
     <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
   </body>
 </html>
