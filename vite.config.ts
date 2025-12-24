@@ -1,28 +1,38 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
 
-export default defineConfig({
-  plugins: [react()],
+export default defineConfig(async () => {
+  return {
+    plugins: [
+      react(),
+      runtimeErrorOverlay(),
+      ...(process.env.NODE_ENV !== "production" && process.env.REPL_ID
+        ? [
+            (await import("@replit/vite-plugin-cartographer").then((m) =>
+              m.cartographer(),
+            )) as any,
+          ]
+        : []),
+    ],
 
-  // Dein index.html liegt im Projekt-Root (nicht in /client)
-  root: ".",
-
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "."),
+    resolve: {
+      alias: {
+        // Du hast deine Frontend-Dateien im Repo-Root (components/, hooks/, pages/, App.tsx, main.tsx, ...)
+        "@": path.resolve(import.meta.dirname, "."),
+        "@shared": path.resolve(import.meta.dirname, "shared"),
+        "@assets": path.resolve(import.meta.dirname, "attached_assets"),
+      },
     },
-  },
 
-  server: {
-    // Render nutzt production build, dev ist lokal
-    port: 5173,
-    strictPort: true,
-  },
+    // Wichtig: index.html liegt bei dir im Root
+    root: path.resolve(import.meta.dirname, "."),
 
-  build: {
-    // Frontend wird nach dist/public gebaut, damit dein Express es serven kann
-    outDir: "dist/public",
-    emptyOutDir: true,
-  },
+    build: {
+      // Frontend landet in dist/public (das kann dein Express-Server dann ausliefern)
+      outDir: path.resolve(import.meta.dirname, "dist/public"),
+      emptyOutDir: true,
+    },
+  };
 });
