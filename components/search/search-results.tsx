@@ -223,12 +223,9 @@ export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
                             <h3 className="text-lg font-semibold truncate">
                               {profile.firstName} {profile.lastName}
                             </h3>
-                            <div className="flex gap-2 flex-shrink-0">
-                              {sortBy === "newest" && <Badge variant="default">Neu #{index + 1}</Badge>}
-                              <Badge variant={profile.isAvailable ? "success" : "warning"}>
-                                {profile.isAvailable ? "Verfügbar" : "Teilweise verfügbar"}
-                              </Badge>
-                            </div>
+                            <Badge variant={profile.isAvailable ? "success" : "warning"}>
+                              {profile.isAvailable ? "Verfügbar" : "Teilweise verfügbar"}
+                            </Badge>
                           </div>
                           <p className="text-primary font-medium">{profile.services?.[0] || "Dienstleistung"}</p>
                           {profile.reviews && profile.reviews.length > 0 ? (
