@@ -19,7 +19,7 @@ export default function FeaturedJobs() {
   const [selectedLocation, setSelectedLocation] = useState("");
 
   const { data: jobs, isLoading, error } = useQuery<JobListing[]>({
-    queryKey: ["/api/jobs", "home-latest-3-mobile-ready"],
+    queryKey: ["/api/jobs", "home-latest-3-no-number-labels"],
     queryFn: async () => {
       const res = await fetch("/api/jobs", { credentials: "include" });
       if (!res.ok) throw new Error("Aufträge konnten nicht geladen werden");
@@ -169,13 +169,10 @@ export default function FeaturedJobs() {
           <div className="text-center py-12 text-muted-foreground">Keine passenden Aufträge gefunden.</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
-            {latestFilteredJobs.map((job, index) => (
+            {latestFilteredJobs.map((job) => (
               <Card key={job.id} className="h-full flex flex-col overflow-hidden border border-gray-100 shadow-sm">
                 <CardHeader className="p-4 sm:p-6 pb-3">
                   <div className="flex flex-wrap items-center gap-2 mb-3">
-                    <Badge variant="default" className="rounded-full px-3 py-1 text-xs font-semibold">
-                      Neu #{index + 1}
-                    </Badge>
                     <Badge variant="outline" className="text-xs">{job.category}</Badge>
                   </div>
                   <CardTitle className="text-base sm:text-lg line-clamp-2">{job.title}</CardTitle>
