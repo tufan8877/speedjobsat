@@ -129,15 +129,8 @@ export function JobList() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sortedJobs.map((job, index) => (
-          <div key={job.id} className="relative">
-            {index < 3 && (
-              <div className="absolute z-10 left-3 top-3 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-white shadow">
-                Neu #{index + 1}
-              </div>
-            )}
-            <JobListingCard job={job} showActions={true} />
-          </div>
+        {sortedJobs.map((job) => (
+          <JobListingCard key={job.id} job={job} showActions={true} />
         ))}
       </div>
     </div>
