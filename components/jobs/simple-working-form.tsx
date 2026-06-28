@@ -5,36 +5,48 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useAuth } from "@/hooks/use-auth";
 
 const categories = [
-  "Reinigung", "Gartenpflege", "Umzug", "Handwerk", "Transport", 
-  "Elektriker", "Installateur", "Maler", "Dachdecker", 
+  "Reinigung", "Gartenpflege", "Umzug", "Handwerk", "Transport",
+  "Elektriker", "Installateur", "Maler", "Dachdecker",
   "Automechaniker", "Schlosser", "Masseur", "Nachhilfe"
 ];
 
 export function SimpleWorkingForm() {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [, navigate] = useLocation();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     location: "",
     category: "",
-    contactInfo: ""
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!user?.email) {
+      toast({
+        title: "Nicht angemeldet",
+        description: "Bitte melden Sie sich an, damit Ihre registrierte E-Mail als Kontakt verwendet werden kann.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
-    
-    if (!formData.title || !formData.description || !formData.location || !formData.category || !formData.contactInfo) {
+
+    if (!formData.title || !formData.description || !formData.location || !formData.category) {
       toast({
         title: "Fehlende Angaben",
-        description: "Bitte füllen Sie alle Felder aus",
+        description: "Bitte füllen Sie alle Pflichtfelder aus.",
         variant: "destructive",
       });
       setIsSubmitting(false);
@@ -42,67 +54,47 @@ export function SimpleWorkingForm() {
     }
 
     try {
-      // DIREKTER TOKEN-TEST - das Backend funktioniert garantiert
-      const authToken = "MTp0dWZhbjc3N0BnbXguYXQ6MTc1MjI2OTcwNzYwMg==";
-      console.log("USING HARDCODED TOKEN FOR TEST:", authToken.substring(0, 20) + "...");
-      
-      // Zusätzlich localStorage prüfen
-      const localToken = localStorage.getItem('authToken');
-      console.log("LocalStorage token:", localToken ? localToken.substring(0, 20) + "..." : "FEHLT");
-
       const jobData = {
         title: formData.title.trim(),
         description: formData.description.trim(),
         location: formData.location.trim(),
         category: formData.category,
-        contactInfo: formData.contactInfo.trim()
       };
 
-      console.log("Sende Job-Daten:", jobData);
-      console.log("Mit Authorization Header:", `Bearer ${authToken.substring(0, 20)}...`);
+      const localToken = localStorage.getItem("authToken");
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+      };
+
+      if (localToken) {
+        headers.Authorization = `Bearer ${localToken}`;
+      }
 
       const response = await fetch("/api/jobs", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${authToken}`
-        },
+        headers,
         body: JSON.stringify(jobData),
-        credentials: "include"
+        credentials: "include",
       });
-      
-      console.log("Request Headers sent:", {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${authToken.substring(0, 20)}...`
-      });
-
-      console.log("Response Status:", response.status);
 
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`HTTP ${response.status}: ${errorText}`);
       }
 
-      const result = await response.json();
-      console.log("Job erfolgreich erstellt:", result);
-
       toast({
         title: "Auftrag erstellt!",
-        description: "Ihr Auftrag wurde erfolgreich veröffentlicht.",
+        description: `Ihr Auftrag wurde veröffentlicht. Kontakt-E-Mail: ${user.email}`,
       });
 
-      // Formular zurücksetzen
       setFormData({
         title: "",
         description: "",
         location: "",
         category: "",
-        contactInfo: ""
       });
 
-      // Zu Aufträge-Seite navigieren
       navigate("/auftraege");
-
     } catch (error) {
       console.error("Fehler beim Erstellen:", error);
       toast({
@@ -116,13 +108,16 @@ export function SimpleWorkingForm() {
   };
 
   const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
       <CardHeader>
         <CardTitle>Neuen Auftrag erstellen</CardTitle>
+        <CardDescription>
+          Die Kontakt-E-Mail wird automatisch aus Ihrem Benutzerkonto übernommen.
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -132,7 +127,7 @@ export function SimpleWorkingForm() {
               id="title"
               value={formData.title}
               onChange={(e) => handleChange("title", e.target.value)}
-              placeholder="z.B. 'Hilfe bei Umzug gesucht'"
+              placeholder="z.B. Hilfe bei Umzug gesucht"
               required
             />
           </div>
@@ -171,24 +166,19 @@ export function SimpleWorkingForm() {
               id="location"
               value={formData.location}
               onChange={(e) => handleChange("location", e.target.value)}
-              placeholder="z.B. 'Wien, 1010'"
+              placeholder="z.B. Wien, 1010"
               required
             />
           </div>
 
-          <div>
-            <Label htmlFor="contactInfo">Kontaktinformation *</Label>
-            <Input
-              id="contactInfo"
-              value={formData.contactInfo}
-              onChange={(e) => handleChange("contactInfo", e.target.value)}
-              placeholder="E-Mail oder Telefonnummer"
-              required
-            />
-          </div>
+          <Alert className="bg-blue-50 border-blue-200 text-blue-900">
+            <AlertDescription>
+              Kontakt-E-Mail wird automatisch verwendet: <strong>{user?.email || "Ihre registrierte E-Mail"}</strong>
+            </AlertDescription>
+          </Alert>
 
-          <Button 
-            type="submit" 
+          <Button
+            type="submit"
             className="w-full"
             disabled={isSubmitting}
           >
