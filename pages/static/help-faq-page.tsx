@@ -10,146 +10,91 @@ export default function HelpFaqPage() {
   return (
     <StaticPage title="Hilfe & FAQ">
       <p className="mb-6">
-        Hier finden Sie Antworten auf häufig gestellte Fragen rund um speedjobs.at.
-        Sollten Sie weitere Fragen haben, zögern Sie nicht, uns zu kontaktieren.
+        Hier finden Sie Antworten auf häufige Fragen zu SpeedJobs.at. SpeedJobs.at ist eine Plattform zur Kontaktvermittlung und nicht selbst Anbieter oder Auftraggeber der angebotenen Leistungen.
       </p>
 
       <div className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Allgemeine Fragen</h2>
         <Accordion type="single" collapsible className="w-full">
           <AccordionItem value="what-is-speedjobs">
-            <AccordionTrigger>Was ist speedjobs.at?</AccordionTrigger>
+            <AccordionTrigger>Was ist SpeedJobs.at?</AccordionTrigger>
             <AccordionContent>
-              speedjobs.at ist eine Online-Plattform, die Privatpersonen mit qualifizierten
-              lokalen Dienstleistern in Österreich verbindet. Wir helfen Ihnen dabei,
-              schnell und unkompliziert den passenden Dienstleister für Ihre Bedürfnisse zu finden.
+              SpeedJobs.at ist eine Online-Plattform, auf der Nutzer Dienstleisterprofile suchen, ein eigenes Profil erstellen oder einen Auftrag veröffentlichen können. SpeedJobs.at stellt nur die technische Plattform bereit und wird nicht Vertragspartner der Nutzer.
             </AccordionContent>
           </AccordionItem>
-          
-          <AccordionItem value="is-speedjobs-free">
-            <AccordionTrigger>Ist die Nutzung von speedjobs.at kostenlos?</AccordionTrigger>
+
+          <AccordionItem value="liability">
+            <AccordionTrigger>Haftet SpeedJobs.at für Dienstleistungen?</AccordionTrigger>
             <AccordionContent>
-              Ja, die Nutzung von speedjobs.at ist für Personen, die nach Dienstleistern suchen,
-              vollständig kostenlos. Dienstleister können sich ebenfalls kostenlos registrieren
-              und ihr Profil erstellen.
+              Nein. Vereinbarungen, Preise, Zahlungen, Termine, Qualität und Durchführung werden direkt zwischen Auftraggeber und Dienstleister geklärt. SpeedJobs.at haftet, soweit gesetzlich zulässig, nicht für Schäden, Streitigkeiten, Zahlungsausfälle oder mangelhafte Leistungen zwischen Nutzern.
             </AccordionContent>
           </AccordionItem>
-          
-          <AccordionItem value="coverage-area">
-            <AccordionTrigger>In welchen Regionen ist speedjobs.at verfügbar?</AccordionTrigger>
+
+          <AccordionItem value="regions">
+            <AccordionTrigger>Wo ist SpeedJobs.at verfügbar?</AccordionTrigger>
             <AccordionContent>
-              speedjobs.at ist in ganz Österreich verfügbar. Dienstleister können ihre
-              Tätigkeitsbereiche nach Bundesländern angeben, sodass Sie gezielt nach Anbietern
-              in Ihrer Region suchen können.
+              SpeedJobs.at ist auf Österreich ausgerichtet. Nutzer können Bundesländer als Tätigkeitsregionen oder Auftragsort angeben.
             </AccordionContent>
           </AccordionItem>
         </Accordion>
       </div>
 
       <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">Für Kunden</h2>
+        <h2 className="text-2xl font-semibold mb-4">Aufträge und Profile</h2>
         <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="find-service-provider">
-            <AccordionTrigger>Wie finde ich einen passenden Dienstleister?</AccordionTrigger>
+          <AccordionItem value="one-job">
+            <AccordionTrigger>Wie viele Aufträge kann ich erstellen?</AccordionTrigger>
             <AccordionContent>
-              Nutzen Sie unsere Suchfunktion und filtern Sie nach Dienstleistungskategorie,
-              Region und weiteren Kriterien. Sie können die Ergebnisse nach Bewertungen oder
-              Aktualität sortieren und die Profile der Dienstleister mit ihren Bewertungen
-              einsehen, um die beste Wahl zu treffen.
+              Pro Benutzer ist nur ein Auftrag möglich. Wenn Sie einen neuen Auftrag erstellen möchten, löschen Sie zuerst den bestehenden Auftrag.
             </AccordionContent>
           </AccordionItem>
-          
-          <AccordionItem value="contact-service-provider">
-            <AccordionTrigger>Wie kontaktiere ich einen Dienstleister?</AccordionTrigger>
+
+          <AccordionItem value="one-service">
+            <AccordionTrigger>Wie viele Dienstleistungen kann ich anbieten?</AccordionTrigger>
             <AccordionContent>
-              Auf der Profilseite eines Dienstleisters finden Sie die vom Anbieter angegebenen
-              Kontaktmöglichkeiten, wie Telefonnummer, E-Mail oder Social-Media-Profile.
-              Sie können den Dienstleister direkt über diese Kontaktdaten erreichen.
+              Pro Dienstleisterprofil kann genau eine Hauptdienstleistung ausgewählt werden. Dadurch bleiben Profile klar und übersichtlich.
             </AccordionContent>
           </AccordionItem>
-          
-          <AccordionItem value="leave-review">
+
+          <AccordionItem value="contact-email">
+            <AccordionTrigger>Welche E-Mail wird als Kontakt angezeigt?</AccordionTrigger>
+            <AccordionContent>
+              Als Kontakt-E-Mail wird automatisch die E-Mail-Adresse Ihres registrierten Benutzerkontos verwendet. Dadurch sollen falsche oder fremde Kontakt-E-Mails vermieden werden.
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+      </div>
+
+      <div className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">Bewertungen und Support</h2>
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value="reviews">
             <AccordionTrigger>Wie kann ich eine Bewertung abgeben?</AccordionTrigger>
             <AccordionContent>
-              Um eine Bewertung abzugeben, müssen Sie registriert und angemeldet sein.
-              Besuchen Sie das Profil des Dienstleisters, den Sie bewerten möchten, und
-              klicken Sie auf "Bewertung abgeben". Vergeben Sie Sterne und schreiben Sie
-              einen Kommentar zu Ihrer Erfahrung.
+              Sie müssen registriert und angemeldet sein. Öffnen Sie ein fremdes Dienstleisterprofil, wählen Sie Sterne aus und schreiben Sie einen sachlichen Kommentar. Falsche, beleidigende oder rechtswidrige Bewertungen können entfernt werden.
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="delete-account">
+            <AccordionTrigger>Wie kann ich Daten oder mein Konto löschen lassen?</AccordionTrigger>
+            <AccordionContent>
+              Schreiben Sie uns an kontaktspeedjobs@gmail.com. Wir prüfen die Anfrage und bearbeiten sie nach den geltenden Datenschutzregeln und gesetzlichen Aufbewahrungspflichten.
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="support">
+            <AccordionTrigger>Wie erreiche ich den Support?</AccordionTrigger>
+            <AccordionContent>
+              Schreiben Sie an kontaktspeedjobs@gmail.com. Geben Sie bitte Ihre registrierte E-Mail-Adresse und eine genaue Beschreibung Ihres Anliegens an. Senden Sie niemals Ihr Passwort.
             </AccordionContent>
           </AccordionItem>
         </Accordion>
       </div>
 
-      <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">Für Dienstleister</h2>
-        <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="create-profile">
-            <AccordionTrigger>Wie erstelle ich ein Dienstleisterprofil?</AccordionTrigger>
-            <AccordionContent>
-              Registrieren Sie sich auf speedjobs.at und melden Sie sich an. Gehen Sie dann
-              zu "Mein Profil" und füllen Sie alle relevanten Informationen aus, wie Ihre
-              angebotenen Dienstleistungen, Tätigkeitsregionen, Kontaktdaten und Verfügbarkeit.
-              Je vollständiger Ihr Profil ist, desto besser werden Sie gefunden.
-            </AccordionContent>
-          </AccordionItem>
-          
-          <AccordionItem value="edit-profile">
-            <AccordionTrigger>Wie kann ich mein Profil bearbeiten?</AccordionTrigger>
-            <AccordionContent>
-              Melden Sie sich an und gehen Sie zu "Mein Profil". Dort können Sie über den
-              Button "Profil bearbeiten" alle Ihre Angaben aktualisieren, einschließlich
-              Kontaktdaten, angebotene Dienstleistungen und Tätigkeitsregionen.
-            </AccordionContent>
-          </AccordionItem>
-          
-          <AccordionItem value="respond-to-reviews">
-            <AccordionTrigger>Kann ich auf Bewertungen antworten?</AccordionTrigger>
-            <AccordionContent>
-              Derzeit bieten wir noch keine Funktion für Dienstleister an, auf Bewertungen zu antworten.
-              Wir arbeiten jedoch daran, diese Funktion in Zukunft zu implementieren.
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </div>
-
-      <div className="mb-8">
-        <h2 className="text-2xl font-semibold mb-4">Technische Fragen</h2>
-        <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="password-reset">
-            <AccordionTrigger>Wie kann ich mein Passwort zurücksetzen?</AccordionTrigger>
-            <AccordionContent>
-              Auf der Anmeldeseite finden Sie den Link "Passwort vergessen". Klicken Sie darauf
-              und folgen Sie den Anweisungen, um Ihr Passwort zurückzusetzen. Sie erhalten eine
-              E-Mail mit einem Link zum Erstellen eines neuen Passworts.
-            </AccordionContent>
-          </AccordionItem>
-          
-          <AccordionItem value="account-deactivation">
-            <AccordionTrigger>Wie kann ich mein Konto löschen?</AccordionTrigger>
-            <AccordionContent>
-              Um Ihr Konto zu löschen, gehen Sie zu Ihren Kontoeinstellungen (unter "Einstellungen")
-              und wählen Sie dort die Option "Konto löschen". Beachten Sie, dass dieser Vorgang
-              nicht rückgängig gemacht werden kann und alle Ihre Daten gelöscht werden.
-            </AccordionContent>
-          </AccordionItem>
-          
-          <AccordionItem value="browser-compatibility">
-            <AccordionTrigger>Welche Browser werden unterstützt?</AccordionTrigger>
-            <AccordionContent>
-              speedjobs.at ist optimiert für moderne Browser wie Google Chrome, Mozilla Firefox,
-              Microsoft Edge und Safari in ihren aktuellen Versionen. Für die beste Erfahrung
-              empfehlen wir, Ihren Browser regelmäßig zu aktualisieren.
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </div>
-      
       <div className="mt-8 p-6 bg-gray-50 rounded-lg">
         <h3 className="text-xl font-semibold mb-3">Weitere Hilfe benötigt?</h3>
         <p>
-          Wenn Sie keine Antwort auf Ihre Frage gefunden haben, kontaktieren Sie uns bitte
-          direkt unter <a href="mailto:kontaktspeedjobs@gmail.com" className="text-primary hover:underline">kontaktspeedjobs@gmail.com</a>.
-          Wir helfen Ihnen gerne weiter.
+          Kontaktieren Sie uns unter <a href="mailto:kontaktspeedjobs@gmail.com" className="text-primary hover:underline">kontaktspeedjobs@gmail.com</a>.
         </p>
       </div>
     </StaticPage>
