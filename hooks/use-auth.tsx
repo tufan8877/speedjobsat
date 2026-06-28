@@ -39,6 +39,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const fetchUser = async () => {
       try {
+        const authToken = localStorage.getItem("authToken");
+
+        if (!authToken && !document.cookie.includes("speedjobs.sid")) {
+          setIsLoading(false);
+          return;
+        }
+
         const response = await apiRequest("GET", "/api/user");
         const userData = await response.json();
         setUser(userData);
@@ -46,6 +53,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (err instanceof Error && !err.message.includes("401")) {
           console.error("Fehler beim Abrufen des Benutzers:", err);
         }
+        localStorage.removeItem("authToken");
         setUser(null);
       } finally {
         setIsLoading(false);
@@ -62,7 +70,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await apiRequest("POST", "/api/login", credentials);
       const userData = await response.json();
-      setUser(userData);
+
+      if ((userData as any).authToken) {
+        localStorage.setItem("authToken", (userData as any).authToken);
+        const { authToken, ...userWithoutToken } = userData as any;
+        setUser(userWithoutToken);
+      } else {
+        setUser(userData);
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       toast({
         title: "Erfolgreich angemeldet",
@@ -95,7 +112,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await apiRequest("POST", "/api/register", userData);
       const newUser = await response.json();
-      setUser(newUser);
+
+      if ((newUser as any).authToken) {
+        localStorage.setItem("authToken", (newUser as any).authToken);
+        const { authToken, ...userWithoutToken } = newUser as any;
+        setUser(userWithoutToken);
+      } else {
+        setUser(newUser);
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       toast({
         title: "Registrierung erfolgreich",
