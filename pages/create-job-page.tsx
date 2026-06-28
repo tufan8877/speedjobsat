@@ -3,20 +3,20 @@ import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
 import { ArrowLeft } from "lucide-react";
+import EmailVerificationNotice from "@/components/auth/email-verification-notice";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
-/**
- * Seite zum Erstellen eines neuen Auftrags
- */
 export default function CreateJobPage() {
   const { user } = useAuth();
   const [, navigate] = useLocation();
-  
-  // Wenn kein Benutzer angemeldet ist, zur Anmeldeseite weiterleiten
+
   if (!user) {
     navigate("/auth?redirect=/auftrag-erstellen");
     return null;
   }
-  
+
+  const emailVerified = !!user.isAdmin || !!(user as any).emailVerified;
+
   return (
     <div className="container py-8">
       <div className="mb-8">
@@ -26,14 +26,28 @@ export default function CreateJobPage() {
             Zurück zur Übersicht
           </Button>
         </Link>
-        
+
         <h1 className="text-3xl font-bold mt-3">Neuen Auftrag erstellen</h1>
         <p className="text-muted-foreground mt-1">
           Erstellen Sie einen neuen Auftrag, um Dienstleister zu finden.
         </p>
       </div>
-      
-      <SimpleWorkingForm />
+
+      {!emailVerified ? (
+        <Card className="max-w-2xl mx-auto">
+          <CardHeader>
+            <CardTitle>E-Mail-Adresse bestätigen</CardTitle>
+            <CardDescription>
+              Bitte bestätigen Sie zuerst Ihre E-Mail-Adresse. Danach können Sie einen Auftrag erstellen.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <EmailVerificationNotice email={user.email} />
+          </CardContent>
+        </Card>
+      ) : (
+        <SimpleWorkingForm />
+      )}
     </div>
   );
 }
