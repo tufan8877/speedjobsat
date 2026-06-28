@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
@@ -19,7 +19,7 @@ export default function FeaturedJobs() {
   const [selectedLocation, setSelectedLocation] = useState("");
 
   const { data: jobs, isLoading, error } = useQuery<JobListing[]>({
-    queryKey: ["/api/jobs", "home-latest-3-no-number-labels"],
+    queryKey: ["/api/jobs", "home-latest-3-clean-cards"],
     queryFn: async () => {
       const res = await fetch("/api/jobs", { credentials: "include" });
       if (!res.ok) throw new Error("Aufträge konnten nicht geladen werden");
@@ -176,7 +176,6 @@ export default function FeaturedJobs() {
                     <Badge variant="outline" className="text-xs">{job.category}</Badge>
                   </div>
                   <CardTitle className="text-base sm:text-lg line-clamp-2">{job.title}</CardTitle>
-                  <CardDescription className="mt-1 text-xs sm:text-sm">Auftrag {job.id}</CardDescription>
                 </CardHeader>
 
                 <CardContent className="flex-1 p-4 sm:p-6 pt-0">
