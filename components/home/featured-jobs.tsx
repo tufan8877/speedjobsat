@@ -49,7 +49,8 @@ export default function FeaturedJobs() {
     .sort((a, b) => {
       const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
       const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-      return dateB - dateA;
+      if (dateB !== dateA) return dateB - dateA;
+      return Number(b.id || 0) - Number(a.id || 0);
     })
     .slice(0, 3);
 
@@ -170,18 +171,17 @@ export default function FeaturedJobs() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {latestFilteredJobs.map((job, index) => (
+            {latestFilteredJobs.map((job) => (
               <Card key={job.id} className="h-full flex flex-col">
                 <CardHeader>
                   <div className="flex justify-between items-start gap-3">
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="default">Neu #{index + 1}</Badge>
                         <Badge variant="outline">{job.category}</Badge>
                       </div>
                       <CardTitle className="text-lg line-clamp-1">{job.title}</CardTitle>
                       <CardDescription className="mt-1">
-                        Auftrag #{job.id}
+                        Auftrag {job.id}
                       </CardDescription>
                     </div>
                   </div>
