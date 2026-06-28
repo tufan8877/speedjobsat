@@ -4,7 +4,7 @@ import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
 export const federalStates = ["Wien","Niederösterreich","Oberösterreich","Steiermark","Tirol","Kärnten","Salzburg","Vorarlberg","Burgenland"] as const;
-export const serviceCategories = ["Installateur","Elektriker","Reinigung","Umzug","Transport","Gartenpflege","Haushaltshilfe","Kinderbetreuung","Seniorenbetreuung","Nachhilfe","Computer & IT","Handwerker","Maler","Dachdecker","Automechaniker","Schlosser","Masseur"] as const;
+export const serviceCategories = ["Installateur","Elektriker","Reinigung","Umzug","Transport","Gartenpflege","Haushaltshilfe","Pflege","Kinderbetreuung","Seniorenbetreuung","Nachhilfe","Computer & IT","Handwerker","Maler","Dachdecker","Automechaniker","Schlosser","Masseur"] as const;
 export const availabilityPeriods = ["Vormittag","Nachmittag","Abend","Wochenende","Feiertag"] as const;
 export const userStatuses = ["active", "suspended", "deleted"] as const;
 export const jobStatuses = ["active", "completed", "cancelled"] as const;
