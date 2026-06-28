@@ -14,7 +14,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useState } from "react";
 import { Loader2, PlusCircle } from "lucide-react";
@@ -23,39 +22,34 @@ export function MyJobs() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [deletingJobId, setDeletingJobId] = useState<number | null>(null);
-  
-  // Lädt die Aufträge des angemeldeten Benutzers
+
   const { data: jobs, isLoading, error } = useQuery<JobListing[]>({
-    queryKey: ['/api/my-jobs'],
+    queryKey: ["/api/my-jobs"],
     queryFn: async () => {
-      const response = await fetch('/api/my-jobs');
-      
+      const response = await fetch("/api/my-jobs", { credentials: "include" });
+
       if (!response.ok) {
-        throw new Error('Fehler beim Abrufen Ihrer Aufträge');
+        throw new Error("Fehler beim Abrufen Ihrer Aufträge");
       }
-      
+
       return response.json();
-    }
+    },
   });
-  
-  // Mutation zum Löschen eines Auftrags
+
   const deleteJobMutation = useMutation({
     mutationFn: async (jobId: number) => {
       await apiRequest("DELETE", `/api/jobs/${jobId}`);
     },
     onSuccess: () => {
-      // Cache invalidieren
-      queryClient.invalidateQueries({ queryKey: ['/api/my-jobs'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/jobs'] });
-      
-      // Erfolgsmeldung anzeigen
+      queryClient.invalidateQueries({ queryKey: ["/api/my-jobs"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
+
       toast({
         title: "Auftrag gelöscht",
-        description: "Ihr Auftrag wurde erfolgreich gelöscht.",
+        description: "Ihr Auftrag wurde erfolgreich gelöscht. Sie können jetzt wieder einen neuen Auftrag erstellen.",
       });
     },
     onError: (error: any) => {
-      // Fehlermeldung anzeigen
       toast({
         title: "Fehler beim Löschen des Auftrags",
         description: error.message || "Bitte versuchen Sie es erneut",
@@ -63,18 +57,15 @@ export function MyJobs() {
       });
     },
     onSettled: () => {
-      // Löschstatus zurücksetzen
       setDeletingJobId(null);
-    }
+    },
   });
-  
-  // Handling für das Löschen eines Auftrags
+
   const handleDeleteJob = (jobId: number) => {
     setDeletingJobId(jobId);
     deleteJobMutation.mutate(jobId);
   };
-  
-  // Lädt noch
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center p-12">
@@ -82,8 +73,7 @@ export function MyJobs() {
       </div>
     );
   }
-  
-  // Fehler beim Laden
+
   if (error) {
     return (
       <div className="text-center p-12">
@@ -92,58 +82,52 @@ export function MyJobs() {
       </div>
     );
   }
-  
-  // Keine Aufträge gefunden
+
   if (!jobs || jobs.length === 0) {
     return (
       <div className="text-center p-12">
-        <h3 className="text-xl font-semibold mb-2">Keine Aufträge vorhanden</h3>
+        <h3 className="text-xl font-semibold mb-2">Kein Auftrag vorhanden</h3>
         <p className="text-muted-foreground mb-6">
-          Sie haben noch keine Aufträge erstellt. Erstellen Sie jetzt Ihren ersten Auftrag.
+          Sie können einen Auftrag erstellen. Pro Benutzer ist nur ein Auftrag erlaubt.
         </p>
         <Link href="/auftrag-erstellen">
           <Button>
             <PlusCircle className="h-4 w-4 mr-2" />
-            Neuen Auftrag erstellen
+            Auftrag erstellen
           </Button>
         </Link>
       </div>
     );
   }
-  
+
   return (
     <div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold">Meine Aufträge</h2>
-        <Link href="/auftrag-erstellen">
-          <Button>
-            <PlusCircle className="h-4 w-4 mr-2" />
-            Neuen Auftrag erstellen
-          </Button>
-        </Link>
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold">Mein Auftrag</h2>
+        <p className="text-sm text-muted-foreground mt-1">
+          Pro Benutzer ist nur ein Auftrag erlaubt. Wenn Sie einen neuen Auftrag erstellen möchten, löschen Sie zuerst den bestehenden Auftrag.
+        </p>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {jobs.map((job) => (
+        {jobs.slice(0, 1).map((job) => (
           <AlertDialog key={job.id}>
-            <JobListingCard 
-              job={job} 
+            <JobListingCard
+              job={job}
               onDelete={(id) => setDeletingJobId(id)}
               showActions={!deleteJobMutation.isPending || deletingJobId !== job.id}
             />
-            
-            {/* Bestätigungsdialog für das Löschen */}
+
             <AlertDialogContent>
               <AlertDialogHeader>
                 <AlertDialogTitle>Auftrag löschen</AlertDialogTitle>
                 <AlertDialogDescription>
-                  Sind Sie sicher, dass Sie diesen Auftrag löschen möchten? 
-                  Diese Aktion kann nicht rückgängig gemacht werden.
+                  Sind Sie sicher, dass Sie diesen Auftrag löschen möchten? Danach können Sie einen neuen Auftrag erstellen.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
                 <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                <AlertDialogAction 
+                <AlertDialogAction
                   onClick={() => handleDeleteJob(job.id)}
                   className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                 >
