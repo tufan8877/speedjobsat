@@ -1,5 +1,6 @@
 import express, { Express, Request, Response } from "express";
 import { isAuthenticated } from "./sqlite-auth";
+import { requireEmailVerified } from "./email-verification-routes";
 import { sqliteDb } from "./sqlite-db";
 import { jobListings } from "@shared/sqlite-schema";
 import { eq, and, desc } from "drizzle-orm";
@@ -11,7 +12,7 @@ function getUserEmail(req: Request): string {
 }
 
 export function setupJobRoutes(app: Express) {
-  app.post("/api/jobs/upload", isAuthenticated, upload.array("images", 5), (req: Request, res: Response) => {
+  app.post("/api/jobs/upload", isAuthenticated, requireEmailVerified, upload.array("images", 5), (req: Request, res: Response) => {
     try {
       const files = req.files as Express.Multer.File[];
 
@@ -31,7 +32,7 @@ export function setupJobRoutes(app: Express) {
     }
   });
 
-  app.post("/api/jobs", isAuthenticated, async (req: Request, res: Response) => {
+  app.post("/api/jobs", isAuthenticated, requireEmailVerified, async (req: Request, res: Response) => {
     try {
       if (!req.user) {
         return res.status(401).json({ message: "Nicht authentifiziert" });
@@ -169,7 +170,7 @@ export function setupJobRoutes(app: Express) {
     }
   });
 
-  app.put("/api/jobs/:id", isAuthenticated, async (req: Request, res: Response) => {
+  app.put("/api/jobs/:id", isAuthenticated, requireEmailVerified, async (req: Request, res: Response) => {
     try {
       if (!req.user) {
         return res.status(401).json({ message: "Nicht authentifiziert" });
