@@ -11,7 +11,6 @@ function getUserEmail(req: Request): string {
 }
 
 export function setupJobRoutes(app: Express) {
-  // Upload-Route für Auftragsbilder
   app.post("/api/jobs/upload", isAuthenticated, upload.array("images", 5), (req: Request, res: Response) => {
     try {
       const files = req.files as Express.Multer.File[];
@@ -32,7 +31,6 @@ export function setupJobRoutes(app: Express) {
     }
   });
 
-  // Auftrag erstellen: Kontakt-E-Mail kommt immer vom eingeloggten Benutzerkonto
   app.post("/api/jobs", isAuthenticated, async (req: Request, res: Response) => {
     try {
       if (!req.user) {
@@ -54,6 +52,16 @@ export function setupJobRoutes(app: Express) {
       const userId = Number((req.user as any)?.id);
       if (!Number.isFinite(userId)) {
         return res.status(401).json({ message: "Benutzer-ID nicht verfügbar" });
+      }
+
+      const existingJobs = await sqliteDb
+        .select()
+        .from(jobListings)
+        .where(eq(jobListings.userId, userId))
+        .limit(1);
+
+      if (existingJobs.length > 0) {
+        return res.status(400).json({ message: "Pro Benutzer ist nur ein Auftrag erlaubt" });
       }
 
       const contactEmail = getUserEmail(req);
@@ -80,7 +88,6 @@ export function setupJobRoutes(app: Express) {
     }
   });
 
-  // Alle Aufträge abrufen
   app.get("/api/jobs", async (req: Request, res: Response) => {
     try {
       const { category, location, status = "active" } = req.query;
@@ -116,7 +123,6 @@ export function setupJobRoutes(app: Express) {
     }
   });
 
-  // Einen bestimmten Auftrag abrufen
   app.get("/api/jobs/:id", async (req: Request, res: Response) => {
     try {
       const jobId = parseInt(req.params.id);
@@ -144,7 +150,6 @@ export function setupJobRoutes(app: Express) {
     }
   });
 
-  // Meine Aufträge abrufen
   app.get("/api/my-jobs", isAuthenticated, async (req: Request, res: Response) => {
     try {
       if (!req.user) {
@@ -164,7 +169,6 @@ export function setupJobRoutes(app: Express) {
     }
   });
 
-  // Auftrag aktualisieren: Kontakt-E-Mail bleibt immer die registrierte E-Mail des Besitzers/Admin-Bearbeiters
   app.put("/api/jobs/:id", isAuthenticated, async (req: Request, res: Response) => {
     try {
       if (!req.user) {
@@ -221,7 +225,6 @@ export function setupJobRoutes(app: Express) {
     }
   });
 
-  // Auftrag löschen
   app.delete("/api/jobs/:id", isAuthenticated, async (req: Request, res: Response) => {
     try {
       if (!req.user) {
