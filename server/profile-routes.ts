@@ -1,7 +1,6 @@
 import { Express, Request, Response } from "express";
 import { storage } from "./storage";
 import { isAuthenticated } from "./auth";
-import { requireEmailVerified } from "./email-verification-routes";
 
 function toStringArray(value: unknown): string[] {
   if (Array.isArray(value)) return value.map(String).filter(Boolean);
@@ -78,7 +77,7 @@ export function setupProfileRoutes(app: Express) {
     }
   });
 
-  app.put("/api/my-profile", isAuthenticated, requireEmailVerified, async (req: Request, res: Response) => {
+  app.put("/api/my-profile", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = req.user!.id;
       const registeredEmail = getRegisteredEmail(req);
@@ -196,7 +195,7 @@ export function setupProfileRoutes(app: Express) {
     }
   });
 
-  app.post("/api/profiles/:id/reviews", isAuthenticated, requireEmailVerified, async (req: Request, res: Response) => {
+  app.post("/api/profiles/:id/reviews", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const profileId = Number(req.params.id);
       if (!Number.isFinite(profileId)) {
@@ -232,7 +231,7 @@ export function setupProfileRoutes(app: Express) {
     }
   });
 
-  app.put("/api/reviews/:id", isAuthenticated, requireEmailVerified, async (req: Request, res: Response) => {
+  app.put("/api/reviews/:id", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const reviewId = Number(req.params.id);
       if (!Number.isFinite(reviewId)) {
