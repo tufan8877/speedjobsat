@@ -3,8 +3,6 @@ import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
 import { ArrowLeft } from "lucide-react";
-import EmailVerificationNotice from "@/components/auth/email-verification-notice";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function CreateJobPage() {
   const { user } = useAuth();
@@ -14,8 +12,6 @@ export default function CreateJobPage() {
     navigate("/auth?redirect=/auftrag-erstellen");
     return null;
   }
-
-  const emailVerified = !!user.isAdmin || !!(user as any).emailVerified;
 
   return (
     <div className="container py-8">
@@ -33,21 +29,7 @@ export default function CreateJobPage() {
         </p>
       </div>
 
-      {!emailVerified ? (
-        <Card className="max-w-2xl mx-auto">
-          <CardHeader>
-            <CardTitle>E-Mail-Adresse bestätigen</CardTitle>
-            <CardDescription>
-              Bitte bestätigen Sie zuerst Ihre E-Mail-Adresse. Danach können Sie einen Auftrag erstellen.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <EmailVerificationNotice email={user.email} />
-          </CardContent>
-        </Card>
-      ) : (
-        <SimpleWorkingForm />
-      )}
+      <SimpleWorkingForm />
     </div>
   );
 }
