@@ -22,8 +22,30 @@ import SafetyTipsPage from "@/pages/static/safety-tips-page";
 import SupportPage from "@/pages/static/support-page";
 import TermsOfServicePage from "@/pages/static/terms-of-service-page";
 
+function forceScrollToTop() {
+  window.scrollTo(0, 0);
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+
+  const root = document.getElementById("root");
+  if (root) root.scrollTop = 0;
+
+  document.querySelectorAll("main, .overflow-y-auto, .overflow-auto").forEach((element) => {
+    if (element instanceof HTMLElement) {
+      element.scrollTop = 0;
+    }
+  });
+}
+
 function ScrollToTop() {
   const [location] = useLocation();
+
+  useEffect(() => {
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+  }, []);
 
   useEffect(() => {
     const hasHash = window.location.hash && window.location.hash.length > 1;
@@ -37,10 +59,25 @@ function ScrollToTop() {
       }
     }
 
-    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-    document.documentElement.scrollTop = 0;
-    document.body.scrollTop = 0;
-  }, [location]);
+    forceScrollToTop();
+
+    const frame1 = window.requestAnimationFrame(forceScrollToTop);
+    const frame2 = window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(forceScrollToTop);
+    });
+
+    const timeout1 = window.setTimeout(forceScrollToTop, 50);
+    const timeout2 = window.setTimeout(forceScrollToTop, 150);
+    const timeout3 = window.setTimeout(forceScrollToTop, 300);
+
+    return () => {
+      window.cancelAnimationFrame(frame1);
+      window.cancelAnimationFrame(frame2);
+      window.clearTimeout(timeout1);
+      window.clearTimeout(timeout2);
+      window.clearTimeout(timeout3);
+    };
+  }, [location, window.location.search]);
 
   return null;
 }
@@ -56,10 +93,10 @@ function App() {
         <Route path="/auth" component={AuthPage} />
         <Route path="/suche" component={SearchPage} />
         <Route path="/anbieter/:id" component={ProviderPage} />
-        <Route path="/auftraege" component={JobsPage} />
         <Route path="/auftraege/:id">
           {() => <JobDetailPage />}
         </Route>
+        <Route path="/auftraege" component={JobsPage} />
 
         {/* Geschützte Routen */}
         <ProtectedRoute path="/profil" component={ProfilePage} />
