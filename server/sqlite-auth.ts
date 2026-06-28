@@ -1,7 +1,9 @@
 // Kompatibilität für alte Imports.
-// Der echte Auth-Code liegt in server/auth.ts und nutzt Postgres-Sessions.
+// Der echte Auth-Code soll in server/auth.ts liegen und Postgres-Sessions nutzen.
 export {
   setupAuth as setupSqliteAuth,
   isAuthenticated,
   isAdmin,
+  hashPassword,
+  comparePasswords,
 } from "./auth";
