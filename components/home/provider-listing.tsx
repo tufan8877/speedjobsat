@@ -3,7 +3,6 @@ import { Link } from "wouter";
 import { StarRating } from "@/components/ui/star-rating";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
 import { Profile } from "@shared/schema";
 import { useAuth } from "@/hooks/use-auth";
@@ -103,7 +102,6 @@ export default function ProviderListing() {
                           <h3 className="text-lg font-semibold truncate">
                             {provider.firstName} {provider.lastName}
                           </h3>
-                          <Badge variant="default">Neu #{index + 1}</Badge>
                         </div>
                         <p className="text-primary font-medium truncate">
                           {services[0] || "Dienstleistung"}
