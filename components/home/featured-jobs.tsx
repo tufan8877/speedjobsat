@@ -19,7 +19,7 @@ export default function FeaturedJobs() {
   const [selectedLocation, setSelectedLocation] = useState("");
 
   const { data: jobs, isLoading, error } = useQuery<JobListing[]>({
-    queryKey: ["/api/jobs", "home-latest-3"],
+    queryKey: ["/api/jobs", "home-latest-3-mobile-ready"],
     queryFn: async () => {
       const res = await fetch("/api/jobs", { credentials: "include" });
       if (!res.ok) throw new Error("Aufträge konnten nicht geladen werden");
@@ -56,10 +56,10 @@ export default function FeaturedJobs() {
 
   if (isLoading) {
     return (
-      <section className="py-12 bg-muted/30">
-        <div className="container">
-          <h2 className="text-3xl font-bold mb-8 text-center">Aktuelle Aufträge</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <section className="py-8 sm:py-12 bg-muted/30">
+        <div className="container px-4">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-8 text-center">Aktuelle Aufträge</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {[1, 2, 3].map((i) => (
               <Card key={i} className="h-full flex flex-col">
                 <CardHeader>
@@ -84,10 +84,10 @@ export default function FeaturedJobs() {
 
   if (error) {
     return (
-      <section className="py-12">
-        <div className="container">
+      <section className="py-8 sm:py-12">
+        <div className="container px-4">
           <div className="text-center">
-            <h2 className="text-3xl font-bold mb-4">Aktuelle Aufträge</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-4">Aktuelle Aufträge</h2>
             <p className="text-red-500">Fehler beim Laden der Aufträge.</p>
           </div>
         </div>
@@ -97,10 +97,10 @@ export default function FeaturedJobs() {
 
   if (!jobs || jobs.length === 0) {
     return (
-      <section className="py-12 bg-muted/30">
-        <div className="container">
+      <section className="py-8 sm:py-12 bg-muted/30">
+        <div className="container px-4">
           <div className="text-center">
-            <h2 className="text-3xl font-bold mb-4">Aktuelle Aufträge</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold mb-4">Aktuelle Aufträge</h2>
             <p className="mb-6">Derzeit sind keine Aufträge verfügbar.</p>
             <Link href="/auftraege">
               <Button>Alle Aufträge anzeigen</Button>
@@ -112,21 +112,21 @@ export default function FeaturedJobs() {
   }
 
   return (
-    <section className="py-12 bg-muted/30">
-      <div className="container">
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold mb-4">Aktuelle Aufträge</h2>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
-            Hier sehen Sie die 3 neuesten Aufträge auf unserer Plattform. Der neueste Auftrag steht immer an erster Stelle.
+    <section className="py-8 sm:py-12 bg-muted/30">
+      <div className="container px-4">
+        <div className="text-center mb-6 sm:mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-3 sm:mb-4">Aktuelle Aufträge</h2>
+          <p className="text-muted-foreground max-w-2xl mx-auto text-sm sm:text-base">
+            Hier sehen Sie die 3 neuesten Aufträge. Der neueste Auftrag steht immer an erster Stelle.
           </p>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
+        <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6 mb-6 sm:mb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="text-gray-700 text-sm font-medium mb-2 block">Kategorie / Service</label>
               <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Kategorie wählen" />
                 </SelectTrigger>
                 <SelectContent>
@@ -143,7 +143,7 @@ export default function FeaturedJobs() {
             <div>
               <label className="text-gray-700 text-sm font-medium mb-2 block">Bundesland</label>
               <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Bundesland wählen" />
                 </SelectTrigger>
                 <SelectContent>
@@ -166,43 +166,38 @@ export default function FeaturedJobs() {
         </div>
 
         {latestFilteredJobs.length === 0 ? (
-          <div className="text-center py-12 text-muted-foreground">
-            Keine passenden Aufträge gefunden.
-          </div>
+          <div className="text-center py-12 text-muted-foreground">Keine passenden Aufträge gefunden.</div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-            {latestFilteredJobs.map((job) => (
-              <Card key={job.id} className="h-full flex flex-col">
-                <CardHeader>
-                  <div className="flex justify-between items-start gap-3">
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Badge variant="outline">{job.category}</Badge>
-                      </div>
-                      <CardTitle className="text-lg line-clamp-1">{job.title}</CardTitle>
-                      <CardDescription className="mt-1">
-                        Auftrag {job.id}
-                      </CardDescription>
-                    </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
+            {latestFilteredJobs.map((job, index) => (
+              <Card key={job.id} className="h-full flex flex-col overflow-hidden border border-gray-100 shadow-sm">
+                <CardHeader className="p-4 sm:p-6 pb-3">
+                  <div className="flex flex-wrap items-center gap-2 mb-3">
+                    <Badge variant="default" className="rounded-full px-3 py-1 text-xs font-semibold">
+                      Neu #{index + 1}
+                    </Badge>
+                    <Badge variant="outline" className="text-xs">{job.category}</Badge>
                   </div>
+                  <CardTitle className="text-base sm:text-lg line-clamp-2">{job.title}</CardTitle>
+                  <CardDescription className="mt-1 text-xs sm:text-sm">Auftrag {job.id}</CardDescription>
                 </CardHeader>
 
-                <CardContent className="flex-1">
+                <CardContent className="flex-1 p-4 sm:p-6 pt-0">
                   <p className="text-sm text-muted-foreground line-clamp-3 mb-4">{job.description}</p>
 
                   <div className="space-y-2">
-                    <div className="flex items-center text-sm">
-                      <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
+                    <div className="flex items-start text-sm">
+                      <MapPin className="h-4 w-4 mr-2 mt-0.5 text-muted-foreground flex-shrink-0" />
                       <span>{job.location}</span>
                     </div>
 
-                    <div className="flex items-center text-sm">
-                      <Calendar className="h-4 w-4 mr-2 text-muted-foreground" />
+                    <div className="flex items-start text-sm">
+                      <Calendar className="h-4 w-4 mr-2 mt-0.5 text-muted-foreground flex-shrink-0" />
                       <span>{job.date ? format(new Date(job.date), "PPP", { locale: de }) : "Kein Datum angegeben"}</span>
                     </div>
 
-                    <div className="flex items-center text-sm">
-                      <Phone className="h-4 w-4 mr-2 text-muted-foreground" />
+                    <div className="flex items-start text-sm">
+                      <Phone className="h-4 w-4 mr-2 mt-0.5 text-muted-foreground flex-shrink-0" />
                       {user ? (
                         <span className="line-clamp-1">{job.contactInfo}</span>
                       ) : (
@@ -212,9 +207,9 @@ export default function FeaturedJobs() {
                   </div>
                 </CardContent>
 
-                <CardFooter>
+                <CardFooter className="p-4 sm:p-6 pt-0">
                   <Link href={`/auftraege/${job.id}`}>
-                    <Button variant="default" className="w-full">
+                    <Button variant="default" className="w-full h-10 sm:h-11">
                       Details ansehen
                     </Button>
                   </Link>
@@ -226,7 +221,7 @@ export default function FeaturedJobs() {
 
         <div className="text-center">
           <Link href="/auftraege">
-            <Button variant="outline" size="lg">
+            <Button variant="outline" size="lg" className="w-full sm:w-auto">
               Alle Aufträge anzeigen
             </Button>
           </Link>
