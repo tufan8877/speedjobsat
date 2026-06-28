@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, Settings, User, LogOut } from "lucide-react";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
-import VerifiedProfileGate from "@/components/profile/verified-profile-gate";
+import AutoEmailProfileForm from "@/components/profile/auto-email-profile-form";
 import { AccountSettings } from "@/components/settings/settings-forms";
 
 export default function ProfilePage() {
@@ -85,7 +85,7 @@ export default function ProfilePage() {
               </div>
 
               <TabsContent value="profile">
-                <VerifiedProfileGate />
+                <AutoEmailProfileForm />
               </TabsContent>
 
               <TabsContent value="settings">
