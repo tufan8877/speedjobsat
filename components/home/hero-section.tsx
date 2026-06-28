@@ -16,47 +16,48 @@ export default function HeroSection() {
     if (service) searchParams.append("service", service);
     if (region) searchParams.append("region", region);
 
-    setLocation(`/suche?${searchParams.toString()}`);
+    const query = searchParams.toString();
+    setLocation(query ? `/suche?${query}` : "/suche");
   };
 
   return (
-    <section className="bg-white text-gray-900 pt-5 pb-8 md:pt-8 md:pb-10 lg:pt-10 lg:pb-12">
+    <section className="bg-white text-gray-900 pt-8 pb-8 sm:pt-10 sm:pb-10 md:pt-8 md:pb-10 lg:pt-10 lg:pb-12 border-b border-gray-100">
       <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto text-left md:text-center">
-          <div className="hidden md:block">
-            <h1 className="text-3xl lg:text-4xl font-bold font-title mb-3 leading-tight text-primary">
+        <div className="max-w-5xl mx-auto text-center">
+          <div className="mb-6 sm:mb-7 md:mb-6">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-title mb-3 leading-tight text-primary tracking-tight">
               Finden Sie lokale Fachkräfte in Österreich
             </h1>
-            <p className="text-base lg:text-lg text-gray-600 mb-5">
+            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Installateure, Mechaniker, Pflegekräfte und mehr - alle von verifizierten Anbietern
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-center gap-3 mb-5 md:mb-5">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 mb-6 md:mb-6">
             <Button
-              className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-semibold md:px-6 md:py-5 md:text-base"
+              className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-semibold px-5 py-6 text-base md:px-6 md:py-5 md:text-base"
               onClick={() => setLocation("/auftrag-erstellen")}
             >
               Einen Auftrag erstellen
             </Button>
             <Button
               variant="outline"
-              className="w-full sm:w-auto border-primary text-primary hover:bg-primary/5 md:px-6 md:py-5 md:text-base"
+              className="w-full sm:w-auto border-primary text-primary hover:bg-primary/5 px-5 py-6 text-base md:px-6 md:py-5 md:text-base"
               onClick={() => setLocation("/auftraege")}
             >
               Aufträge durchsuchen
             </Button>
           </div>
 
-          <Card className="bg-white rounded-lg shadow-lg overflow-hidden">
-            <CardContent className="p-4 md:p-6 text-left">
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+          <Card className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+            <CardContent className="p-4 sm:p-5 md:p-6 text-left">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
                 <div>
-                  <Label htmlFor="service" className="text-gray-700 text-sm font-medium mb-1">
+                  <Label htmlFor="service" className="text-gray-700 text-sm font-medium mb-2 block">
                     Dienstleistung
                   </Label>
                   <Select value={service} onValueChange={setService}>
-                    <SelectTrigger className="w-full p-3 bg-gray-50 border border-gray-200 rounded text-gray-800 md:h-12">
+                    <SelectTrigger className="w-full h-12 px-3 bg-gray-50 border border-gray-200 rounded text-gray-800">
                       <SelectValue placeholder="Kategorie wählen" />
                     </SelectTrigger>
                     <SelectContent>
@@ -70,11 +71,11 @@ export default function HeroSection() {
                 </div>
 
                 <div>
-                  <Label htmlFor="region" className="text-gray-700 text-sm font-medium mb-1">
+                  <Label htmlFor="region" className="text-gray-700 text-sm font-medium mb-2 block">
                     Bundesland
                   </Label>
                   <Select value={region} onValueChange={setRegion}>
-                    <SelectTrigger className="w-full p-3 bg-gray-50 border border-gray-200 rounded text-gray-800 md:h-12">
+                    <SelectTrigger className="w-full h-12 px-3 bg-gray-50 border border-gray-200 rounded text-gray-800">
                       <SelectValue placeholder="Wählen Sie ein Bundesland" />
                     </SelectTrigger>
                     <SelectContent>
@@ -89,10 +90,10 @@ export default function HeroSection() {
 
                 <div className="flex items-end">
                   <Button
-                    className="w-full bg-primary hover:bg-primary/90 text-white p-3 rounded font-medium transition md:h-12"
+                    className="w-full h-12 bg-primary hover:bg-primary/90 text-white rounded font-medium transition text-base"
                     onClick={handleSearch}
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
                       <circle cx="11" cy="11" r="8" />
                       <path d="m21 21-4.3-4.3" />
                     </svg>
