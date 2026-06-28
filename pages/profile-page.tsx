@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useSearch } from "wouter";
-import { 
-  Tabs, 
-  TabsContent, 
-  TabsList, 
-  TabsTrigger 
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger
 } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Loader2, Settings, User, LogOut } from "lucide-react";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
-import BetterProfileForm from "@/components/profile/better-profile-form";
+import AutoEmailProfileForm from "@/components/profile/auto-email-profile-form";
 import { AccountSettings } from "@/components/settings/settings-forms";
 
 export default function ProfilePage() {
@@ -21,8 +21,7 @@ export default function ProfilePage() {
   const searchParams = new URLSearchParams(search);
   const initialTab = searchParams.get("tab") === "settings" ? "settings" : "profile";
   const [activeTab, setActiveTab] = useState(initialTab);
-  
-  // Update URL when tab changes
+
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     const newParams = new URLSearchParams(search);
@@ -34,7 +33,7 @@ export default function ProfilePage() {
     const newSearch = newParams.toString();
     window.history.replaceState(null, "", `/profil${newSearch ? `?${newSearch}` : ""}`);
   };
-  
+
   if (!user) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -46,7 +45,7 @@ export default function ProfilePage() {
       </div>
     );
   }
-  
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -65,9 +64,9 @@ export default function ProfilePage() {
                     Einstellungen
                   </TabsTrigger>
                 </TabsList>
-                
-                <Button 
-                  variant="outline" 
+
+                <Button
+                  variant="outline"
                   className="text-red-500 border-red-200 hover:bg-red-50"
                   onClick={async () => {
                     setIsLoggingOut(true);
@@ -84,11 +83,11 @@ export default function ProfilePage() {
                   Abmelden
                 </Button>
               </div>
-              
+
               <TabsContent value="profile">
-                <BetterProfileForm />
+                <AutoEmailProfileForm />
               </TabsContent>
-              
+
               <TabsContent value="settings">
                 <AccountSettings />
               </TabsContent>
