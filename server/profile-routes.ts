@@ -18,7 +18,11 @@ function toStringArray(value: unknown): string[] {
   return [];
 }
 
-function normalizeProfilePayload(body: any, userId?: number) {
+function getRegisteredEmail(req: Request): string {
+  return String((req.user as any)?.email || "").trim().toLowerCase();
+}
+
+function normalizeProfilePayload(body: any, userId?: number, registeredEmail?: string) {
   const payload: any = {
     firstName: body?.firstName ?? null,
     lastName: body?.lastName ?? null,
@@ -26,9 +30,9 @@ function normalizeProfilePayload(body: any, userId?: number) {
     services: toStringArray(body?.services),
     customServices: body?.customServices ?? null,
     regions: toStringArray(body?.regions),
-    phoneNumber: body?.phoneNumber ?? null,
-    email: body?.email ?? null,
-    socialMedia: body?.socialMedia ?? null,
+    phoneNumber: null,
+    email: registeredEmail || null,
+    socialMedia: null,
     availablePeriods: toStringArray(body?.availablePeriods),
     isAvailable: typeof body?.isAvailable === "boolean" ? body.isAvailable : true,
     profileImage: body?.profileImage ?? null,
@@ -71,8 +75,13 @@ export function setupProfileRoutes(app: Express) {
   app.put("/api/my-profile", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = req.user!.id;
-      const profileData = normalizeProfilePayload(req.body, userId);
+      const registeredEmail = getRegisteredEmail(req);
 
+      if (!registeredEmail) {
+        return res.status(400).json({ message: "Keine registrierte E-Mail-Adresse im Benutzerkonto gefunden" });
+      }
+
+      const profileData = normalizeProfilePayload(req.body, userId, registeredEmail);
       const existingProfile = await storage.getProfileByUserId(userId);
 
       if (existingProfile) {
