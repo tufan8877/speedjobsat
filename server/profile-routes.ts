@@ -18,6 +18,11 @@ function toStringArray(value: unknown): string[] {
   return [];
 }
 
+function oneStringArray(value: unknown): string[] {
+  const values = toStringArray(value);
+  return values.length > 0 ? [values[0]] : [];
+}
+
 function getRegisteredEmail(req: Request): string {
   return String((req.user as any)?.email || "").trim().toLowerCase();
 }
@@ -27,7 +32,7 @@ function normalizeProfilePayload(body: any, userId?: number, registeredEmail?: s
     firstName: body?.firstName ?? null,
     lastName: body?.lastName ?? null,
     description: body?.description ?? null,
-    services: toStringArray(body?.services),
+    services: oneStringArray(body?.services),
     customServices: body?.customServices ?? null,
     regions: toStringArray(body?.regions),
     phoneNumber: null,
@@ -48,7 +53,7 @@ function normalizeProfilePayload(body: any, userId?: number, registeredEmail?: s
 function responseProfile(profile: any, reviews?: any[]) {
   return {
     ...profile,
-    services: toStringArray(profile.services),
+    services: oneStringArray(profile.services),
     regions: toStringArray(profile.regions),
     availablePeriods: toStringArray(profile.availablePeriods),
     ...(reviews ? { reviews } : {}),
@@ -82,6 +87,11 @@ export function setupProfileRoutes(app: Express) {
       }
 
       const profileData = normalizeProfilePayload(req.body, userId, registeredEmail);
+
+      if (!profileData.services || profileData.services.length !== 1) {
+        return res.status(400).json({ message: "Pro Profil ist genau eine Dienstleistung erlaubt" });
+      }
+
       const existingProfile = await storage.getProfileByUserId(userId);
 
       if (existingProfile) {
