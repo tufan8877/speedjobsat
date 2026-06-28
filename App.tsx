@@ -38,6 +38,15 @@ function forceScrollToTop() {
   });
 }
 
+function scheduleScrollToTop() {
+  forceScrollToTop();
+  window.requestAnimationFrame(forceScrollToTop);
+  window.setTimeout(forceScrollToTop, 25);
+  window.setTimeout(forceScrollToTop, 100);
+  window.setTimeout(forceScrollToTop, 250);
+  window.setTimeout(forceScrollToTop, 500);
+}
+
 function ScrollToTop() {
   const [location] = useLocation();
 
@@ -45,6 +54,28 @@ function ScrollToTop() {
     if ("scrollRestoration" in window.history) {
       window.history.scrollRestoration = "manual";
     }
+  }, []);
+
+  useEffect(() => {
+    const handleNavigationClick = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      if (!target) return;
+
+      const link = target.closest("a") as HTMLAnchorElement | null;
+      if (!link) return;
+
+      const href = link.getAttribute("href") || "";
+      const isInternalLink = href.startsWith("/");
+      const isHashOnly = href.startsWith("#");
+      const opensNewTab = link.target === "_blank";
+
+      if (isInternalLink && !isHashOnly && !opensNewTab) {
+        scheduleScrollToTop();
+      }
+    };
+
+    document.addEventListener("click", handleNavigationClick, true);
+    return () => document.removeEventListener("click", handleNavigationClick, true);
   }, []);
 
   useEffect(() => {
@@ -59,24 +90,7 @@ function ScrollToTop() {
       }
     }
 
-    forceScrollToTop();
-
-    const frame1 = window.requestAnimationFrame(forceScrollToTop);
-    const frame2 = window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(forceScrollToTop);
-    });
-
-    const timeout1 = window.setTimeout(forceScrollToTop, 50);
-    const timeout2 = window.setTimeout(forceScrollToTop, 150);
-    const timeout3 = window.setTimeout(forceScrollToTop, 300);
-
-    return () => {
-      window.cancelAnimationFrame(frame1);
-      window.cancelAnimationFrame(frame2);
-      window.clearTimeout(timeout1);
-      window.clearTimeout(timeout2);
-      window.clearTimeout(timeout3);
-    };
+    scheduleScrollToTop();
   }, [location, window.location.search]);
 
   return null;
