@@ -1,21 +1,14 @@
 import { Express, Request, Response, NextFunction } from "express";
 import { eq } from "drizzle-orm";
-import { randomBytes } from "crypto";
 import { db } from "./db";
 import { users, type User as AppUser } from "@shared/schema";
 import { storage } from "./storage";
 import { isAuthenticated } from "./auth";
 import { sendVerificationEmail } from "./email";
+import { createVerificationData } from "./verification";
 
 function appUrl() {
   return (process.env.APP_URL || process.env.PUBLIC_APP_URL || "https://speedjobs.at").replace(/\/$/, "");
-}
-
-export function createVerificationData() {
-  return {
-    emailVerificationToken: randomBytes(32).toString("hex"),
-    emailVerificationExpires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-  };
 }
 
 export function requireEmailVerified(req: Request, res: Response, next: NextFunction) {
