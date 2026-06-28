@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "Installing dependencies..."
-npm install
+echo "Installing dependencies including dev dependencies..."
+npm install --include=dev
 
 echo "Pushing database schema..."
 npm run db:push
