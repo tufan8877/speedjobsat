@@ -3,7 +3,6 @@ import { Link } from "wouter";
 import { StarRating } from "@/components/ui/star-rating";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Loader2 } from "lucide-react";
 import { Profile } from "@shared/schema";
 import { useAuth } from "@/hooks/use-auth";
@@ -31,7 +30,7 @@ export default function ProviderListing() {
   const { user } = useAuth();
 
   const { data, isLoading, error } = useQuery<{ profiles: ProfileWithStats[] }>({
-    queryKey: ["/api/profiles", "home-latest-4-mobile-ready"],
+    queryKey: ["/api/profiles", "home-latest-4-no-badges"],
     queryFn: async () => {
       const res = await fetch("/api/profiles?sort=newest&pageSize=4&page=1", {
         credentials: "include",
@@ -89,13 +88,6 @@ export default function ProviderListing() {
               return (
                 <div key={provider.id} className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition border border-gray-100">
                   <div className="p-4 sm:p-6">
-                    <div className="mb-3 flex items-center justify-between gap-2">
-                      <Badge variant="default" className="rounded-full px-3 py-1 text-xs font-semibold">
-                        Neu #{index + 1}
-                      </Badge>
-                      <span className="text-xs text-gray-500">Neues Profil</span>
-                    </div>
-
                     <div className="flex items-start gap-3 sm:gap-4">
                       <Avatar className="h-14 w-14 sm:h-16 sm:w-16 rounded-full flex-shrink-0">
                         <AvatarImage
