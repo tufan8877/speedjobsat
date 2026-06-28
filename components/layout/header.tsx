@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { LogOut, User as UserIcon, Settings, Shield, Heart, Briefcase } from "lucide-react";
+import { LogOut, User as UserIcon, Shield, Heart, Briefcase } from "lucide-react";
 import { useState } from "react";
 import MobileMenu from "./mobile-menu";
 import { useAuth } from "@/hooks/use-auth";
@@ -10,19 +10,29 @@ import { useAuth } from "@/hooks/use-auth";
 export default function Header() {
   const { user, isLoading, logout, logoutPending } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [, setLocation] = useLocation();
+
+  const goHome = (event?: React.MouseEvent) => {
+    event?.preventDefault();
+    setMobileMenuOpen(false);
+    setLocation("/");
+    window.setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 0);
+  };
 
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
+          <Link href="/" onClick={goHome} className="flex items-center space-x-2 cursor-pointer">
             <span className="text-primary text-2xl font-bold">
               speedjobs<span className="text-secondary">.at</span>
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
             <Link href="/auftraege" className="text-gray-700 hover:text-primary transition-colors">
               Aufträge
@@ -43,7 +53,6 @@ export default function Header() {
             )}
           </nav>
 
-          {/* Desktop Auth Section */}
           <div className="hidden md:flex items-center space-x-4">
             {isLoading ? (
               <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
@@ -125,8 +134,7 @@ export default function Header() {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
-          <button 
+          <button
             className="md:hidden p-2 rounded-md hover:bg-gray-100"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
@@ -139,10 +147,9 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      <MobileMenu 
-        isOpen={mobileMenuOpen} 
-        onClose={() => setMobileMenuOpen(false)} 
+      <MobileMenu
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
         user={user}
         onLogout={logout}
       />
