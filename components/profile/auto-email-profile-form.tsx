@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Loader2, Save } from "lucide-react";
@@ -22,7 +23,7 @@ const schema = z.object({
   firstName: z.string().optional().default(""),
   lastName: z.string().optional().default(""),
   description: z.string().optional().default(""),
-  services: z.array(z.string()).min(1, "Wählen Sie mindestens eine Dienstleistung aus"),
+  service: z.string().min(1, "Wählen Sie eine Dienstleistung aus"),
   regions: z.array(z.string()).min(1, "Wählen Sie mindestens ein Bundesland aus"),
   availablePeriods: z.array(z.string()).min(1, "Wählen Sie mindestens eine Verfügbarkeitszeit aus"),
   isAvailable: z.boolean().default(true),
@@ -59,7 +60,7 @@ export default function AutoEmailProfileForm() {
       firstName: "",
       lastName: "",
       description: "",
-      services: [],
+      service: "",
       regions: [],
       availablePeriods: [],
       isAvailable: true,
@@ -73,11 +74,12 @@ export default function AutoEmailProfileForm() {
 
   useEffect(() => {
     if (!profile) return;
+    const savedServices = Array.isArray(profile.services) ? profile.services : [];
     form.reset({
       firstName: profile.firstName || "",
       lastName: profile.lastName || "",
       description: profile.description || "",
-      services: Array.isArray(profile.services) ? profile.services : [],
+      service: savedServices[0] || "",
       regions: Array.isArray(profile.regions) ? profile.regions : profile.region ? [profile.region] : [],
       availablePeriods: Array.isArray(profile.availablePeriods) ? profile.availablePeriods : [],
       isAvailable: profile.isAvailable !== undefined ? profile.isAvailable : true,
@@ -86,14 +88,17 @@ export default function AutoEmailProfileForm() {
 
   const mutation = useMutation({
     mutationFn: async (values: FormValues) => {
-      const res = await apiRequest("PUT", "/api/my-profile", values);
+      const res = await apiRequest("PUT", "/api/my-profile", {
+        ...values,
+        services: [values.service],
+      });
       return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/my-profile"] });
       toast({
         title: "Profil gespeichert",
-        description: "Ihre registrierte E-Mail wurde automatisch als Kontakt hinterlegt.",
+        description: "Eine Dienstleistung wurde gespeichert. Ihre registrierte E-Mail wurde automatisch als Kontakt hinterlegt.",
       });
     },
     onError: (error: any) => {
@@ -117,7 +122,7 @@ export default function AutoEmailProfileForm() {
     <Card className="w-full shadow-md">
       <CardHeader>
         <CardTitle>Mein Profil</CardTitle>
-        <CardDescription>Bearbeiten Sie Ihre Dienstleister-Informationen.</CardDescription>
+        <CardDescription>Bearbeiten Sie Ihre Dienstleister-Informationen. Pro Profil ist nur eine Dienstleistung erlaubt.</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -144,7 +149,7 @@ export default function AutoEmailProfileForm() {
             </div>
 
             <FormField control={form.control} name="description" render={({ field }) => (
-              <FormItem><FormLabel>Beschreibung</FormLabel><FormControl><Textarea placeholder="Beschreiben Sie Ihre Erfahrung und Dienstleistungen..." className="min-h-[120px]" {...field} /></FormControl><FormMessage /></FormItem>
+              <FormItem><FormLabel>Beschreibung</FormLabel><FormControl><Textarea placeholder="Beschreiben Sie Ihre Erfahrung und Dienstleistung..." className="min-h-[120px]" {...field} /></FormControl><FormMessage /></FormItem>
             )} />
 
             <FormField control={form.control} name="isAvailable" render={({ field }) => (
@@ -154,8 +159,24 @@ export default function AutoEmailProfileForm() {
               </FormItem>
             )} />
 
-            <FormField control={form.control} name="services" render={({ field }) => (
-              <FormItem><FormLabel>Dienstleistungen</FormLabel><FormDescription>Wählen Sie Ihre angebotenen Leistungen.</FormDescription><CheckList items={serviceCategories} value={field.value || []} onChange={field.onChange} /><FormMessage /></FormItem>
+            <FormField control={form.control} name="service" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Dienstleistung</FormLabel>
+                <FormDescription>Wählen Sie genau eine Dienstleistung aus, die Sie anbieten.</FormDescription>
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Dienstleistung wählen" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {serviceCategories.map((service) => (
+                      <SelectItem key={service} value={service}>{service}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
             )} />
 
             <FormField control={form.control} name="availablePeriods" render={({ field }) => (
