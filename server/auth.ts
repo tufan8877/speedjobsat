@@ -6,7 +6,7 @@ import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
 import type { User as AppUser } from "@shared/schema";
-import { createVerificationData } from "./email-verification-routes";
+import { createVerificationData } from "./verification";
 import { sendVerificationEmail } from "./email";
 
 const scryptAsync = promisify(scrypt);
