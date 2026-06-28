@@ -1,21 +1,19 @@
-// components/ui/star-rating.tsx
 import * as React from "react";
 import { Star } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type StarRatingProps = {
-  /** Aktueller Wert (0–max) */
-  value: number;
-  /** Max Sterne */
+  value?: number;
+  rating?: number;
   max?: number;
-  /** Größe der Icons in px */
-  size?: number;
-  /** Optional: callback wenn klickbar */
+  size?: number | "sm" | "md" | "lg";
   onChange?: (value: number) => void;
-  /** Optional: erlaubt halbe Sterne */
+  onRatingChange?: (value: number) => void;
+  interactive?: boolean;
   allowHalf?: boolean;
-  /** Optional: deaktiviert Interaktion */
   disabled?: boolean;
+  showText?: boolean;
+  reviewCount?: number;
   className?: string;
 };
 
@@ -23,88 +21,106 @@ function clamp(n: number, min: number, max: number) {
   return Math.max(min, Math.min(max, n));
 }
 
+function resolveSize(size: StarRatingProps["size"]) {
+  if (typeof size === "number") return size;
+  if (size === "sm") return 16;
+  if (size === "lg") return 24;
+  return 20;
+}
+
 export function StarRating({
   value,
+  rating,
   max = 5,
-  size = 18,
+  size = "md",
   onChange,
+  onRatingChange,
+  interactive = false,
   allowHalf = false,
   disabled = false,
+  showText = true,
+  reviewCount,
   className,
 }: StarRatingProps) {
-  const safeValue = clamp(value ?? 0, 0, max);
+  const currentValue = value ?? rating ?? 0;
+  const safeValue = clamp(Number(currentValue) || 0, 0, max);
+  const iconSize = resolveSize(size);
+  const handleRatingChange = onChange || onRatingChange;
+  const isInteractive = (interactive || !!handleRatingChange) && !disabled;
 
-  const interactive = !!onChange && !disabled;
+  const handleClick = (idx: number, event: React.MouseEvent<HTMLButtonElement>) => {
+    if (!isInteractive || !handleRatingChange) return;
 
-  const handleClick = (idx: number, e: React.MouseEvent<HTMLButtonElement>) => {
-    if (!interactive) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = e.clientX - rect.left;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = event.clientX - rect.left;
     const next = allowHalf && x < rect.width / 2 ? idx - 0.5 : idx;
-    onChange?.(clamp(next, 0, max));
+    handleRatingChange(clamp(next, 1, max));
   };
 
   return (
-    <div
-      className={cn("inline-flex items-center gap-1", className)}
-      role={interactive ? "radiogroup" : "img"}
-      aria-label={`Bewertung ${safeValue} von ${max}`}
-    >
-      {Array.from({ length: max }).map((_, i) => {
-        const starIndex = i + 1;
+    <div className={cn("inline-flex items-center gap-2", className)}>
+      <div
+        className="inline-flex items-center gap-1"
+        role={isInteractive ? "radiogroup" : "img"}
+        aria-label={`Bewertung ${safeValue} von ${max}`}
+      >
+        {Array.from({ length: max }).map((_, i) => {
+          const starIndex = i + 1;
+          const full = safeValue >= starIndex;
+          const half = !full && allowHalf && safeValue >= starIndex - 0.5;
 
-        const full = safeValue >= starIndex;
-        const half = !full && allowHalf && safeValue >= starIndex - 0.5;
+          const icon = (
+            <span className="relative inline-flex text-yellow-500">
+              <Star
+                style={{ width: iconSize, height: iconSize }}
+                className="opacity-60"
+              />
+              {(full || half) && (
+                <span
+                  className="absolute left-0 top-0 overflow-hidden"
+                  style={{ width: full ? "100%" : "50%", height: "100%" }}
+                  aria-hidden="true"
+                >
+                  <Star
+                    style={{ width: iconSize, height: iconSize }}
+                    fill="currentColor"
+                    className="opacity-100"
+                  />
+                </span>
+              )}
+            </span>
+          );
 
-        const icon = (
-          <span className="relative inline-flex">
-            {/* Outline */}
-            <Star
-              style={{ width: size, height: size }}
-              className={cn("opacity-60")}
-            />
-            {/* Fill overlay */}
-            {(full || half) ? (
-              <span
-                className="absolute left-0 top-0 overflow-hidden"
-                style={{
-                  width: full ? "100%" : "50%",
-                  height: "100%",
-                }}
-                aria-hidden="true"
-              >
-                <Star
-                  style={{ width: size, height: size }}
-                  className={cn("opacity-100")}
-                  fill="currentColor"
-                />
-              </span>
-            ) : null}
-          </span>
-        );
+          if (!isInteractive) {
+            return <span key={starIndex}>{icon}</span>;
+          }
 
-        if (!interactive) {
-          return <span key={starIndex}>{icon}</span>;
-        }
+          return (
+            <button
+              key={starIndex}
+              type="button"
+              className="cursor-pointer rounded-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+              onClick={(event) => handleClick(starIndex, event)}
+              aria-label={`${starIndex} Sterne`}
+              aria-checked={safeValue === starIndex}
+              role="radio"
+              disabled={disabled}
+            >
+              {icon}
+            </button>
+          );
+        })}
+      </div>
 
-        return (
-          <button
-            key={starIndex}
-            type="button"
-            className={cn(
-              "cursor-pointer rounded-sm focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
-              disabled && "cursor-not-allowed opacity-50",
-            )}
-            onClick={(e) => handleClick(starIndex, e)}
-            aria-label={`${starIndex} Sterne`}
-            aria-checked={safeValue === starIndex}
-            role="radio"
-            disabled={disabled}
-          >
-            {icon}
-          </button>
-        );
-      })}
+      {showText && (
+        <span className="text-sm text-muted-foreground">
+          {reviewCount !== undefined
+            ? `${safeValue.toFixed(1)} (${reviewCount})`
+            : safeValue > 0
+              ? `${safeValue.toFixed(1)} von ${max}`
+              : "Noch keine Bewertung"}
+        </span>
+      )}
     </div>
   );
 }
