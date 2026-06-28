@@ -3,157 +3,131 @@ import StaticPage from "@/components/static/static-page";
 export default function PrivacyPolicyPage() {
   return (
     <StaticPage title="Datenschutzerklärung">
-      <p className="mb-6 font-semibold">
-        Letzte Aktualisierung: 27. April 2025
-      </p>
-      
+      <p className="mb-6 font-semibold">Letzte Aktualisierung: 28. Juni 2026</p>
+
       <div className="mb-6">
         <p className="mb-4">
-          Der Schutz Ihrer persönlichen Daten ist uns wichtig. Diese Datenschutzerklärung informiert
-          Sie darüber, wie wir Ihre personenbezogenen Daten sammeln, verwenden, offenlegen und schützen.
+          Diese Datenschutzerklärung informiert darüber, wie SpeedJobs.at personenbezogene Daten verarbeitet. SpeedJobs.at ist eine Online-Plattform zur Kontaktvermittlung zwischen Nutzern, Dienstleistern und Auftraggebern.
         </p>
       </div>
-      
+
       <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-3">1. Verantwortliche Stelle</h2>
+        <h2 className="text-xl font-semibold mb-3">1. Verantwortlicher</h2>
         <p className="mb-3">
-          Verantwortlich für die Datenverarbeitung auf dieser Website ist:
+          Verantwortlich für die Datenverarbeitung auf dieser Website ist SpeedJobs.at.
         </p>
         <p className="mb-3">
-          speedjobs.at<br />
-          E-Mail: kontaktspeedjobs@gmail.com
+          Kontakt: <a href="mailto:kontaktspeedjobs@gmail.com" className="text-primary hover:underline">kontaktspeedjobs@gmail.com</a>
         </p>
       </div>
-      
+
       <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-3">2. Erhebung personenbezogener Daten</h2>
-        <p className="mb-3">
-          Wir erheben verschiedene Arten von personenbezogenen Daten, einschließlich:
-        </p>
+        <h2 className="text-xl font-semibold mb-3">2. Welche Daten verarbeitet werden</h2>
         <ul className="list-disc pl-6 space-y-2">
-          <li>
-            <strong>Kontaktdaten:</strong> Name, E-Mail-Adresse, Telefonnummer, Anschrift (wenn angegeben)
-          </li>
-          <li>
-            <strong>Kontoinformationen:</strong> Benutzername, Passwort (verschlüsselt)
-          </li>
-          <li>
-            <strong>Profilinformationen:</strong> Dienstleistungskategorien, Tätigkeitsregionen, Verfügbarkeit, Beschreibungen
-          </li>
-          <li>
-            <strong>Bewertungsdaten:</strong> Bewertungen, Kommentare
-          </li>
-          <li>
-            <strong>Nutzungsdaten:</strong> IP-Adresse, Browsertyp, Betriebssystem, besuchte Seiten, Zeitstempel
-          </li>
+          <li><strong>Kontodaten:</strong> E-Mail-Adresse, verschlüsseltes Passwort, Benutzerstatus, Registrierungsdatum.</li>
+          <li><strong>Profildaten:</strong> Name, Beschreibung, eine Hauptdienstleistung, Tätigkeitsregionen, Verfügbarkeit, Profilbild, automatisch verwendete Kontakt-E-Mail.</li>
+          <li><strong>Auftragsdaten:</strong> Titel, Beschreibung, Ort, Kategorie, Datum, automatisch verwendete Kontakt-E-Mail.</li>
+          <li><strong>Bewertungsdaten:</strong> Sternebewertung, Kommentar, Zeitpunkt und zugeordnetes Profil.</li>
+          <li><strong>Technische Daten:</strong> IP-Adresse, Browser, Gerätedaten, Zeitstempel, Logdaten und sicherheitsrelevante Ereignisse.</li>
+          <li><strong>Supportdaten:</strong> Nachrichten, E-Mail-Kommunikation und Angaben, die Sie uns freiwillig übermitteln.</li>
         </ul>
       </div>
-      
+
       <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-3">3. Zwecke der Datenverarbeitung</h2>
-        <p className="mb-3">
-          Wir verarbeiten Ihre personenbezogenen Daten für folgende Zwecke:
-        </p>
+        <h2 className="text-xl font-semibold mb-3">3. Zwecke der Verarbeitung</h2>
         <ul className="list-disc pl-6 space-y-2">
-          <li>Bereitstellung und Verwaltung unserer Website und Dienste</li>
-          <li>Erstellung und Verwaltung von Benutzerkonten</li>
-          <li>Vermittlung zwischen Dienstleistern und Kunden</li>
-          <li>Bearbeitung von Anfragen und Supportanfragen</li>
-          <li>Verbesserung unserer Dienste und Entwicklung neuer Funktionen</li>
-          <li>Gewährleistung der Sicherheit unserer Website</li>
-          <li>Einhaltung gesetzlicher Verpflichtungen</li>
+          <li>Bereitstellung und Betrieb der Plattform,</li>
+          <li>Registrierung, Login und Verwaltung von Benutzerkonten,</li>
+          <li>Erstellung und Anzeige von Dienstleisterprofilen, Aufträgen und Bewertungen,</li>
+          <li>Kontaktvermittlung zwischen Nutzern,</li>
+          <li>Missbrauchsvermeidung, Sicherheit, Fehleranalyse und Plattformschutz,</li>
+          <li>Bearbeitung von Supportanfragen,</li>
+          <li>Erfüllung gesetzlicher Pflichten und Durchsetzung unserer Rechte.</li>
         </ul>
       </div>
-      
+
       <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-3">4. Rechtsgrundlage der Verarbeitung</h2>
-        <p className="mb-3">
-          Die Verarbeitung Ihrer personenbezogenen Daten erfolgt auf folgenden Rechtsgrundlagen:
-        </p>
+        <h2 className="text-xl font-semibold mb-3">4. Rechtsgrundlagen</h2>
         <ul className="list-disc pl-6 space-y-2">
-          <li>Ihre Einwilligung (Art. 6 Abs. 1 lit. a DSGVO)</li>
-          <li>Erfüllung eines Vertrags oder vorvertraglicher Maßnahmen (Art. 6 Abs. 1 lit. b DSGVO)</li>
-          <li>Erfüllung rechtlicher Verpflichtungen (Art. 6 Abs. 1 lit. c DSGVO)</li>
-          <li>Wahrung unserer berechtigten Interessen (Art. 6 Abs. 1 lit. f DSGVO)</li>
+          <li>Art. 6 Abs. 1 lit. b DSGVO: Vertragserfüllung und vorvertragliche Maßnahmen,</li>
+          <li>Art. 6 Abs. 1 lit. f DSGVO: berechtigtes Interesse am sicheren und funktionsfähigen Betrieb der Plattform,</li>
+          <li>Art. 6 Abs. 1 lit. c DSGVO: rechtliche Verpflichtungen,</li>
+          <li>Art. 6 Abs. 1 lit. a DSGVO: Einwilligung, sofern diese im Einzelfall erforderlich ist.</li>
         </ul>
       </div>
-      
+
       <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-3">5. Speicherdauer</h2>
+        <h2 className="text-xl font-semibold mb-3">5. Sichtbarkeit von Daten</h2>
         <p className="mb-3">
-          Wir speichern Ihre personenbezogenen Daten nur so lange, wie es für die Erfüllung der 
-          Zwecke, für die sie erhoben wurden, erforderlich ist oder solange gesetzliche Aufbewahrungsfristen 
-          bestehen. Nach Ablauf dieser Fristen werden Ihre Daten routinemäßig gelöscht oder anonymisiert.
+          Öffentliche oder registrierten Nutzern zugängliche Inhalte können je nach Funktion Profilinformationen, Dienstleistung, Region, Beschreibung, Bewertungen und Kontakt-E-Mail enthalten. Kontaktinformationen werden nur im Rahmen der Plattformfunktion angezeigt. Nutzer sind selbst verantwortlich dafür, welche Inhalte sie veröffentlichen.
         </p>
       </div>
-      
+
       <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-3">6. Weitergabe von Daten</h2>
+        <h2 className="text-xl font-semibold mb-3">6. Kontakt-E-Mail</h2>
         <p className="mb-3">
-          Wir geben Ihre personenbezogenen Daten nicht ohne angemessene Grundlage an Dritte weiter. 
-          Eine Weitergabe erfolgt nur:
+          Bei Profilen und Aufträgen wird die registrierte Konto-E-Mail automatisch als Kontakt-E-Mail verwendet. Frei eingegebene fremde Kontakt-E-Mails werden nicht als Kontaktmöglichkeit gespeichert. Dies dient der Missbrauchsvermeidung und Nachvollziehbarkeit.
         </p>
-        <ul className="list-disc pl-6 space-y-2">
-          <li>An Dienstleister, die uns bei der Bereitstellung unserer Dienste unterstützen und vertraglich zur Einhaltung der Datenschutzbestimmungen verpflichtet sind</li>
-          <li>Wenn Sie eingewilligt haben</li>
-          <li>Wenn wir gesetzlich dazu verpflichtet sind</li>
-          <li>Zur Durchsetzung unserer Rechte oder zur Untersuchung potenzieller Rechtsverletzungen</li>
-        </ul>
       </div>
-      
+
       <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-3">7. Ihre Rechte</h2>
+        <h2 className="text-xl font-semibold mb-3">7. Weitergabe an Dritte</h2>
         <p className="mb-3">
-          Als betroffene Person haben Sie folgende Rechte:
+          Personenbezogene Daten werden nur weitergegeben, wenn dies zur Bereitstellung der Plattform notwendig ist, Sie eingewilligt haben, eine gesetzliche Verpflichtung besteht oder berechtigte Interessen wie Missbrauchsabwehr oder Rechtsdurchsetzung vorliegen.
         </p>
+        <p className="mb-3">
+          Für Hosting, Datenbank, E-Mail, technische Wartung oder Sicherheitsfunktionen können externe Dienstleister eingesetzt werden, die Daten nur im erforderlichen Umfang verarbeiten dürfen.
+        </p>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-3">8. Speicherdauer</h2>
+        <p className="mb-3">
+          Wir speichern Daten nur so lange, wie sie für den jeweiligen Zweck erforderlich sind. Kontodaten, Profile, Aufträge und Bewertungen bleiben grundsätzlich gespeichert, solange das Konto oder der jeweilige Inhalt besteht. Gesetzliche Aufbewahrungspflichten, Sicherheitsinteressen und Nachweiszwecke können längere Speicherungen erforderlich machen.
+        </p>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-3">9. Sicherheit</h2>
+        <p className="mb-3">
+          Wir setzen angemessene technische und organisatorische Maßnahmen ein, um Daten vor Verlust, Missbrauch, unbefugtem Zugriff, Veränderung oder Offenlegung zu schützen. Ein absoluter Schutz kann bei internetbasierten Diensten jedoch nicht garantiert werden.
+        </p>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-3">10. Cookies und technische Speicherung</h2>
+        <p className="mb-3">
+          SpeedJobs.at kann technisch notwendige Cookies oder vergleichbare Speichertechnologien verwenden, damit Login, Sicherheit, Seitennavigation und Plattformfunktionen funktionieren. Werden zukünftig Analyse-, Marketing- oder Trackingdienste eingesetzt, erfolgt dies nur im gesetzlich zulässigen Rahmen und, falls erforderlich, mit Einwilligung.
+        </p>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-3">11. Rechte betroffener Personen</h2>
+        <p className="mb-3">Sie haben nach Maßgabe der DSGVO insbesondere folgende Rechte:</p>
         <ul className="list-disc pl-6 space-y-2">
-          <li>Recht auf Auskunft (Art. 15 DSGVO)</li>
-          <li>Recht auf Berichtigung (Art. 16 DSGVO)</li>
-          <li>Recht auf Löschung (Art. 17 DSGVO)</li>
-          <li>Recht auf Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
-          <li>Recht auf Datenübertragbarkeit (Art. 20 DSGVO)</li>
-          <li>Widerspruchsrecht (Art. 21 DSGVO)</li>
-          <li>Beschwerderecht bei einer Aufsichtsbehörde</li>
+          <li>Auskunft über Ihre gespeicherten Daten,</li>
+          <li>Berichtigung unrichtiger Daten,</li>
+          <li>Löschung oder Einschränkung der Verarbeitung,</li>
+          <li>Datenübertragbarkeit,</li>
+          <li>Widerspruch gegen bestimmte Verarbeitungen,</li>
+          <li>Widerruf einer erteilten Einwilligung mit Wirkung für die Zukunft.</li>
         </ul>
         <p className="mt-3">
-          Um Ihre Rechte auszuüben, kontaktieren Sie uns bitte unter kontaktspeedjobs@gmail.com.
+          Zur Ausübung Ihrer Rechte kontaktieren Sie uns unter <a href="mailto:kontaktspeedjobs@gmail.com" className="text-primary hover:underline">kontaktspeedjobs@gmail.com</a>.
         </p>
       </div>
-      
+
       <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-3">8. Datensicherheit</h2>
+        <h2 className="text-xl font-semibold mb-3">12. Beschwerderecht</h2>
         <p className="mb-3">
-          Wir treffen angemessene technische und organisatorische Maßnahmen, um Ihre personenbezogenen 
-          Daten vor Verlust, Missbrauch, unbefugtem Zugriff, Offenlegung, Veränderung und Zerstörung zu schützen.
+          Wenn Sie der Ansicht sind, dass die Verarbeitung Ihrer personenbezogenen Daten gegen Datenschutzrecht verstößt, können Sie sich bei einer Datenschutzaufsichtsbehörde beschweren. In Österreich ist dies insbesondere die Österreichische Datenschutzbehörde.
         </p>
       </div>
-      
+
       <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-3">9. Cookies und ähnliche Technologien</h2>
+        <h2 className="text-xl font-semibold mb-3">13. Änderungen</h2>
         <p className="mb-3">
-          Unsere Website verwendet Cookies und ähnliche Technologien, um die Benutzerfreundlichkeit 
-          zu verbessern und bestimmte Funktionen bereitzustellen. Sie können Ihren Browser so einstellen, 
-          dass er Sie über das Setzen von Cookies informiert oder Cookies ablehnt. 
-          Beachten Sie jedoch, dass einige Funktionen unserer Website möglicherweise nicht vollständig 
-          funktionieren, wenn Cookies deaktiviert sind.
-        </p>
-      </div>
-      
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-3">10. Änderungen dieser Datenschutzerklärung</h2>
-        <p className="mb-3">
-          Wir behalten uns das Recht vor, diese Datenschutzerklärung jederzeit zu ändern. 
-          Die aktualisierte Version wird auf unserer Website veröffentlicht, und das Datum 
-          der letzten Aktualisierung wird entsprechend angepasst.
-        </p>
-      </div>
-      
-      <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-3">11. Kontakt</h2>
-        <p className="mb-3">
-          Wenn Sie Fragen zu dieser Datenschutzerklärung haben oder Ihre Datenschutzrechte 
-          ausüben möchten, kontaktieren Sie uns bitte unter:
-          <a href="mailto:kontaktspeedjobs@gmail.com" className="text-primary hover:underline ml-1">kontaktspeedjobs@gmail.com</a>
+          Wir können diese Datenschutzerklärung anpassen, wenn sich rechtliche, technische oder organisatorische Anforderungen ändern. Die jeweils aktuelle Version wird auf dieser Website veröffentlicht.
         </p>
       </div>
     </StaticPage>
