@@ -1,4 +1,5 @@
-import { Switch, Route, Link } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
+import { useEffect } from "react";
 import NotFound from "@/pages/not-found";
 import HomePage from "@/pages/home-page";
 import AuthPage from "@/pages/auth-page";
@@ -7,12 +8,10 @@ import SearchPage from "@/pages/search-page";
 import AdminPage from "@/pages/admin-page";
 import ProviderPage from "@/pages/provider-page";
 import JobsPage from "@/pages/jobs-page";
-import SimpleJobPage from "@/pages/simple-job-page";
 import JobDetailPage from "@/pages/job-detail-page";
 import FavoritesPage from "@/pages/favorites-page";
 import CreateJobPage from "@/pages/create-job-page";
 import { ProtectedRoute } from "@/lib/protected-route";
-
 
 // Statische Seiten
 import AboutPage from "@/pages/static/about-page";
@@ -23,20 +22,34 @@ import SafetyTipsPage from "@/pages/static/safety-tips-page";
 import SupportPage from "@/pages/static/support-page";
 import TermsOfServicePage from "@/pages/static/terms-of-service-page";
 
-import { Home } from "lucide-react";
+function ScrollToTop() {
+  const [location] = useLocation();
 
-import { Button } from "@/components/ui/button";
+  useEffect(() => {
+    const hasHash = window.location.hash && window.location.hash.length > 1;
 
-/**
- * Hauptanwendungskomponente
- * Verwaltet alle Routen
- */
+    if (hasHash) {
+      const id = window.location.hash.replace("#", "");
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: "auto", block: "start" });
+        return;
+      }
+    }
+
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [location]);
+
+  return null;
+}
+
 function App() {
   return (
     <>
-      {/* Fester Home-Button, der immer sichtbar ist */}
+      <ScrollToTop />
 
-    
       <Switch>
         {/* Öffentliche Routen */}
         <Route path="/" component={HomePage} />
@@ -47,13 +60,13 @@ function App() {
         <Route path="/auftraege/:id">
           {() => <JobDetailPage />}
         </Route>
-        
+
         {/* Geschützte Routen */}
         <ProtectedRoute path="/profil" component={ProfilePage} />
         <ProtectedRoute path="/favoriten" component={FavoritesPage} />
         <ProtectedRoute path="/auftrag-erstellen" component={CreateJobPage} />
         <ProtectedRoute path="/admin" component={AdminPage} />
-        
+
         {/* Statische Seiten */}
         <Route path="/ueber-uns" component={AboutPage} />
         <Route path="/kontakt" component={ContactPage} />
@@ -62,7 +75,7 @@ function App() {
         <Route path="/sicherheitstipps" component={SafetyTipsPage} />
         <Route path="/support" component={SupportPage} />
         <Route path="/nutzungsbedingungen" component={TermsOfServicePage} />
-        
+
         <Route component={NotFound} />
       </Switch>
     </>
