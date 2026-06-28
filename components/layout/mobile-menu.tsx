@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Link } from "wouter";
+import { Link, useLocation } from "wouter";
 import { X } from "lucide-react";
 import { User } from "@shared/schema";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -12,9 +12,22 @@ interface MobileMenuProps {
 }
 
 export default function MobileMenu({ isOpen, onClose, user, onLogout }: MobileMenuProps) {
+  const [, setLocation] = useLocation();
+
   if (!isOpen) return null;
 
   const initials = user?.email ? user.email.substring(0, 2).toUpperCase() : "";
+
+  const goHome = (event?: React.MouseEvent) => {
+    event?.preventDefault();
+    onClose();
+    setLocation("/");
+    window.setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }, 0);
+  };
 
   const menuItems = user
     ? [
@@ -34,7 +47,7 @@ export default function MobileMenu({ isOpen, onClose, user, onLogout }: MobileMe
   return (
     <div className="fixed inset-0 bg-white z-40 p-4 overflow-y-auto">
       <div className="flex justify-between items-center mb-8">
-        <Link href="/" className="flex items-center space-x-2" onClick={onClose}>
+        <Link href="/" className="flex items-center space-x-2" onClick={goHome}>
           <span className="text-primary text-2xl font-bold font-title">
             speedjobs<span className="text-secondary">.at</span>
           </span>
