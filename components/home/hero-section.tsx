@@ -20,36 +20,36 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="bg-white text-gray-900 pt-5 pb-8 md:bg-gradient-to-br md:from-primary-600 md:to-primary-700 md:text-white md:pt-16 md:pb-20 lg:pt-20 lg:pb-24">
+    <section className="bg-white text-gray-900 pt-5 pb-8 md:pt-8 md:pb-10 lg:pt-10 lg:pb-12">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto text-left md:text-center">
           <div className="hidden md:block">
-            <h1 className="text-3xl lg:text-5xl font-bold font-title mb-4 leading-tight">
+            <h1 className="text-3xl lg:text-4xl font-bold font-title mb-3 leading-tight text-primary">
               Finden Sie lokale Fachkräfte in Österreich
             </h1>
-            <p className="text-lg lg:text-xl opacity-90 mb-8">
+            <p className="text-base lg:text-lg text-gray-600 mb-5">
               Installateure, Mechaniker, Pflegekräfte und mehr - alle von verifizierten Anbietern
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row justify-center gap-3 mb-5 md:mb-8">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 mb-5 md:mb-5">
             <Button
-              className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white md:bg-white md:hover:bg-gray-100 md:text-primary font-semibold md:px-6 md:py-6 md:text-base"
+              className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-semibold md:px-6 md:py-5 md:text-base"
               onClick={() => setLocation("/auftrag-erstellen")}
             >
               Einen Auftrag erstellen
             </Button>
             <Button
               variant="outline"
-              className="w-full sm:w-auto border-primary text-primary hover:bg-primary/5 md:bg-transparent md:border-white md:hover:bg-white/10 md:text-white md:px-6 md:py-6 md:text-base"
+              className="w-full sm:w-auto border-primary text-primary hover:bg-primary/5 md:px-6 md:py-5 md:text-base"
               onClick={() => setLocation("/auftraege")}
             >
               Aufträge durchsuchen
             </Button>
           </div>
 
-          <Card className="bg-white rounded-lg shadow-lg md:shadow-2xl overflow-hidden">
-            <CardContent className="p-4 md:p-8 text-left">
+          <Card className="bg-white rounded-lg shadow-lg overflow-hidden">
+            <CardContent className="p-4 md:p-6 text-left">
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
                 <div>
                   <Label htmlFor="service" className="text-gray-700 text-sm font-medium mb-1">
