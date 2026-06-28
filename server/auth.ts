@@ -6,8 +6,6 @@ import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { storage } from "./storage";
 import type { User as AppUser } from "@shared/schema";
-import { createVerificationData } from "./verification";
-import { sendVerificationEmail } from "./email";
 
 const scryptAsync = promisify(scrypt);
 
@@ -31,7 +29,7 @@ export async function comparePasswords(supplied: string, stored: string) {
 }
 
 function sanitizeUser(user: AppUser) {
-  const { password, emailVerificationToken, emailVerificationExpires, ...safeUser } = user as any;
+  const { password, ...safeUser } = user;
   return safeUser;
 }
 
@@ -58,10 +56,7 @@ async function upsertEnvAdminUser() {
       password: passwordHash,
       status: "active",
       isAdmin: true,
-      emailVerified: true,
-      emailVerificationToken: null,
-      emailVerificationExpires: null,
-    } as any);
+    });
     console.log(`Admin-Benutzer erstellt: ${admin.email}`);
     return created;
   }
@@ -70,10 +65,7 @@ async function upsertEnvAdminUser() {
     password: passwordHash,
     status: "active",
     isAdmin: true,
-    emailVerified: true,
-    emailVerificationToken: null,
-    emailVerificationExpires: null,
-  } as any);
+  });
   console.log(`Admin-Benutzer aktualisiert: ${admin.email}`);
   return updated || existingAdmin;
 }
@@ -115,15 +107,21 @@ export function setupAuth(app: Express) {
 
         if (admin && normalizedEmail === admin.email && password === admin.password) {
           const adminUser = await upsertEnvAdminUser();
-          if (!adminUser) return done(null, false, { message: "Admin-Zugang ist nicht konfiguriert" });
+          if (!adminUser) {
+            return done(null, false, { message: "Admin-Zugang ist nicht konfiguriert" });
+          }
           return done(null, adminUser);
         }
 
         const user = await storage.getUserByEmail(normalizedEmail);
-        if (!user) return done(null, false, { message: "Ungültige E-Mail-Adresse oder Passwort" });
+        if (!user) {
+          return done(null, false, { message: "Ungültige E-Mail-Adresse oder Passwort" });
+        }
 
         if (user.status !== "active") {
-          return done(null, false, { message: "Ihr Konto ist gesperrt. Bitte kontaktieren Sie den Support." });
+          return done(null, false, {
+            message: "Ihr Konto ist gesperrt. Bitte kontaktieren Sie den Support.",
+          });
         }
 
         if (!(await comparePasswords(password, user.password))) {
@@ -146,7 +144,9 @@ export function setupAuth(app: Express) {
     }
   });
 
-  upsertEnvAdminUser().catch((error) => console.error("Admin-Bootstrap fehlgeschlagen:", error));
+  upsertEnvAdminUser().catch((error) =>
+    console.error("Admin-Bootstrap fehlgeschlagen:", error),
+  );
 
   app.post("/api/register", async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -154,26 +154,36 @@ export function setupAuth(app: Express) {
       const normalizedEmail = String(email || "").trim().toLowerCase();
 
       if (!normalizedEmail || !password || !passwordConfirm) {
-        return res.status(400).json({ message: "E-Mail, Passwort und Passwortbestätigung sind erforderlich" });
+        return res.status(400).json({
+          message: "E-Mail, Passwort und Passwortbestätigung sind erforderlich",
+        });
       }
 
-      if (password !== passwordConfirm) return res.status(400).json({ message: "Passwörter stimmen nicht überein" });
-      if (String(password).length < 8) return res.status(400).json({ message: "Passwort muss mindestens 8 Zeichen haben" });
-      if (await storage.getBannedEmail(normalizedEmail)) return res.status(403).json({ message: "Diese E-Mail-Adresse ist gesperrt" });
-      if (await storage.getUserByEmail(normalizedEmail)) return res.status(400).json({ message: "Ein Benutzer mit dieser E-Mail-Adresse existiert bereits" });
+      if (password !== passwordConfirm) {
+        return res.status(400).json({ message: "Passwörter stimmen nicht überein" });
+      }
 
-      const verificationData = createVerificationData();
+      if (String(password).length < 8) {
+        return res.status(400).json({
+          message: "Passwort muss mindestens 8 Zeichen haben",
+        });
+      }
+
+      if (await storage.getBannedEmail(normalizedEmail)) {
+        return res.status(403).json({ message: "Diese E-Mail-Adresse ist gesperrt" });
+      }
+
+      if (await storage.getUserByEmail(normalizedEmail)) {
+        return res.status(400).json({
+          message: "Ein Benutzer mit dieser E-Mail-Adresse existiert bereits",
+        });
+      }
+
       const newUser = await storage.createUser({
         email: normalizedEmail,
         password: await hashPassword(password),
         status: "active",
         isAdmin: false,
-        emailVerified: false,
-        ...verificationData,
-      } as any);
-
-      sendVerificationEmail(normalizedEmail, verificationData.emailVerificationToken).catch((error) => {
-        console.error("Verifizierungs-E-Mail konnte nicht gesendet werden:", error);
       });
 
       req.login(newUser, (err) => {
@@ -189,12 +199,18 @@ export function setupAuth(app: Express) {
   app.post("/api/login", (req: Request, res: Response, next: NextFunction) => {
     passport.authenticate("local", (err: any, user: AppUser | false, info: any) => {
       if (err) return res.status(500).json({ message: "Interner Serverfehler" });
-      if (!user) return res.status(401).json({ message: info?.message || "Anmeldung fehlgeschlagen" });
+      if (!user) {
+        return res.status(401).json({
+          message: info?.message || "Anmeldung fehlgeschlagen",
+        });
+      }
 
       req.login(user, (loginErr) => {
         if (loginErr) return next(loginErr);
         req.session.save((saveErr) => {
-          if (saveErr) return res.status(500).json({ message: "Fehler beim Speichern der Sitzung" });
+          if (saveErr) {
+            return res.status(500).json({ message: "Fehler beim Speichern der Sitzung" });
+          }
           res.json(sanitizeUser(user));
         });
       });
@@ -213,7 +229,9 @@ export function setupAuth(app: Express) {
   });
 
   app.get("/api/user", (req: Request, res: Response) => {
-    if (!req.isAuthenticated() || !req.user) return res.status(401).json({ message: "Nicht authentifiziert" });
+    if (!req.isAuthenticated() || !req.user) {
+      return res.status(401).json({ message: "Nicht authentifiziert" });
+    }
     res.json(sanitizeUser(req.user as AppUser));
   });
 }
