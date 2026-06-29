@@ -78,14 +78,14 @@ export default function HelpFaqPage() {
           <AccordionItem value="delete-account">
             <AccordionTrigger>Wie kann ich Daten oder mein Konto löschen lassen?</AccordionTrigger>
             <AccordionContent>
-              Schreiben Sie uns an kontaktspeedjobs@gmail.com. Wir prüfen die Anfrage und bearbeiten sie nach den geltenden Datenschutzregeln und gesetzlichen Aufbewahrungspflichten.
+              Schreiben Sie uns an kontaktspeedjob@gmail.com. Wir prüfen die Anfrage und bearbeiten sie nach den geltenden Datenschutzregeln und gesetzlichen Aufbewahrungspflichten.
             </AccordionContent>
           </AccordionItem>
 
           <AccordionItem value="support">
             <AccordionTrigger>Wie erreiche ich den Support?</AccordionTrigger>
             <AccordionContent>
-              Schreiben Sie an kontaktspeedjobs@gmail.com. Geben Sie bitte Ihre registrierte E-Mail-Adresse und eine genaue Beschreibung Ihres Anliegens an. Senden Sie niemals Ihr Passwort.
+              Schreiben Sie an kontaktspeedjob@gmail.com. Geben Sie bitte Ihre registrierte E-Mail-Adresse und eine genaue Beschreibung Ihres Anliegens an. Senden Sie niemals Ihr Passwort.
             </AccordionContent>
           </AccordionItem>
         </Accordion>
@@ -94,7 +94,7 @@ export default function HelpFaqPage() {
       <div className="mt-8 p-6 bg-gray-50 rounded-lg">
         <h3 className="text-xl font-semibold mb-3">Weitere Hilfe benötigt?</h3>
         <p>
-          Kontaktieren Sie uns unter <a href="mailto:kontaktspeedjobs@gmail.com" className="text-primary hover:underline">kontaktspeedjobs@gmail.com</a>.
+          Kontaktieren Sie uns unter <a href="mailto:kontaktspeedjob@gmail.com" className="text-primary hover:underline">kontaktspeedjob@gmail.com</a>.
         </p>
       </div>
     </StaticPage>
