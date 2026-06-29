@@ -4,19 +4,34 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { serviceCategories } from "@shared/schema";
 
-const serviceIcons = {
-  "Installateur": <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="14 5 14 9"/><line x1="16" x2="16" y1="7" y2="9"/><path d="M17 11h3a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-3a1 1 0 0 1-1-1v-2a1 1 0 0 1 1-1Z"/><path d="M12 15v3a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1Z"/><path d="M5 11H3a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1Z"/><path d="M10 7v4"/><path d="M4 7v4"/><path d="M14 3v4"/></svg>,
-  "Elektriker": <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 3v4"/><path d="M14 3v4"/><path d="M10 3v4"/><path d="M6 3v4"/><path d="M18 21v-4"/><path d="M14 21v-4"/><path d="M10 21v-4"/><path d="M6 21v-4"/><rect width="16" height="10" x="4" y="7" rx="2"/></svg>,
-  "Reinigung": <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 11 18-5"/><path d="m3 11 3 9h4.3a2 2 0 0 0 1.7-1l4-7a2 2 0 0 1 1.7-1H21"/><path d="m3 11 9 3"/></svg>,
-  "Umzug": <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 18V6a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v12"/><path d="M10 20v2h4v-2"/><path d="M12 2h2a2 2 0 0 1 2 2v2"/><path d="M7 8h10"/><path d="M7 12h10"/><circle cx="9" cy="16" r="1"/><circle cx="15" cy="16" r="1"/></svg>,
-  "Transport": <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2L21 10"/><path d="M5 18H2s-.5-1.7-.8-2.8c-.1-.4-.2-.8-.2-1.2 0-.4.1-.8.2-1.2L2 10"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>,
-  "Gartenpflege": <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 22c1.25-.987 2.36-1.89 4-2a3.41 3.41 0 0 1 2.41.938c.263.211.559.38.876.487a2.59 2.59 0 0 0 1.02.085 2.43 2.43 0 0 0 1.49-.79A3.46 3.46 0 0 1 14.21 20c1.64.11 2.75 1.013 4 2"/><path d="M2 16c1.25-.987 2.36-1.89 4-2a3.41 3.41 0 0 1 2.41.938c.263.211.559.38.876.487a2.59 2.59 0 0 0 1.02.085 2.43 2.43 0 0 0 1.49-.79A3.46 3.46 0 0 1 14.21 14c1.64.11 2.75 1.013 4 2"/><path d="m7 16 3-2"/><path d="M7 20v-4"/></svg>,
-};
-
 type ProfileForCount = {
   id?: number;
   services?: string[] | string | null;
 };
+
+function ServiceCommunityIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="7" r="4" />
+      <path d="M5.5 21a6.5 6.5 0 0 1 13 0" />
+      <path d="M3 11.5a3 3 0 0 1 4.5-2.6" />
+      <path d="M1.5 20a5 5 0 0 1 5-5" />
+      <path d="M21 11.5a3 3 0 0 0-4.5-2.6" />
+      <path d="M22.5 20a5 5 0 0 0-5-5" />
+    </svg>
+  );
+}
 
 function safeArray(value: unknown): string[] {
   if (Array.isArray(value)) return value.map(String).filter(Boolean);
@@ -94,8 +109,8 @@ export default function FeaturedServices() {
                 href={`/suche?service=${encodeURIComponent(service)}`}
                 className="group bg-gray-50 hover:bg-gray-100 rounded-xl p-4 text-center transition"
               >
-                <div className="w-12 h-12 bg-primary-50 rounded-full flex items-center justify-center text-primary mx-auto mb-3">
-                  {serviceIcons[service as keyof typeof serviceIcons] || serviceIcons["Installateur"]}
+                <div className="w-12 h-12 bg-primary-50 rounded-full flex items-center justify-center text-primary mx-auto mb-3 group-hover:bg-primary/10 transition">
+                  <ServiceCommunityIcon />
                 </div>
                 <h3 className="font-medium text-gray-800 group-hover:text-primary">{service}</h3>
                 <p className="text-sm text-gray-500 mt-1">
