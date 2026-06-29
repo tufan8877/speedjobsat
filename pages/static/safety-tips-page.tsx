@@ -26,7 +26,7 @@ export default function SafetyTipsPage() {
             <li className="flex items-start"><AlertCircle className="text-red-500 h-5 w-5 mr-2 mt-0.5 flex-shrink-0" /><p><strong>Qualifikation erfragen:</strong> Fragen Sie bei Facharbeiten nach Ausbildung, Erfahrung, Gewerbeberechtigung oder Versicherung.</p></li>
             <li className="flex items-start"><AlertCircle className="text-red-500 h-5 w-5 mr-2 mt-0.5 flex-shrink-0" /><p><strong>Absprachen schriftlich machen:</strong> Klären Sie Preis, Umfang, Termin, Material, Anfahrt und Zahlungsart vorab.</p></li>
             <li className="flex items-start"><AlertCircle className="text-red-500 h-5 w-5 mr-2 mt-0.5 flex-shrink-0" /><p><strong>Vorsicht bei Vorauszahlungen:</strong> Zahlen Sie keine großen Beträge vorab, wenn Sie die Person nicht sicher einschätzen können.</p></li>
-            <li className="flex items-start"><AlertCircle className="text-red-500 h-5 w-5 mr-2 mt-0.5 flex-shrink-0" /><p><strong>Verdacht melden:</strong> Melden Sie unseriöses Verhalten an kontaktspeedjobs@gmail.com.</p></li>
+            <li className="flex items-start"><AlertCircle className="text-red-500 h-5 w-5 mr-2 mt-0.5 flex-shrink-0" /><p><strong>Verdacht melden:</strong> Melden Sie unseriöses Verhalten an kontaktspeedjob@gmail.com.</p></li>
           </ul>
         </div>
 
