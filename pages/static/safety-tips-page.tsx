@@ -7,11 +7,11 @@ export default function SafetyTipsPage() {
       <div className="mb-6">
         <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-4">
           <p className="font-semibold text-red-600 text-sm md:text-base">
-            SpeedJobs.at ist eine Kontaktplattform. Wir sind nicht Vertragspartner und prüfen keine Leistungen verbindlich. Jede Kontaktaufnahme, Beauftragung, Zahlung und Durchführung erfolgt eigenverantwortlich zwischen den Nutzern.
+            speedjob.at ist eine Kontaktplattform. Wir sind nicht Vertragspartner und prüfen keine Leistungen verbindlich. Jede Kontaktaufnahme, Beauftragung, Zahlung und Durchführung erfolgt eigenverantwortlich zwischen den Nutzern.
           </p>
         </div>
         <p className="mb-4">
-          Diese Tipps helfen, Risiken zu reduzieren. Sie ersetzen keine eigene Prüfung und keine fachliche oder rechtliche Beratung. SpeedJobs.at haftet, soweit gesetzlich zulässig, nicht für Schäden, Streitigkeiten, Zahlungsausfälle oder mangelhafte Leistungen zwischen Nutzern.
+          Diese Tipps helfen, Risiken zu reduzieren. Sie ersetzen keine eigene Prüfung und keine fachliche oder rechtliche Beratung. speedjob.at haftet, soweit gesetzlich zulässig, nicht für Schäden, Streitigkeiten, Zahlungsausfälle oder mangelhafte Leistungen zwischen Nutzern.
         </p>
       </div>
 
@@ -55,7 +55,7 @@ export default function SafetyTipsPage() {
           <li className="flex items-start"><div className="bg-primary/10 rounded-full p-1 mr-3 mt-0.5"><span className="text-xs font-bold">2</span></div><p><strong>Keine sensiblen Daten unnötig teilen:</strong> Geben Sie nur weiter, was für den Auftrag erforderlich ist.</p></li>
           <li className="flex items-start"><div className="bg-primary/10 rounded-full p-1 mr-3 mt-0.5"><span className="text-xs font-bold">3</span></div><p><strong>Vorsicht bei Links:</strong> Klicken Sie nicht auf verdächtige Links oder Anhänge.</p></li>
           <li className="flex items-start"><div className="bg-primary/10 rounded-full p-1 mr-3 mt-0.5"><span className="text-xs font-bold">4</span></div><p><strong>Nachweise aufbewahren:</strong> Speichern Sie Absprachen, Rechnungen und Zahlungsbestätigungen.</p></li>
-          <li className="flex items-start"><div className="bg-primary/10 rounded-full p-1 mr-3 mt-0.5"><span className="text-xs font-bold">5</span></div><p><strong>Plattformregeln beachten:</strong> Nutzen Sie SpeedJobs.at fair, ehrlich und rechtmäßig.</p></li>
+          <li className="flex items-start"><div className="bg-primary/10 rounded-full p-1 mr-3 mt-0.5"><span className="text-xs font-bold">5</span></div><p><strong>Plattformregeln beachten:</strong> Nutzen Sie speedjob.at fair, ehrlich und rechtmäßig.</p></li>
         </ul>
       </div>
 
