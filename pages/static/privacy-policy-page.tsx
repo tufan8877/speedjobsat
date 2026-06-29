@@ -17,7 +17,7 @@ export default function PrivacyPolicyPage() {
           Verantwortlich für die Datenverarbeitung auf dieser Website ist speedjob.at.
         </p>
         <p className="mb-3">
-          Kontakt: <a href="mailto:kontaktspeedjobs@gmail.com" className="text-primary hover:underline">kontaktspeedjobs@gmail.com</a>
+          Kontakt: <a href="mailto:kontaktspeedjob@gmail.com" className="text-primary hover:underline">kontaktspeedjob@gmail.com</a>
         </p>
       </div>
 
@@ -113,7 +113,7 @@ export default function PrivacyPolicyPage() {
           <li>Widerruf einer erteilten Einwilligung mit Wirkung für die Zukunft.</li>
         </ul>
         <p className="mt-3">
-          Zur Ausübung Ihrer Rechte kontaktieren Sie uns unter <a href="mailto:kontaktspeedjobs@gmail.com" className="text-primary hover:underline">kontaktspeedjobs@gmail.com</a>.
+          Zur Ausübung Ihrer Rechte kontaktieren Sie uns unter <a href="mailto:kontaktspeedjob@gmail.com" className="text-primary hover:underline">kontaktspeedjob@gmail.com</a>.
         </p>
       </div>
 
