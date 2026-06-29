@@ -29,7 +29,7 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           <Link href="/" onClick={goHome} className="flex items-center space-x-2 cursor-pointer">
             <span className="text-primary text-2xl font-bold">
-              speedjobs<span className="text-secondary">.at</span>
+              speedjob<span className="text-secondary">.at</span>
             </span>
           </Link>
 
