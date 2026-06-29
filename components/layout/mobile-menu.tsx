@@ -49,7 +49,7 @@ export default function MobileMenu({ isOpen, onClose, user, onLogout }: MobileMe
       <div className="flex justify-between items-center mb-8">
         <Link href="/" className="flex items-center space-x-2" onClick={goHome}>
           <span className="text-primary text-2xl font-bold font-title">
-            speedjobs<span className="text-secondary">.at</span>
+            speedjob<span className="text-secondary">.at</span>
           </span>
         </Link>
         <Button variant="ghost" size="icon" onClick={onClose}>
