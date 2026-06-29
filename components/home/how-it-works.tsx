@@ -4,7 +4,7 @@ export default function HowItWorks() {
       <div className="container mx-auto px-4">
         <div className="text-center mb-7 sm:mb-10">
           <h2 className="text-2xl md:text-3xl font-bold font-title mb-3">
-            So funktioniert speedjobs.at
+            So funktioniert speedjob.at
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto mb-4">
             Finden Sie passende lokale Dienstleister oder erstellen Sie einen eigenen Auftrag.
