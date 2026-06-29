@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -17,7 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Mail, Key, Shield, Trash2 } from "lucide-react";
+import { Loader2, Mail, Shield, Trash2 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { 
   Card, 
@@ -36,15 +35,31 @@ const emailSchema = z.object({
 // Passwort Änderungsformular
 const passwordSchema = z.object({
   currentPassword: z.string().min(1, "Aktuelles Passwort ist erforderlich"),
-  newPassword: z.string().min(6, "Neues Passwort muss mindestens 6 Zeichen haben"),
-  confirmPassword: z.string().min(6, "Passwort muss mindestens 6 Zeichen haben"),
+  newPassword: z.string().min(8, "Neues Passwort muss mindestens 8 Zeichen haben"),
+  confirmPassword: z.string().min(8, "Passwort muss mindestens 8 Zeichen haben"),
 }).refine(data => data.newPassword === data.confirmPassword, {
   message: "Passwörter stimmen nicht überein",
   path: ["confirmPassword"]
 });
 
+function cleanErrorMessage(error: any, fallback: string) {
+  const raw = error instanceof Error ? error.message : String(error || "");
+  const jsonMatch = raw.match(/\{.*\}$/s);
+
+  if (jsonMatch) {
+    try {
+      const parsed = JSON.parse(jsonMatch[0]);
+      if (parsed?.message) return parsed.message;
+    } catch {
+      return raw || fallback;
+    }
+  }
+
+  return raw || fallback;
+}
+
 export function AccountSettings() {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
   
   // E-Mail Änderungsformular
@@ -75,14 +90,15 @@ export function AccountSettings() {
     onSuccess: () => {
       toast({
         title: "E-Mail geändert",
-        description: "Ihre E-Mail wurde erfolgreich geändert.",
+        description: "Ihre E-Mail wurde erfolgreich geändert. Die Seite wird neu geladen.",
       });
       emailForm.reset();
+      window.setTimeout(() => window.location.reload(), 700);
     },
     onError: (error: any) => {
       toast({
         title: "Fehler",
-        description: error.message || "E-Mail konnte nicht geändert werden.",
+        description: cleanErrorMessage(error, "E-Mail konnte nicht geändert werden."),
         variant: "destructive",
       });
     }
@@ -107,7 +123,7 @@ export function AccountSettings() {
     onError: (error: any) => {
       toast({
         title: "Fehler",
-        description: error.message || "Passwort konnte nicht geändert werden.",
+        description: cleanErrorMessage(error, "Passwort konnte nicht geändert werden."),
         variant: "destructive",
       });
     }
@@ -124,13 +140,12 @@ export function AccountSettings() {
         title: "Konto gelöscht",
         description: "Ihr Konto wurde erfolgreich gelöscht.",
       });
-      // Nach erfolgreicher Löschung ausloggen und zur Startseite weiterleiten
       window.location.href = "/";
     },
     onError: (error: any) => {
       toast({
         title: "Fehler",
-        description: error.message || "Konto konnte nicht gelöscht werden.",
+        description: cleanErrorMessage(error, "Konto konnte nicht gelöscht werden."),
         variant: "destructive",
       });
     }
@@ -265,7 +280,7 @@ export function AccountSettings() {
                       <Input type="password" placeholder="••••••••" {...field} />
                     </FormControl>
                     <FormDescription>
-                      Mindestens 6 Zeichen lang
+                      Mindestens 8 Zeichen lang
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
