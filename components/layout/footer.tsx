@@ -8,7 +8,7 @@ export default function Footer() {
           <div>
             <h3 className="text-white font-semibold text-base sm:text-lg mb-2 sm:mb-4">Über uns</h3>
             <ul className="space-y-1.5 sm:space-y-2">
-              <li><Link href="/ueber-uns" className="hover:text-white transition">Über speedjobs.at</Link></li>
+              <li><Link href="/ueber-uns" className="hover:text-white transition">Über speedjob.at</Link></li>
               <li><Link href="/kontakt" className="hover:text-white transition">Kontakt</Link></li>
             </ul>
           </div>
@@ -63,7 +63,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-5 pt-4 border-t border-gray-700 flex flex-col md:flex-row justify-between items-start md:items-center gap-2 text-xs sm:text-sm">
-          <p className="leading-snug">&copy; {new Date().getFullYear()} speedjobs.at - Alle Rechte vorbehalten.</p>
+          <p className="leading-snug">&copy; {new Date().getFullYear()} speedjob.at - Alle Rechte vorbehalten.</p>
           <div className="flex items-center">
             <svg className="h-3.5 w-auto mr-2" viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <rect x="0" y="0" width="36" height="24" fill="#ed2939" />
