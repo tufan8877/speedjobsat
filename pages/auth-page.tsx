@@ -48,7 +48,7 @@ export default function AuthPage() {
             <div className="lg:w-1/2 space-y-6">
               <div className="text-center lg:text-left">
                 <h1 className="text-3xl font-bold">
-                  Willkommen bei <span className="text-primary">speedjobs</span>
+                  Willkommen bei <span className="text-primary">speedjob</span>
                   <span className="text-secondary">.at</span>
                 </h1>
                 <p className="mt-2 text-gray-600">
@@ -114,7 +114,7 @@ export default function AuthPage() {
                   </div>
                   
                   <div className="pt-4 border-t border-gray-200">
-                    <h3 className="font-semibold text-base lg:text-lg text-gray-900 mb-2">Wie speedjobs.at funktioniert:</h3>
+                    <h3 className="font-semibold text-base lg:text-lg text-gray-900 mb-2">Wie speedjob.at funktioniert:</h3>
                     <ul className="space-y-2 text-sm lg:text-base text-gray-600">
                       <li className="flex items-start">
                         <span className="text-primary font-medium mr-2">1.</span>
