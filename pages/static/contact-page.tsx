@@ -19,10 +19,10 @@ export default function ContactPage() {
         <h3 className="font-semibold text-xl mb-4">E-Mail-Kontakt</h3>
         <p className="mb-2">Sie erreichen uns unter folgender E-Mail-Adresse:</p>
         <a 
-          href="mailto:kontaktspeedjobs@gmail.com" 
+          href="mailto:kontaktspeedjob@gmail.com" 
           className="text-primary font-medium text-lg hover:underline break-all sm:break-normal"
         >
-          kontaktspeedjobs@gmail.com
+          kontaktspeedjob@gmail.com
         </a>
         
         <p className="mt-4 text-gray-600">
