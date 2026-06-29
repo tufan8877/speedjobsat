@@ -5,16 +5,16 @@ export default function AboutPage() {
     <StaticPage title="Über uns">
       <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-5">
         <p className="font-semibold text-red-600 text-sm md:text-base">
-          WICHTIGER HINWEIS: speedjobs.at ist ausschließlich eine Vermittlungsplattform und übernimmt keinerlei 
+          WICHTIGER HINWEIS: speedjob.at ist ausschließlich eine Vermittlungsplattform und übernimmt keinerlei 
           Verantwortung für Handlungen, Vereinbarungen oder Konflikte zwischen Dienstleistern und Auftraggebern.
           Jegliche Beauftragung erfolgt auf eigenes Risiko der beteiligten Parteien.
         </p>
       </div>
       
-      <h2 className="text-2xl font-semibold mb-4">Willkommen bei speedjobs.at</h2>
+      <h2 className="text-2xl font-semibold mb-4">Willkommen bei speedjob.at</h2>
       
       <p className="mb-4">
-        speedjobs.at ist eine Vermittlungsplattform in Österreich, die Privatpersonen mit privaten 
+        speedjob.at ist eine Vermittlungsplattform in Österreich, die Privatpersonen mit privaten 
         Dienstleistern verbindet. Wir bieten eine Möglichkeit für Menschen, schnell und unkompliziert 
         Dienstleister für ihre individuellen Bedürfnisse zu finden, oft zu günstigeren Preisen als bei 
         gewerblichen Anbietern.
@@ -23,7 +23,7 @@ export default function AboutPage() {
       <h3 className="text-xl font-semibold mb-3 mt-6">Unsere Idee</h3>
       
       <p className="mb-4">
-        speedjobs.at wurde aus der Beobachtung heraus entwickelt, dass es oft schwierig ist, 
+        speedjob.at wurde aus der Beobachtung heraus entwickelt, dass es oft schwierig ist, 
         bezahlbare Dienstleister für kleinere Aufgaben zu finden. Viele Menschen suchen nach 
         günstigeren Alternativen zu gewerblichen Anbietern, während andere ihre Fähigkeiten und 
         Zeit anbieten möchten, um ein zusätzliches Einkommen zu erzielen.
@@ -57,7 +57,7 @@ export default function AboutPage() {
       <h3 className="text-xl font-semibold mb-3 mt-6">Haftungsausschluss</h3>
       
       <p className="mb-4">
-        speedjobs.at ist ausschließlich eine Vermittlungsplattform. Wir überprüfen nicht die Identität, 
+        speedjob.at ist ausschließlich eine Vermittlungsplattform. Wir überprüfen nicht die Identität, 
         Qualifikationen oder rechtlichen Status der Nutzer. Wir sind nicht verantwortlich für die Qualität 
         der Dienstleistungen, für Streitigkeiten zwischen Nutzern oder für rechtliche Konsequenzen, 
         die aus der Nutzung unserer Plattform entstehen könnten. Jeder Nutzer handelt auf eigene Verantwortung 
