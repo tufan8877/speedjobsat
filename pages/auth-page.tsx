@@ -3,27 +3,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { useLocation, useSearch } from "wouter";
 import { LoginForm, RegisterForm } from "@/components/auth/auth-forms";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
-
-function getGoogleErrorMessage(errorCode: string | null) {
-  if (!errorCode) return null;
-
-  const messages: Record<string, string> = {
-    missing_config: "Google Login ist noch nicht vollständig eingerichtet. Bitte GOOGLE_CLIENT_ID und GOOGLE_CLIENT_SECRET in Render eintragen.",
-    invalid_state: "Google Login konnte nicht abgeschlossen werden. Bitte erneut versuchen. Falls es wieder passiert, Cache löschen und neu deployen.",
-    token_failed: "Google hat die Anmeldung abgelehnt. Prüfe bitte GOOGLE_CALLBACK_URL und die Weiterleitungs-URL in der Google Cloud Console.",
-    profile_failed: "Google-Profil konnte nicht gelesen werden. Bitte erneut versuchen.",
-    email_not_verified: "Diese Google-E-Mail ist nicht verifiziert und kann nicht verwendet werden.",
-    email_banned: "Diese E-Mail-Adresse ist auf speedjob.at gesperrt.",
-    account_suspended: "Dieses Konto ist gesperrt. Bitte den Support kontaktieren.",
-    session_failed: "Die Sitzung konnte vor der Google-Weiterleitung nicht gespeichert werden. Bitte erneut versuchen.",
-    server_error: "Google Login ist wegen eines Serverfehlers fehlgeschlagen. Bitte Render-Logs prüfen.",
-  };
-
-  return messages[errorCode] || "Google Login ist fehlgeschlagen. Bitte erneut versuchen.";
-}
 
 export default function AuthPage() {
   const { user } = useAuth();
@@ -31,7 +12,6 @@ export default function AuthPage() {
   const search = useSearch();
   const searchParams = new URLSearchParams(search);
   const initialTab = searchParams.get("tab") === "register" ? "register" : "login";
-  const googleErrorMessage = getGoogleErrorMessage(searchParams.get("googleError"));
   const [activeTab, setActiveTab] = useState(initialTab);
   
   // Update URL when tab changes
@@ -43,7 +23,6 @@ export default function AuthPage() {
     } else {
       newParams.delete("tab");
     }
-    newParams.delete("googleError");
     const newSearch = newParams.toString();
     const newPath = `${location.split("?")[0]}${newSearch ? `?${newSearch}` : ""}`;
     window.history.replaceState(null, "", newPath);
@@ -76,12 +55,6 @@ export default function AuthPage() {
                   Verbinden Sie sich mit lokalen Dienstleistern in ganz Österreich
                 </p>
               </div>
-
-              {googleErrorMessage && (
-                <Alert variant="destructive">
-                  <AlertDescription>{googleErrorMessage}</AlertDescription>
-                </Alert>
-              )}
               
               <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
                 <TabsList className="grid w-full grid-cols-2">
