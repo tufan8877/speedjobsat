@@ -7,14 +7,14 @@ export default function PrivacyPolicyPage() {
 
       <div className="mb-6">
         <p className="mb-4">
-          Diese Datenschutzerklärung informiert darüber, wie SpeedJobs.at personenbezogene Daten verarbeitet. SpeedJobs.at ist eine Online-Plattform zur Kontaktvermittlung zwischen Nutzern, Dienstleistern und Auftraggebern.
+          Diese Datenschutzerklärung informiert darüber, wie speedjob.at personenbezogene Daten verarbeitet. speedjob.at ist eine Online-Plattform zur Kontaktvermittlung zwischen Nutzern, Dienstleistern und Auftraggebern.
         </p>
       </div>
 
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-3">1. Verantwortlicher</h2>
         <p className="mb-3">
-          Verantwortlich für die Datenverarbeitung auf dieser Website ist SpeedJobs.at.
+          Verantwortlich für die Datenverarbeitung auf dieser Website ist speedjob.at.
         </p>
         <p className="mb-3">
           Kontakt: <a href="mailto:kontaktspeedjobs@gmail.com" className="text-primary hover:underline">kontaktspeedjobs@gmail.com</a>
@@ -97,7 +97,7 @@ export default function PrivacyPolicyPage() {
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-3">10. Cookies und technische Speicherung</h2>
         <p className="mb-3">
-          SpeedJobs.at kann technisch notwendige Cookies oder vergleichbare Speichertechnologien verwenden, damit Login, Sicherheit, Seitennavigation und Plattformfunktionen funktionieren. Werden zukünftig Analyse-, Marketing- oder Trackingdienste eingesetzt, erfolgt dies nur im gesetzlich zulässigen Rahmen und, falls erforderlich, mit Einwilligung.
+          speedjob.at kann technisch notwendige Cookies oder vergleichbare Speichertechnologien verwenden, damit Login, Sicherheit, Seitennavigation und Plattformfunktionen funktionieren. Werden zukünftig Analyse-, Marketing- oder Trackingdienste eingesetzt, erfolgt dies nur im gesetzlich zulässigen Rahmen und, falls erforderlich, mit Einwilligung.
         </p>
       </div>
 
