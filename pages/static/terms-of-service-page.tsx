@@ -124,7 +124,7 @@ export default function TermsOfServicePage() {
         <h2 className="text-xl font-semibold mb-3">12. Kontakt</h2>
         <p className="mb-3">
           Bei Fragen zu diesen Nutzungsbedingungen kontaktieren Sie uns bitte unter:
-          <a href="mailto:kontaktspeedjobs@gmail.com" className="text-primary hover:underline ml-1">kontaktspeedjobs@gmail.com</a>
+          <a href="mailto:kontaktspeedjob@gmail.com" className="text-primary hover:underline ml-1">kontaktspeedjob@gmail.com</a>
         </p>
       </div>
     </StaticPage>
