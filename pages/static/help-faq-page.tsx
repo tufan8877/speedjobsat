@@ -10,30 +10,30 @@ export default function HelpFaqPage() {
   return (
     <StaticPage title="Hilfe & FAQ">
       <p className="mb-6">
-        Hier finden Sie Antworten auf häufige Fragen zu SpeedJobs.at. SpeedJobs.at ist eine Plattform zur Kontaktvermittlung und nicht selbst Anbieter oder Auftraggeber der angebotenen Leistungen.
+        Hier finden Sie Antworten auf häufige Fragen zu speedjob.at. speedjob.at ist eine Plattform zur Kontaktvermittlung und nicht selbst Anbieter oder Auftraggeber der angebotenen Leistungen.
       </p>
 
       <div className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Allgemeine Fragen</h2>
         <Accordion type="single" collapsible className="w-full">
-          <AccordionItem value="what-is-speedjobs">
-            <AccordionTrigger>Was ist SpeedJobs.at?</AccordionTrigger>
+          <AccordionItem value="what-is-speedjob">
+            <AccordionTrigger>Was ist speedjob.at?</AccordionTrigger>
             <AccordionContent>
-              SpeedJobs.at ist eine Online-Plattform, auf der Nutzer Dienstleisterprofile suchen, ein eigenes Profil erstellen oder einen Auftrag veröffentlichen können. SpeedJobs.at stellt nur die technische Plattform bereit und wird nicht Vertragspartner der Nutzer.
+              speedjob.at ist eine Online-Plattform, auf der Nutzer Dienstleisterprofile suchen, ein eigenes Profil erstellen oder einen Auftrag veröffentlichen können. speedjob.at stellt nur die technische Plattform bereit und wird nicht Vertragspartner der Nutzer.
             </AccordionContent>
           </AccordionItem>
 
           <AccordionItem value="liability">
-            <AccordionTrigger>Haftet SpeedJobs.at für Dienstleistungen?</AccordionTrigger>
+            <AccordionTrigger>Haftet speedjob.at für Dienstleistungen?</AccordionTrigger>
             <AccordionContent>
-              Nein. Vereinbarungen, Preise, Zahlungen, Termine, Qualität und Durchführung werden direkt zwischen Auftraggeber und Dienstleister geklärt. SpeedJobs.at haftet, soweit gesetzlich zulässig, nicht für Schäden, Streitigkeiten, Zahlungsausfälle oder mangelhafte Leistungen zwischen Nutzern.
+              Nein. Vereinbarungen, Preise, Zahlungen, Termine, Qualität und Durchführung werden direkt zwischen Auftraggeber und Dienstleister geklärt. speedjob.at haftet, soweit gesetzlich zulässig, nicht für Schäden, Streitigkeiten, Zahlungsausfälle oder mangelhafte Leistungen zwischen Nutzern.
             </AccordionContent>
           </AccordionItem>
 
           <AccordionItem value="regions">
-            <AccordionTrigger>Wo ist SpeedJobs.at verfügbar?</AccordionTrigger>
+            <AccordionTrigger>Wo ist speedjob.at verfügbar?</AccordionTrigger>
             <AccordionContent>
-              SpeedJobs.at ist auf Österreich ausgerichtet. Nutzer können Bundesländer als Tätigkeitsregionen oder Auftragsort angeben.
+              speedjob.at ist auf Österreich ausgerichtet. Nutzer können Bundesländer als Tätigkeitsregionen oder Auftragsort angeben.
             </AccordionContent>
           </AccordionItem>
         </Accordion>
