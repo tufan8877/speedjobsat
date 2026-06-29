@@ -68,7 +68,7 @@ export default function AboutPage() {
       
       <p className="mb-4">
         Haben Sie Fragen oder Anregungen? Wir freuen uns über Ihre Nachricht an 
-        <a href="mailto:kontaktspeedjobs@gmail.com" className="text-primary hover:underline ml-1 break-all sm:break-normal">kontaktspeedjobs@gmail.com</a>.
+        <a href="mailto:kontaktspeedjob@gmail.com" className="text-primary hover:underline ml-1 break-all sm:break-normal">kontaktspeedjob@gmail.com</a>.
       </p>
     </StaticPage>
   );
