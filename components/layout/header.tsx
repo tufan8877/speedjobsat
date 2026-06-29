@@ -26,13 +26,9 @@ export default function Header() {
   return (
     <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
       <div className="container mx-auto px-4">
-        <div className="relative flex items-center justify-between h-16">
-          <Link
-            href="/"
-            onClick={goHome}
-            className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center cursor-pointer md:static md:translate-x-0 md:translate-y-0"
-          >
-            <span className="text-primary text-2xl font-bold leading-none">
+        <div className="flex items-center justify-between h-16">
+          <Link href="/" onClick={goHome} className="flex items-center space-x-2 cursor-pointer">
+            <span className="text-primary text-2xl font-bold">
               speedjob<span className="text-secondary">.at</span>
             </span>
           </Link>
@@ -139,7 +135,7 @@ export default function Header() {
           </div>
 
           <button
-            className="ml-auto md:hidden p-2 rounded-md hover:bg-gray-100"
+            className="md:hidden p-2 rounded-md hover:bg-gray-100"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Menü öffnen"
           >
