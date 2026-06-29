@@ -40,6 +40,10 @@ function getEnvAdminCredentials() {
   return { email, password };
 }
 
+function isValidEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
 async function upsertEnvAdminUser() {
   const admin = getEnvAdminCredentials();
   if (!admin) {
@@ -215,6 +219,122 @@ export function setupAuth(app: Express) {
         });
       });
     })(req, res, next);
+  });
+
+  app.post("/api/change-email", isAuthenticated, async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const currentUser = req.user as AppUser;
+      const normalizedEmail = String(req.body?.email || "").trim().toLowerCase();
+      const password = String(req.body?.password || "");
+
+      if (!normalizedEmail || !password) {
+        return res.status(400).json({ message: "Neue E-Mail-Adresse und aktuelles Passwort sind erforderlich" });
+      }
+
+      if (!isValidEmail(normalizedEmail)) {
+        return res.status(400).json({ message: "Bitte geben Sie eine gültige E-Mail-Adresse ein" });
+      }
+
+      const freshUser = await storage.getUser(currentUser.id);
+      if (!freshUser) {
+        return res.status(404).json({ message: "Benutzerkonto nicht gefunden" });
+      }
+
+      if (!(await comparePasswords(password, freshUser.password))) {
+        return res.status(401).json({ message: "Aktuelles Passwort ist falsch" });
+      }
+
+      const existingUser = await storage.getUserByEmail(normalizedEmail);
+      if (existingUser && existingUser.id !== freshUser.id) {
+        return res.status(400).json({ message: "Diese E-Mail-Adresse wird bereits verwendet" });
+      }
+
+      if (await storage.getBannedEmail(normalizedEmail)) {
+        return res.status(403).json({ message: "Diese E-Mail-Adresse ist gesperrt" });
+      }
+
+      const updatedUser = await storage.updateUser(freshUser.id, { email: normalizedEmail });
+      if (!updatedUser) {
+        return res.status(500).json({ message: "E-Mail-Adresse konnte nicht geändert werden" });
+      }
+
+      const profile = await storage.getProfileByUserId(freshUser.id);
+      if (profile) {
+        await storage.updateProfile(profile.id, { email: normalizedEmail });
+      }
+
+      req.login(updatedUser, (loginErr) => {
+        if (loginErr) return next(loginErr);
+        req.session.save((saveErr) => {
+          if (saveErr) return next(saveErr);
+          return res.json({ message: "E-Mail-Adresse erfolgreich geändert", user: sanitizeUser(updatedUser) });
+        });
+      });
+    } catch (error) {
+      console.error("Fehler beim Ändern der E-Mail-Adresse:", error);
+      res.status(500).json({ message: "Serverfehler beim Ändern der E-Mail-Adresse" });
+    }
+  });
+
+  app.post("/api/change-password", isAuthenticated, async (req: Request, res: Response) => {
+    try {
+      const currentUser = req.user as AppUser;
+      const currentPassword = String(req.body?.currentPassword || "");
+      const newPassword = String(req.body?.newPassword || "");
+
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({ message: "Aktuelles Passwort und neues Passwort sind erforderlich" });
+      }
+
+      if (newPassword.length < 8) {
+        return res.status(400).json({ message: "Neues Passwort muss mindestens 8 Zeichen haben" });
+      }
+
+      const freshUser = await storage.getUser(currentUser.id);
+      if (!freshUser) {
+        return res.status(404).json({ message: "Benutzerkonto nicht gefunden" });
+      }
+
+      if (!(await comparePasswords(currentPassword, freshUser.password))) {
+        return res.status(401).json({ message: "Aktuelles Passwort ist falsch" });
+      }
+
+      const updatedUser = await storage.updateUser(freshUser.id, {
+        password: await hashPassword(newPassword),
+      });
+
+      if (!updatedUser) {
+        return res.status(500).json({ message: "Passwort konnte nicht geändert werden" });
+      }
+
+      res.json({ message: "Passwort erfolgreich geändert" });
+    } catch (error) {
+      console.error("Fehler beim Ändern des Passworts:", error);
+      res.status(500).json({ message: "Serverfehler beim Ändern des Passworts" });
+    }
+  });
+
+  app.delete("/api/delete-account", isAuthenticated, async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const currentUser = req.user as AppUser;
+      const deleted = await storage.deleteUser(currentUser.id);
+
+      if (!deleted) {
+        return res.status(500).json({ message: "Konto konnte nicht gelöscht werden" });
+      }
+
+      req.logout((logoutErr) => {
+        if (logoutErr) return next(logoutErr);
+        req.session.destroy((destroyErr) => {
+          if (destroyErr) return next(destroyErr);
+          res.clearCookie("speedjobs.sid");
+          return res.json({ message: "Konto erfolgreich gelöscht" });
+        });
+      });
+    } catch (error) {
+      console.error("Fehler beim Löschen des Kontos:", error);
+      res.status(500).json({ message: "Serverfehler beim Löschen des Kontos" });
+    }
   });
 
   app.post("/api/logout", (req: Request, res: Response, next: NextFunction) => {
