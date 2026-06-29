@@ -9,7 +9,7 @@ type ProfileForCount = {
   services?: string[] | string | null;
 };
 
-function ServiceCommunityIcon() {
+function ServiceToolboxIcon() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -23,12 +23,10 @@ function ServiceCommunityIcon() {
       strokeLinejoin="round"
       aria-hidden="true"
     >
-      <circle cx="12" cy="7" r="4" />
-      <path d="M5.5 21a6.5 6.5 0 0 1 13 0" />
-      <path d="M3 11.5a3 3 0 0 1 4.5-2.6" />
-      <path d="M1.5 20a5 5 0 0 1 5-5" />
-      <path d="M21 11.5a3 3 0 0 0-4.5-2.6" />
-      <path d="M22.5 20a5 5 0 0 0-5-5" />
+      <path d="M10 6V5a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v1" />
+      <rect x="3" y="6" width="18" height="14" rx="2" />
+      <path d="M3 12h18" />
+      <path d="M12 12v3" />
     </svg>
   );
 }
@@ -110,7 +108,7 @@ export default function FeaturedServices() {
                 className="group bg-gray-50 hover:bg-gray-100 rounded-xl p-4 text-center transition"
               >
                 <div className="w-12 h-12 bg-primary-50 rounded-full flex items-center justify-center text-primary mx-auto mb-3 group-hover:bg-primary/10 transition">
-                  <ServiceCommunityIcon />
+                  <ServiceToolboxIcon />
                 </div>
                 <h3 className="font-medium text-gray-800 group-hover:text-primary">{service}</h3>
                 <p className="text-sm text-gray-500 mt-1">
