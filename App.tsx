@@ -1,4 +1,4 @@
-import { Switch, Route, useLocation } from "wouter";
+import { Switch, Route, useLocation, useSearch } from "wouter";
 import { useEffect } from "react";
 import NotFound from "@/pages/not-found";
 import HomePage from "@/pages/home-page";
@@ -22,33 +22,38 @@ import SafetyTipsPage from "@/pages/static/safety-tips-page";
 import SupportPage from "@/pages/static/support-page";
 import TermsOfServicePage from "@/pages/static/terms-of-service-page";
 
-function forceScrollToTop() {
-  window.scrollTo(0, 0);
+function getHeaderOffset() {
+  const header = document.querySelector("header");
+  if (header instanceof HTMLElement) {
+    return header.offsetHeight + 12;
+  }
+  return 76;
+}
+
+function scrollToTop() {
   window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   document.documentElement.scrollTop = 0;
   document.body.scrollTop = 0;
 
   const root = document.getElementById("root");
   if (root) root.scrollTop = 0;
-
-  document.querySelectorAll("main, .overflow-y-auto, .overflow-auto").forEach((element) => {
-    if (element instanceof HTMLElement) {
-      element.scrollTop = 0;
-    }
-  });
 }
 
-function scheduleScrollToTop() {
-  forceScrollToTop();
-  window.requestAnimationFrame(forceScrollToTop);
-  window.setTimeout(forceScrollToTop, 25);
-  window.setTimeout(forceScrollToTop, 100);
-  window.setTimeout(forceScrollToTop, 250);
-  window.setTimeout(forceScrollToTop, 500);
+function scrollToHash(hash: string) {
+  const id = decodeURIComponent(hash.replace("#", ""));
+  if (!id) return false;
+
+  const element = document.getElementById(id);
+  if (!element) return false;
+
+  const top = element.getBoundingClientRect().top + window.scrollY - getHeaderOffset();
+  window.scrollTo({ top: Math.max(0, top), left: 0, behavior: "auto" });
+  return true;
 }
 
-function ScrollToTop() {
+function ScrollManager() {
   const [location] = useLocation();
+  const search = useSearch();
 
   useEffect(() => {
     if ("scrollRestoration" in window.history) {
@@ -57,41 +62,50 @@ function ScrollToTop() {
   }, []);
 
   useEffect(() => {
-    const handleNavigationClick = (event: MouseEvent) => {
-      const target = event.target as HTMLElement | null;
-      if (!target) return;
+    let cancelled = false;
+    let frame = 0;
+    const timers: number[] = [];
 
-      const link = target.closest("a") as HTMLAnchorElement | null;
-      if (!link) return;
+    const runScroll = () => {
+      if (cancelled) return;
 
-      const href = link.getAttribute("href") || "";
-      const isInternalLink = href.startsWith("/");
-      const isHashOnly = href.startsWith("#");
-      const opensNewTab = link.target === "_blank";
+      if (window.location.hash && scrollToHash(window.location.hash)) {
+        return;
+      }
 
-      if (isInternalLink && !isHashOnly && !opensNewTab) {
-        scheduleScrollToTop();
+      scrollToTop();
+    };
+
+    runScroll();
+    frame = window.requestAnimationFrame(runScroll);
+    timers.push(window.setTimeout(runScroll, 80));
+
+    const stopAutomaticScroll = () => {
+      cancelled = true;
+      if (frame) window.cancelAnimationFrame(frame);
+      timers.forEach((timer) => window.clearTimeout(timer));
+    };
+
+    window.addEventListener("wheel", stopAutomaticScroll, { passive: true, once: true });
+    window.addEventListener("touchmove", stopAutomaticScroll, { passive: true, once: true });
+
+    return () => {
+      stopAutomaticScroll();
+      window.removeEventListener("wheel", stopAutomaticScroll);
+      window.removeEventListener("touchmove", stopAutomaticScroll);
+    };
+  }, [location, search]);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      if (window.location.hash) {
+        window.requestAnimationFrame(() => scrollToHash(window.location.hash));
       }
     };
 
-    document.addEventListener("click", handleNavigationClick, true);
-    return () => document.removeEventListener("click", handleNavigationClick, true);
+    window.addEventListener("hashchange", handleHashChange);
+    return () => window.removeEventListener("hashchange", handleHashChange);
   }, []);
-
-  useEffect(() => {
-    const hasHash = window.location.hash && window.location.hash.length > 1;
-
-    if (hasHash) {
-      const id = window.location.hash.replace("#", "");
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: "auto", block: "start" });
-        return;
-      }
-    }
-
-    scheduleScrollToTop();
-  }, [location, window.location.search]);
 
   return null;
 }
@@ -99,7 +113,7 @@ function ScrollToTop() {
 function App() {
   return (
     <>
-      <ScrollToTop />
+      <ScrollManager />
 
       <Switch>
         {/* Öffentliche Routen */}
