@@ -162,6 +162,15 @@ export function setupAuth(app: Express) {
     console.error("Admin-Bootstrap fehlgeschlagen:", error),
   );
 
+  app.get("/api/auth/google/status", (_req: Request, res: Response) => {
+    res.json({
+      configured: googleOAuthConfigured(),
+      hasClientId: Boolean(process.env.GOOGLE_CLIENT_ID),
+      hasClientSecret: Boolean(process.env.GOOGLE_CLIENT_SECRET),
+      callbackUrl: process.env.GOOGLE_CALLBACK_URL || null,
+    });
+  });
+
   app.get("/api/auth/google", (req: Request, res: Response) => {
     if (!googleOAuthConfigured()) {
       return res.redirect("/auth?googleError=missing_config");
@@ -179,7 +188,13 @@ export function setupAuth(app: Express) {
       prompt: "select_account",
     });
 
-    return res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`);
+    req.session.save((saveErr) => {
+      if (saveErr) {
+        console.error("Google Session konnte nicht gespeichert werden:", saveErr);
+        return res.redirect("/auth?googleError=session_failed");
+      }
+      return res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`);
+    });
   });
 
   app.get("/api/auth/google/callback", async (req: Request, res: Response, next: NextFunction) => {
