@@ -8,7 +8,7 @@ export default function SupportPage() {
     <StaticPage title="Support">
       <div className="mb-8">
         <p className="mb-4">
-          Über den Support können Sie Fragen zu Ihrem Konto, technischen Problemen, Profilen, Aufträgen, Bewertungen oder verdächtigem Verhalten melden. SpeedJobs.at unterstützt bei der Nutzung der Plattform, ist jedoch nicht Partei von Vereinbarungen zwischen Nutzern.
+          Über den Support können Sie Fragen zu Ihrem Konto, technischen Problemen, Profilen, Aufträgen, Bewertungen oder verdächtigem Verhalten melden. speedjob.at unterstützt bei der Nutzung der Plattform, ist jedoch nicht Partei von Vereinbarungen zwischen Nutzern.
         </p>
         <div className="bg-yellow-50 border border-yellow-200 rounded-md p-3">
           <p className="text-sm text-yellow-800 font-medium">
@@ -42,7 +42,7 @@ export default function SupportPage() {
           </div>
           <h3 className="text-lg font-semibold mb-2">Melden & Feedback</h3>
           <p className="mb-4 text-gray-600">Melden Sie technische Fehler, verdächtige Profile oder geben Sie Feedback.</p>
-          <a href="mailto:kontaktspeedjobs@gmail.com?subject=SpeedJobs.at%20Support" className="mt-auto"><Button variant="outline">Nachricht senden</Button></a>
+          <a href="mailto:kontaktspeedjobs@gmail.com?subject=speedjob.at%20Support" className="mt-auto"><Button variant="outline">Nachricht senden</Button></a>
         </div>
       </div>
 
@@ -79,7 +79,7 @@ export default function SupportPage() {
             </div>
             <div>
               <h3 className="font-medium">Sicherheitstipps</h3>
-              <p className="text-sm text-gray-600">Tipps zur sicheren Nutzung von SpeedJobs.at</p>
+              <p className="text-sm text-gray-600">Tipps zur sicheren Nutzung von speedjob.at</p>
             </div>
           </Link>
 
