@@ -83,9 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       toast({
         title: "Erfolgreich angemeldet",
-        description: (userData as any).emailVerified || userData.isAdmin
-          ? "Willkommen zurück!"
-          : "Bitte bestätigen Sie noch Ihre E-Mail-Adresse.",
+        description: "Willkommen zurück!",
       });
 
       return userData;
@@ -125,7 +123,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       toast({
         title: "Registrierung erfolgreich",
-        description: "Ihr Konto wurde erstellt. Bitte prüfen Sie Ihr E-Mail-Postfach und bestätigen Sie Ihre Adresse.",
+        description: "Ihr Konto wurde erstellt. Sie sind jetzt angemeldet.",
       });
 
       return newUser;
