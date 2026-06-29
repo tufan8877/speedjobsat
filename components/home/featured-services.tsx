@@ -59,14 +59,19 @@ export default function FeaturedServices() {
 
   const providerCounts = useMemo(() => countProvidersByService(data?.profiles || []), [data?.profiles]);
   const displayedServices = useMemo(() => {
-    const sortedServices = [...serviceCategories].sort((a, b) => {
-      const countDiff = (providerCounts[b] || 0) - (providerCounts[a] || 0);
-      if (countDiff !== 0) return countDiff;
-      return serviceCategories.indexOf(a) - serviceCategories.indexOf(b);
-    });
-
-    return sortedServices.slice(0, 6);
+    return [...serviceCategories]
+      .filter((service) => (providerCounts[service] || 0) > 0)
+      .sort((a, b) => {
+        const countDiff = (providerCounts[b] || 0) - (providerCounts[a] || 0);
+        if (countDiff !== 0) return countDiff;
+        return serviceCategories.indexOf(a) - serviceCategories.indexOf(b);
+      })
+      .slice(0, 6);
   }, [providerCounts]);
+
+  if (displayedServices.length === 0) {
+    return null;
+  }
 
   return (
     <section className="py-12 bg-white">
