@@ -40,6 +40,20 @@ function getEnvAdminCredentials() {
   return { email, password };
 }
 
+function getBaseUrl(req: Request) {
+  const configuredUrl = process.env.APP_URL || process.env.PUBLIC_URL;
+  if (configuredUrl) return configuredUrl.replace(/\/$/, "");
+  return `${req.protocol}://${req.get("host")}`;
+}
+
+function getGoogleCallbackUrl(req: Request) {
+  return process.env.GOOGLE_CALLBACK_URL || `${getBaseUrl(req)}/api/auth/google/callback`;
+}
+
+function googleOAuthConfigured() {
+  return Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
+}
+
 async function upsertEnvAdminUser() {
   const admin = getEnvAdminCredentials();
   if (!admin) {
@@ -147,6 +161,114 @@ export function setupAuth(app: Express) {
   upsertEnvAdminUser().catch((error) =>
     console.error("Admin-Bootstrap fehlgeschlagen:", error),
   );
+
+  app.get("/api/auth/google", (req: Request, res: Response) => {
+    if (!googleOAuthConfigured()) {
+      return res.redirect("/auth?googleError=missing_config");
+    }
+
+    const state = randomBytes(24).toString("hex");
+    (req.session as any).googleOAuthState = state;
+
+    const params = new URLSearchParams({
+      client_id: String(process.env.GOOGLE_CLIENT_ID),
+      redirect_uri: getGoogleCallbackUrl(req),
+      response_type: "code",
+      scope: "openid email profile",
+      state,
+      prompt: "select_account",
+    });
+
+    return res.redirect(`https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`);
+  });
+
+  app.get("/api/auth/google/callback", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!googleOAuthConfigured()) {
+        return res.redirect("/auth?googleError=missing_config");
+      }
+
+      const code = String(req.query.code || "");
+      const state = String(req.query.state || "");
+      const savedState = String((req.session as any).googleOAuthState || "");
+      delete (req.session as any).googleOAuthState;
+
+      if (!code || !state || !savedState || state !== savedState) {
+        return res.redirect("/auth?googleError=invalid_state");
+      }
+
+      const tokenResponse = await fetch("https://oauth2.googleapis.com/token", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          code,
+          client_id: String(process.env.GOOGLE_CLIENT_ID),
+          client_secret: String(process.env.GOOGLE_CLIENT_SECRET),
+          redirect_uri: getGoogleCallbackUrl(req),
+          grant_type: "authorization_code",
+        }),
+      });
+
+      if (!tokenResponse.ok) {
+        console.error("Google Token Fehler:", await tokenResponse.text());
+        return res.redirect("/auth?googleError=token_failed");
+      }
+
+      const tokenData = await tokenResponse.json() as { access_token?: string };
+      if (!tokenData.access_token) {
+        return res.redirect("/auth?googleError=token_failed");
+      }
+
+      const profileResponse = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
+        headers: { Authorization: `Bearer ${tokenData.access_token}` },
+      });
+
+      if (!profileResponse.ok) {
+        console.error("Google Profil Fehler:", await profileResponse.text());
+        return res.redirect("/auth?googleError=profile_failed");
+      }
+
+      const googleProfile = await profileResponse.json() as {
+        email?: string;
+        email_verified?: boolean;
+      };
+
+      const normalizedEmail = String(googleProfile.email || "").trim().toLowerCase();
+      if (!normalizedEmail || googleProfile.email_verified !== true) {
+        return res.redirect("/auth?googleError=email_not_verified");
+      }
+
+      if (await storage.getBannedEmail(normalizedEmail)) {
+        return res.redirect("/auth?googleError=email_banned");
+      }
+
+      let user = await storage.getUserByEmail(normalizedEmail);
+
+      if (!user) {
+        user = await storage.createUser({
+          email: normalizedEmail,
+          password: await hashPassword(randomBytes(32).toString("hex")),
+          status: "active",
+          isAdmin: false,
+        });
+      }
+
+      if (user.status !== "active") {
+        return res.redirect("/auth?googleError=account_suspended");
+      }
+
+      req.login(user, (loginErr) => {
+        if (loginErr) return next(loginErr);
+        req.session.save((saveErr) => {
+          if (saveErr) return next(saveErr);
+          return res.redirect("/");
+        });
+      });
+    } catch (error) {
+      console.error("Google Login Fehler:", error);
+      return res.redirect("/auth?googleError=server_error");
+    }
+  });
 
   app.post("/api/register", async (req: Request, res: Response, next: NextFunction) => {
     try {
