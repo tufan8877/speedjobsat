@@ -11,6 +11,7 @@ body {
   overflow-x: hidden;
   box-sizing: border-box;
   scroll-padding-top: 76px;
+  scrollbar-gutter: stable;
 }
 
 html {
