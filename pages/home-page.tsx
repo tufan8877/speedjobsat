@@ -10,7 +10,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-1 pb-4 sm:pb-6">
+      <main className="flex-1 pb-14 sm:pb-20">
         <HeroSection />
         <FeaturedServices />
         <ProviderListing />
