@@ -1,12 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { JobListingCard } from "./job-listing-card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { serviceCategories } from "@shared/schema";
 import { useState } from "react";
 import { JobListing } from "@shared/schema";
-import { Loader2 } from "lucide-react";
+import { ChevronDown, Loader2 } from "lucide-react";
 import { Link } from "wouter";
 
 function sortJobsNewestFirst(jobs: JobListing[]) {
@@ -64,25 +63,33 @@ export function JobList() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="text-sm font-medium block mb-1">Kategorie</label>
-          <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-            <SelectTrigger className="h-11 bg-white">
-              <SelectValue placeholder="Alle Kategorien" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">Alle Kategorien</SelectItem>
+          <label htmlFor="job-category-filter" className="text-sm font-medium block mb-1">
+            Kategorie
+          </label>
+          <div className="relative">
+            <select
+              id="job-category-filter"
+              value={categoryFilter}
+              onChange={(event) => setCategoryFilter(event.target.value)}
+              className="h-11 w-full appearance-none rounded-md border border-input bg-white px-3 pr-10 text-sm ring-offset-background outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <option value="all">Alle Kategorien</option>
               {serviceCategories.map((category) => (
-                <SelectItem key={category} value={category}>
+                <option key={category} value={category}>
                   {category}
-                </SelectItem>
+                </option>
               ))}
-            </SelectContent>
-          </Select>
+            </select>
+            <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          </div>
         </div>
 
         <div>
-          <label className="text-sm font-medium block mb-1">Ort</label>
+          <label htmlFor="job-location-filter" className="text-sm font-medium block mb-1">
+            Ort
+          </label>
           <Input
+            id="job-location-filter"
             className="h-11 bg-white"
             placeholder="Ort eingeben..."
             value={locationFilter}
