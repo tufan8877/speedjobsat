@@ -40,9 +40,9 @@ export default function JobsPage() {
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Hilfsgesuche</h1>
+          <h1 className="text-3xl font-bold">Aktuelle Aufträge</h1>
           <p className="text-muted-foreground mt-1">
-            Durchsuchen Sie Hilfsgesuche. Pro Benutzer ist nur ein Auftrag erlaubt.
+            Durchsuchen Sie aktuelle Aufträge. Pro Benutzer ist nur ein Auftrag erlaubt.
           </p>
           {!user && (
             <div className="mt-3 p-3 bg-blue-50 border border-blue-100 rounded-md">
