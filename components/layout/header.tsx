@@ -34,6 +34,9 @@ export default function Header() {
           </Link>
 
           <nav className="hidden md:flex items-center space-x-6">
+            <Link href="/auftraege" className="text-gray-700 hover:text-primary transition-colors">
+              Aufträge
+            </Link>
             <Link href="/suche" className="text-gray-700 hover:text-primary transition-colors">
               Dienstleistungen
             </Link>
