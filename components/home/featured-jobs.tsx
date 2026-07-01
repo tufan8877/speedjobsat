@@ -3,10 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { format } from "date-fns";
 import { de } from "date-fns/locale";
-import { MapPin, Calendar, Phone } from "lucide-react";
+import { Calendar, ChevronDown, MapPin, Phone } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Link } from "wouter";
 import { JobListing } from "@shared/schema";
@@ -15,8 +14,8 @@ import { useAuth } from "@/hooks/use-auth";
 
 export default function FeaturedJobs() {
   const { user } = useAuth();
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("alle");
+  const [selectedLocation, setSelectedLocation] = useState("alle");
 
   const { data: jobs, isLoading, error } = useQuery<JobListing[]>({
     queryKey: ["/api/jobs", "home-latest-3-clean-cards"],
@@ -33,13 +32,11 @@ export default function FeaturedJobs() {
       const matchesCategory =
         !selectedCategory ||
         selectedCategory === "alle" ||
-        selectedCategory === "" ||
         job.category === selectedCategory;
 
       const matchesLocation =
         !selectedLocation ||
         selectedLocation === "alle" ||
-        selectedLocation === "" ||
         job.location.toLowerCase().includes(selectedLocation.toLowerCase());
 
       return matchesCategory && matchesLocation;
@@ -124,41 +121,51 @@ export default function FeaturedJobs() {
         <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6 mb-6 sm:mb-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="text-gray-700 text-sm font-medium mb-2 block">Kategorie / Service</label>
-              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Kategorie wählen" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="alle">Alle Kategorien</SelectItem>
+              <label htmlFor="home-job-category-filter" className="text-gray-700 text-sm font-medium mb-2 block">
+                Kategorie / Service
+              </label>
+              <div className="relative">
+                <select
+                  id="home-job-category-filter"
+                  value={selectedCategory}
+                  onChange={(event) => setSelectedCategory(event.target.value)}
+                  className="h-11 w-full appearance-none rounded-md border border-input bg-white px-3 pr-10 text-sm ring-offset-background outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <option value="alle">Alle Kategorien</option>
                   {serviceCategories.map((category) => (
-                    <SelectItem key={category} value={category}>
+                    <option key={category} value={category}>
                       {category}
-                    </SelectItem>
+                    </option>
                   ))}
-                </SelectContent>
-              </Select>
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              </div>
             </div>
 
             <div>
-              <label className="text-gray-700 text-sm font-medium mb-2 block">Bundesland</label>
-              <Select value={selectedLocation} onValueChange={setSelectedLocation}>
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Bundesland wählen" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="alle">Alle Bundesländer</SelectItem>
+              <label htmlFor="home-job-location-filter" className="text-gray-700 text-sm font-medium mb-2 block">
+                Bundesland
+              </label>
+              <div className="relative">
+                <select
+                  id="home-job-location-filter"
+                  value={selectedLocation}
+                  onChange={(event) => setSelectedLocation(event.target.value)}
+                  className="h-11 w-full appearance-none rounded-md border border-input bg-white px-3 pr-10 text-sm ring-offset-background outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <option value="alle">Alle Bundesländer</option>
                   {federalStates.map((state) => (
-                    <SelectItem key={state} value={state}>
+                    <option key={state} value={state}>
                       {state}
-                    </SelectItem>
+                    </option>
                   ))}
-                </SelectContent>
-              </Select>
+                </select>
+                <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              </div>
             </div>
           </div>
 
-          {(selectedCategory || selectedLocation) && (
+          {(selectedCategory !== "alle" || selectedLocation !== "alle") && (
             <div className="mt-4 text-sm text-gray-600">
               {filteredJobs.length} von {jobs?.length || 0} Aufträgen gefunden – angezeigt werden die neuesten 3
             </div>
