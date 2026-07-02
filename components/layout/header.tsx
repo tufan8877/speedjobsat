@@ -25,19 +25,7 @@ export default function Header() {
 
   return (
     <>
-      <header
-        className="bg-white shadow-sm border-b border-gray-200"
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          right: 0,
-          width: "100%",
-          zIndex: 99999,
-          transform: "translateZ(0)",
-          WebkitTransform: "translateZ(0)",
-        }}
-      >
+      <header className="site-header-fixed shadow-sm border-b border-gray-200">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <Link href="/" onClick={goHome} className="flex items-center space-x-2 cursor-pointer">
@@ -168,7 +156,7 @@ export default function Header() {
           onLogout={logout}
         />
       </header>
-      <div style={{ height: 64, flexShrink: 0 }} aria-hidden="true" />
+      <div className="site-header-spacer" aria-hidden="true" />
     </>
   );
 }
