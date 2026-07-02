@@ -24,7 +24,7 @@ export default function Header() {
   };
 
   return (
-    <header className="relative static bg-white shadow-sm border-b border-gray-200 z-40">
+    <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           <Link href="/" onClick={goHome} className="flex items-center space-x-2 cursor-pointer">
