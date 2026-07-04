@@ -389,7 +389,7 @@ export default function JobDetailPage() {
             
             <div className="mt-4 p-4 bg-muted rounded-md text-sm">
               <p className="font-medium mb-1">Haftungsausschluss</p>
-              <p>speedjobs.at vermittelt nur zwischen Dienstleistern und Auftraggebern. Wir übernehmen keine Haftung für die Qualität der Ausführung oder die Bezahlung von Aufträgen.</p>
+              <p>speedjob.at vermittelt nur zwischen Dienstleistern und Auftraggebern. Wir übernehmen keine Haftung für die Qualität der Ausführung oder die Bezahlung von Aufträgen.</p>
             </div>
           </div>
         </div>
