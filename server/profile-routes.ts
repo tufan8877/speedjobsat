@@ -50,13 +50,24 @@ function normalizeProfilePayload(body: any, userId?: number, registeredEmail?: s
   return payload;
 }
 
+function uniqueReviewsByUser(reviews: any[] = []) {
+  const seen = new Set<number>();
+  return reviews.filter((review) => {
+    const userId = Number(review?.userId);
+    if (!Number.isFinite(userId)) return true;
+    if (seen.has(userId)) return false;
+    seen.add(userId);
+    return true;
+  });
+}
+
 function responseProfile(profile: any, reviews?: any[]) {
   return {
     ...profile,
     services: oneStringArray(profile.services),
     regions: toStringArray(profile.regions),
     availablePeriods: toStringArray(profile.availablePeriods),
-    ...(reviews ? { reviews } : {}),
+    ...(reviews ? { reviews: uniqueReviewsByUser(reviews) } : {}),
   };
 }
 
@@ -188,7 +199,7 @@ export function setupProfileRoutes(app: Express) {
       }
 
       const reviews = await storage.getReviewsByProfileId(profileId);
-      res.json(reviews);
+      res.json(uniqueReviewsByUser(reviews));
     } catch (error) {
       console.error("Fehler beim Abrufen der Bewertungen:", error);
       res.status(500).json({ message: "Serverfehler beim Abrufen der Bewertungen" });
@@ -221,6 +232,13 @@ export function setupProfileRoutes(app: Express) {
 
       if (profile.userId === userId) {
         return res.status(400).json({ message: "Sie können Ihr eigenes Profil nicht bewerten" });
+      }
+
+      const existingReviews = await storage.getReviewsByProfileId(profileId);
+      const alreadyReviewed = existingReviews.some((review) => review.userId === userId);
+
+      if (alreadyReviewed) {
+        return res.status(409).json({ message: "Sie haben dieses Profil bereits bewertet. Pro Profil ist nur eine Bewertung möglich." });
       }
 
       const review = await storage.createReview({ userId, profileId, rating, comment });
