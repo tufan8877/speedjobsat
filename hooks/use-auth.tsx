@@ -8,7 +8,7 @@ interface AuthContextType {
   isLoading: boolean;
   error: string | null;
   login: (data: LoginUser) => Promise<User | null>;
-  register: (data: RegisterUser) => Promise<any>;
+  register: (data: RegisterUser) => Promise<User | null>;
   logout: () => Promise<void>;
   loginPending: boolean;
   registerPending: boolean;
@@ -103,34 +103,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const register = async (userData: RegisterUser): Promise<any> => {
+  const register = async (userData: RegisterUser): Promise<User | null> => {
     setRegisterPending(true);
     setError(null);
 
     try {
       const response = await apiRequest("POST", "/api/register", userData);
-      const result = await response.json();
+      const newUser = await response.json();
 
-      if ((result as any).id) {
-        if ((result as any).authToken) {
-          localStorage.setItem("authToken", (result as any).authToken);
-          const { authToken, ...userWithoutToken } = result as any;
-          setUser(userWithoutToken);
-        } else {
-          setUser(result);
-        }
+      if ((newUser as any).authToken) {
+        localStorage.setItem("authToken", (newUser as any).authToken);
+        const { authToken, ...userWithoutToken } = newUser as any;
+        setUser(userWithoutToken);
       } else {
-        setUser(null);
+        setUser(newUser);
       }
 
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       toast({
-        title: "Registrierung fast fertig",
-        description: result?.message || "Bitte bestätigen Sie Ihre E-Mail-Adresse über den Link in Ihrem Postfach.",
+        title: "Registrierung erfolgreich",
+        description: "Ihr Konto wurde erstellt. Sie sind jetzt angemeldet.",
       });
 
-      return result;
+      return newUser;
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Ein Fehler ist aufgetreten";
       setError(errorMessage);
