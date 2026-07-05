@@ -9,6 +9,7 @@ import AdminPage from "@/pages/admin-page";
 import ProviderPage from "@/pages/provider-page";
 import JobsPage from "@/pages/jobs-page";
 import JobDetailPage from "@/pages/job-detail-page";
+import EditJobPage from "@/pages/edit-job-page";
 import FavoritesPage from "@/pages/favorites-page";
 import CreateJobPage from "@/pages/create-job-page";
 import { ProtectedRoute } from "@/lib/protected-route";
@@ -121,6 +122,7 @@ function App() {
         <Route path="/auth" component={AuthPage} />
         <Route path="/suche" component={SearchPage} />
         <Route path="/anbieter/:id" component={ProviderPage} />
+        <ProtectedRoute path="/auftraege/bearbeiten/:id" component={EditJobPage} />
         <Route path="/auftraege/:id">
           {() => <JobDetailPage />}
         </Route>
