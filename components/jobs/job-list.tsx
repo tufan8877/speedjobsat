@@ -1,12 +1,22 @@
-import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { JobListingCard } from "./job-listing-card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { serviceCategories } from "@shared/schema";
-import { useState } from "react";
 import { JobListing } from "@shared/schema";
 import { ChevronDown, Loader2 } from "lucide-react";
 import { Link } from "wouter";
+import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 function sortJobsNewestFirst(jobs: JobListing[]) {
   return [...jobs].sort((a, b) => {
@@ -18,8 +28,11 @@ function sortJobsNewestFirst(jobs: JobListing[]) {
 }
 
 export function JobList() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [categoryFilter, setCategoryFilter] = useState<string>("all");
   const [locationFilter, setLocationFilter] = useState<string>("");
+  const [jobToDelete, setJobToDelete] = useState<JobListing | null>(null);
 
   const { data: jobs, isLoading, isFetching, error } = useQuery<JobListing[]>({
     queryKey: ["/api/jobs", categoryFilter, locationFilter],
@@ -34,7 +47,10 @@ export function JobList() {
         url += `&location=${encodeURIComponent(locationFilter)}`;
       }
 
-      const response = await fetch(url, { credentials: "include" });
+      const response = await fetch(url, {
+        credentials: "include",
+        headers: { "Cache-Control": "no-cache" },
+      });
 
       if (!response.ok) {
         throw new Error("Fehler beim Abrufen der Aufträge");
@@ -47,7 +63,48 @@ export function JobList() {
     placeholderData: (previousData) => previousData,
   });
 
+  const deleteJobMutation = useMutation({
+    mutationFn: async (jobId: number) => {
+      const response = await fetch(`/api/jobs/${jobId}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: { "Cache-Control": "no-cache" },
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Auftrag konnte nicht gelöscht werden");
+      }
+
+      return response.json();
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
+      await queryClient.invalidateQueries({ queryKey: ["/api/my-jobs"] });
+
+      toast({
+        title: "Auftrag gelöscht",
+        description: "Der Auftrag wurde erfolgreich gelöscht. Sie können jetzt wieder einen neuen Auftrag erstellen.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Fehler beim Löschen des Auftrags",
+        description: error.message || "Bitte versuchen Sie es erneut",
+        variant: "destructive",
+      });
+    },
+    onSettled: () => {
+      setJobToDelete(null);
+    },
+  });
+
   const sortedJobs = sortJobsNewestFirst(jobs || []);
+
+  const confirmDelete = () => {
+    if (!jobToDelete) return;
+    deleteJobMutation.mutate(jobToDelete.id);
+  };
 
   const filterBar = (
     <div className="mb-6 space-y-4">
@@ -100,6 +157,37 @@ export function JobList() {
     </div>
   );
 
+  const deleteDialog = (
+    <AlertDialog open={!!jobToDelete} onOpenChange={(open) => !open && setJobToDelete(null)}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Auftrag löschen</AlertDialogTitle>
+          <AlertDialogDescription>
+            Sind Sie sicher, dass Sie den Auftrag "{jobToDelete?.title}" löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel disabled={deleteJobMutation.isPending}>Abbrechen</AlertDialogCancel>
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={confirmDelete}
+            disabled={deleteJobMutation.isPending}
+          >
+            {deleteJobMutation.isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Löschen...
+              </>
+            ) : (
+              "Endgültig löschen"
+            )}
+          </Button>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+
   if (error) {
     return (
       <div>
@@ -108,6 +196,7 @@ export function JobList() {
           <h3 className="text-xl font-semibold mb-2">Fehler beim Laden der Aufträge</h3>
           <p className="text-muted-foreground">{(error as Error).message}</p>
         </div>
+        {deleteDialog}
       </div>
     );
   }
@@ -119,6 +208,7 @@ export function JobList() {
         <div className="flex justify-center items-center p-12 border rounded-lg bg-white min-h-[260px]">
           <Loader2 className="h-12 w-12 animate-spin text-primary" />
         </div>
+        {deleteDialog}
       </div>
     );
   }
@@ -147,6 +237,7 @@ export function JobList() {
             </Link>
           </div>
         </div>
+        {deleteDialog}
       </div>
     );
   }
@@ -157,9 +248,16 @@ export function JobList() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[260px]">
         {sortedJobs.map((job) => (
-          <JobListingCard key={job.id} job={job} showActions={true} />
+          <JobListingCard
+            key={job.id}
+            job={job}
+            showActions={!deleteJobMutation.isPending}
+            onDelete={() => setJobToDelete(job)}
+          />
         ))}
       </div>
+
+      {deleteDialog}
     </div>
   );
 }
