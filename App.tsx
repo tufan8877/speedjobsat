@@ -14,6 +14,7 @@ import { ProtectedRoute } from "@/lib/protected-route";
 import AboutPage from "@/pages/static/about-page";
 import ContactPage from "@/pages/static/contact-page";
 import HelpFaqPage from "@/pages/static/help-faq-page";
+import ImprintPage from "@/pages/static/imprint-page";
 import PrivacyPolicyPage from "@/pages/static/privacy-policy-page";
 import SafetyTipsPage from "@/pages/static/safety-tips-page";
 import SupportPage from "@/pages/static/support-page";
@@ -125,6 +126,7 @@ function App() {
         <Route path="/ueber-uns" component={AboutPage} />
         <Route path="/kontakt" component={ContactPage} />
         <Route path="/hilfe-faq" component={HelpFaqPage} />
+        <Route path="/impressum" component={ImprintPage} />
         <Route path="/datenschutz" component={PrivacyPolicyPage} />
         <Route path="/sicherheitstipps" component={SafetyTipsPage} />
         <Route path="/support" component={SupportPage} />
