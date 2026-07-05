@@ -29,23 +29,23 @@ export default function HeroSection() {
               Finden Sie lokale Fachkräfte in Österreich
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Installateure, Mechaniker, Pflegekräfte und mehr - alle von verifizierten Anbietern
+              Installateure, Elektriker, Mechaniker, Pflegekräfte und weitere Dienstleister mit eigenem Profil und Bewertungen.
             </p>
           </div>
 
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-6 md:mb-6">
             <Button
               className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-semibold px-5 py-6 text-base md:px-6 md:py-5 md:text-base"
-              onClick={() => setLocation("/auftrag-erstellen")}
+              onClick={() => setLocation("/suche")}
             >
-              Einen Auftrag erstellen
+              Dienstleister suchen
             </Button>
             <Button
               variant="outline"
               className="w-full sm:w-auto border-primary text-primary hover:bg-primary/5 px-5 py-6 text-base md:px-6 md:py-5 md:text-base"
-              onClick={() => setLocation("/auftraege")}
+              onClick={() => setLocation("/auth?tab=register")}
             >
-              Aufträge durchsuchen
+              Profil erstellen
             </Button>
           </div>
 
