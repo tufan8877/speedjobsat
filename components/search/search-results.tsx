@@ -9,6 +9,7 @@ import { StarRating } from "@/components/ui/star-rating";
 import { Loader2, MapPin, Clock, Phone, Mail, Share2 } from "lucide-react";
 import { useSearch } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
+import { FavoriteButton } from "@/components/favorites/favorite-button";
 
 interface SearchResultsProps {
   initialPage?: number;
@@ -290,10 +291,11 @@ export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
                         </div>
                       </div>
 
-                      <div className="mt-4">
+                      <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <Link href={`/anbieter/${profile.id}`}>
                           <Button className="w-full">Profil ansehen</Button>
                         </Link>
+                        <FavoriteButton profileId={profile.id} />
                       </div>
                     </div>
                   </CardContent>
