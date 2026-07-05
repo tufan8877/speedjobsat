@@ -5,12 +5,23 @@ import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { eq } from "drizzle-orm";
+import nodemailer from "nodemailer";
 import { storage } from "./storage";
 import { db } from "./db";
 import { jobListings } from "@shared/schema";
 import type { User as AppUser } from "@shared/schema";
 
 const scryptAsync = promisify(scrypt);
+
+type PendingRegistration = {
+  email: string;
+  passwordHash: string;
+  code: string;
+  expiresAt: number;
+  attempts: number;
+};
+
+const pendingRegistrations = new Map<string, PendingRegistration>();
 
 export async function hashPassword(password: string) {
   const salt = randomBytes(16).toString("hex");
@@ -45,6 +56,54 @@ function getEnvAdminCredentials() {
 
 function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function createRegistrationCode() {
+  return String(Math.floor(100000 + Math.random() * 900000));
+}
+
+function getMailConfig() {
+  const host = process.env.SMTP_HOST?.trim();
+  const port = Number(process.env.SMTP_PORT || 587);
+  const user = process.env.SMTP_USER?.trim();
+  const pass = process.env.SMTP_PASS;
+  const from = process.env.MAIL_FROM?.trim() || user;
+
+  if (!host || !user || !pass || !from) return null;
+  return { host, port, user, pass, from };
+}
+
+async function sendRegistrationCode(email: string, code: string) {
+  const config = getMailConfig();
+  if (!config) {
+    throw new Error("E-Mail-Versand ist nicht eingerichtet. Bitte SMTP-Daten auf Render setzen.");
+  }
+
+  const transporter = nodemailer.createTransport({
+    host: config.host,
+    port: config.port,
+    secure: config.port === 465,
+    auth: {
+      user: config.user,
+      pass: config.pass,
+    },
+  });
+
+  await transporter.sendMail({
+    from: config.from,
+    to: email,
+    subject: "speedjob.at – Registrierungscode",
+    text: `Ihr Registrierungscode für speedjob.at lautet: ${code}\n\nDer Code ist 15 Minuten gültig.`,
+    html: `
+      <div style="font-family:Arial,sans-serif;line-height:1.6;color:#111827">
+        <h2 style="margin:0 0 12px;color:#111827">speedjob.at Registrierung</h2>
+        <p>Ihr Registrierungscode lautet:</p>
+        <div style="font-size:28px;font-weight:bold;letter-spacing:6px;background:#f3f4f6;padding:14px 18px;border-radius:8px;display:inline-block">${code}</div>
+        <p>Der Code ist 15 Minuten gültig.</p>
+        <p style="font-size:13px;color:#6b7280">Falls Sie sich nicht bei speedjob.at registriert haben, können Sie diese E-Mail ignorieren.</p>
+      </div>
+    `,
+  });
 }
 
 async function upsertEnvAdminUser() {
@@ -155,7 +214,7 @@ export function setupAuth(app: Express) {
     console.error("Admin-Bootstrap fehlgeschlagen:", error),
   );
 
-  app.post("/api/register", async (req: Request, res: Response, next: NextFunction) => {
+  app.post("/api/register", async (req: Request, res: Response) => {
     try {
       const { email, password, passwordConfirm } = req.body || {};
       const normalizedEmail = String(email || "").trim().toLowerCase();
@@ -164,6 +223,10 @@ export function setupAuth(app: Express) {
         return res.status(400).json({
           message: "E-Mail, Passwort und Passwortbestätigung sind erforderlich",
         });
+      }
+
+      if (!isValidEmail(normalizedEmail)) {
+        return res.status(400).json({ message: "Bitte geben Sie eine gültige E-Mail-Adresse ein" });
       }
 
       if (password !== passwordConfirm) {
@@ -186,19 +249,111 @@ export function setupAuth(app: Express) {
         });
       }
 
+      const code = createRegistrationCode();
+      const passwordHash = await hashPassword(password);
+      pendingRegistrations.set(normalizedEmail, {
+        email: normalizedEmail,
+        passwordHash,
+        code,
+        expiresAt: Date.now() + 15 * 60 * 1000,
+        attempts: 0,
+      });
+
+      await sendRegistrationCode(normalizedEmail, code);
+
+      return res.status(200).json({
+        requiresCode: true,
+        email: normalizedEmail,
+        message: "Wir haben Ihnen einen 6-stelligen Bestätigungscode per E-Mail gesendet. Bitte geben Sie den Code ein, um Ihr Konto zu erstellen.",
+      });
+    } catch (error) {
+      console.error("Fehler bei der Registrierung:", error);
+      res.status(500).json({
+        message: error instanceof Error ? error.message : "Interner Serverfehler",
+      });
+    }
+  });
+
+  app.post("/api/resend-registration-code", async (req: Request, res: Response) => {
+    try {
+      const normalizedEmail = String(req.body?.email || "").trim().toLowerCase();
+      const pending = pendingRegistrations.get(normalizedEmail);
+
+      if (!pending) {
+        return res.status(404).json({ message: "Keine offene Registrierung für diese E-Mail-Adresse gefunden" });
+      }
+
+      if (await storage.getUserByEmail(normalizedEmail)) {
+        pendingRegistrations.delete(normalizedEmail);
+        return res.status(400).json({ message: "Ein Benutzer mit dieser E-Mail-Adresse existiert bereits" });
+      }
+
+      const code = createRegistrationCode();
+      pending.code = code;
+      pending.expiresAt = Date.now() + 15 * 60 * 1000;
+      pending.attempts = 0;
+      pendingRegistrations.set(normalizedEmail, pending);
+
+      await sendRegistrationCode(normalizedEmail, code);
+      return res.json({ message: "Ein neuer Code wurde per E-Mail gesendet." });
+    } catch (error) {
+      console.error("Fehler beim erneuten Senden des Codes:", error);
+      res.status(500).json({ message: error instanceof Error ? error.message : "Code konnte nicht erneut gesendet werden" });
+    }
+  });
+
+  app.post("/api/confirm-registration", async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const normalizedEmail = String(req.body?.email || "").trim().toLowerCase();
+      const code = String(req.body?.code || "").trim();
+      const pending = pendingRegistrations.get(normalizedEmail);
+
+      if (!pending) {
+        return res.status(404).json({ message: "Keine offene Registrierung gefunden. Bitte registrieren Sie sich erneut." });
+      }
+
+      if (pending.expiresAt < Date.now()) {
+        pendingRegistrations.delete(normalizedEmail);
+        return res.status(400).json({ message: "Der Code ist abgelaufen. Bitte registrieren Sie sich erneut." });
+      }
+
+      pending.attempts += 1;
+      if (pending.attempts > 5) {
+        pendingRegistrations.delete(normalizedEmail);
+        return res.status(429).json({ message: "Zu viele falsche Versuche. Bitte registrieren Sie sich erneut." });
+      }
+
+      if (pending.code !== code) {
+        pendingRegistrations.set(normalizedEmail, pending);
+        return res.status(400).json({ message: "Der eingegebene Code ist falsch" });
+      }
+
+      if (await storage.getUserByEmail(normalizedEmail)) {
+        pendingRegistrations.delete(normalizedEmail);
+        return res.status(400).json({ message: "Ein Benutzer mit dieser E-Mail-Adresse existiert bereits" });
+      }
+
       const newUser = await storage.createUser({
         email: normalizedEmail,
-        password: await hashPassword(password),
+        password: pending.passwordHash,
         status: "active",
         isAdmin: false,
       });
 
+      pendingRegistrations.delete(normalizedEmail);
+
       req.login(newUser, (err) => {
         if (err) return next(err);
-        res.status(201).json(sanitizeUser(newUser));
+        req.session.save((saveErr) => {
+          if (saveErr) return next(saveErr);
+          return res.status(201).json({
+            message: "E-Mail bestätigt. Ihr Konto wurde erstellt.",
+            user: sanitizeUser(newUser),
+          });
+        });
       });
     } catch (error) {
-      console.error("Fehler bei der Registrierung:", error);
+      console.error("Fehler bei der Code-Bestätigung:", error);
       res.status(500).json({ message: "Interner Serverfehler" });
     }
   });
