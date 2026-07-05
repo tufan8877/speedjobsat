@@ -13,28 +13,30 @@ import { Link } from "wouter";
 export default function FavoritesPage() {
   const { user } = useAuth();
   const [, navigate] = useLocation();
-  
-  // Wenn kein Benutzer angemeldet ist, zur Anmeldeseite weiterleiten
+
   if (!user) {
-    navigate("/auth?redirect=/favorites");
+    navigate("/auth?redirect=/favoriten");
     return null;
   }
-  
-  // Ruft alle Favoriten des Benutzers ab
+
   const { data: favoriteProfiles, isLoading, error } = useQuery<Profile[]>({
-    queryKey: ['/api/favorites'],
+    queryKey: ["/api/favorites"],
     queryFn: async () => {
-      const response = await fetch('/api/favorites');
-      
+      const response = await fetch("/api/favorites", {
+        credentials: "include",
+        headers: {
+          "Cache-Control": "no-cache",
+        },
+      });
+
       if (!response.ok) {
-        throw new Error('Fehler beim Abrufen Ihrer Favoriten');
+        throw new Error("Fehler beim Abrufen Ihrer Favoriten");
       }
-      
+
       return response.json();
-    }
+    },
   });
-  
-  // Lädt noch
+
   if (isLoading) {
     return (
       <div className="container py-8">
@@ -45,8 +47,7 @@ export default function FavoritesPage() {
       </div>
     );
   }
-  
-  // Fehler beim Laden
+
   if (error) {
     return (
       <div className="container py-8">
@@ -58,8 +59,7 @@ export default function FavoritesPage() {
       </div>
     );
   }
-  
-  // Keine Favoriten gefunden
+
   if (!favoriteProfiles || favoriteProfiles.length === 0) {
     return (
       <div className="container py-8">
@@ -67,24 +67,24 @@ export default function FavoritesPage() {
         <div className="text-center p-12">
           <h3 className="text-xl font-semibold mb-2">Keine Favoriten vorhanden</h3>
           <p className="text-muted-foreground mb-6">
-            Sie haben noch keine Dienstleister zu Ihren Favoriten hinzugefügt. 
+            Sie haben noch keine Dienstleister zu Ihren Favoriten hinzugefügt.
             Durchsuchen Sie die verfügbaren Dienstleister und fügen Sie sie zu Ihren Favoriten hinzu.
           </p>
-          <Link href="/search">
+          <Link href="/suche">
             <Button>Dienstleister suchen</Button>
           </Link>
         </div>
       </div>
     );
   }
-  
+
   return (
     <div className="container py-8">
       <h1 className="text-3xl font-bold mb-2">Meine Favoriten</h1>
       <p className="text-muted-foreground mb-8">
         Hier finden Sie eine Übersicht Ihrer favorisierten Dienstleister.
       </p>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {favoriteProfiles.map((profile) => (
           <Card key={profile.id} className="overflow-hidden">
@@ -92,8 +92,8 @@ export default function FavoritesPage() {
               <div className="flex items-start gap-4">
                 <Avatar className="h-12 w-12 border">
                   <AvatarFallback className="bg-primary text-primary-foreground">
-                    {profile.firstName?.charAt(0) || ''}
-                    {profile.lastName?.charAt(0) || ''}
+                    {profile.firstName?.charAt(0) || ""}
+                    {profile.lastName?.charAt(0) || ""}
                   </AvatarFallback>
                 </Avatar>
                 <div>
@@ -106,7 +106,7 @@ export default function FavoritesPage() {
                 </div>
               </div>
             </CardHeader>
-            
+
             <CardContent className="pb-3">
               <div className="mb-4">
                 <h4 className="text-sm font-semibold mb-1">Tätig in:</h4>
@@ -122,7 +122,7 @@ export default function FavoritesPage() {
                   )}
                 </div>
               </div>
-              
+
               {profile.description && (
                 <div>
                   <h4 className="text-sm font-semibold mb-1">Beschreibung:</h4>
@@ -132,13 +132,13 @@ export default function FavoritesPage() {
                 </div>
               )}
             </CardContent>
-            
-            <CardFooter className="flex justify-between pt-0">
-              <Link href={`/providers/${profile.id}`}>
+
+            <CardFooter className="flex justify-between pt-0 gap-2">
+              <Link href={`/anbieter/${profile.id}`}>
                 <Button variant="outline" size="sm">Profil ansehen</Button>
               </Link>
-              
-              <FavoriteButton profileId={profile.id} />
+
+              <FavoriteButton profileId={profile.id} size="sm" />
             </CardFooter>
           </Card>
         ))}
