@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Link } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -191,6 +192,12 @@ export default function AutoEmailProfileForm() {
               <AlertDescription>
                 Als einzige Kontaktmöglichkeit wird automatisch Ihre registrierte E-Mail verwendet:<br />
                 <strong>{user?.email || "Ihre registrierte E-Mail"}</strong>
+                <br />
+                Sie können Ihre E-Mail-Adresse jederzeit in den{" "}
+                <Link href="/profil?tab=settings" className="font-semibold underline underline-offset-2 hover:text-blue-700">
+                  Einstellungen
+                </Link>{" "}
+                ändern.
               </AlertDescription>
             </Alert>
 
