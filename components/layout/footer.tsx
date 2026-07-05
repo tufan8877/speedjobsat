@@ -17,9 +17,6 @@ export default function Footer() {
             <h3 className="text-white font-semibold text-base sm:text-lg mb-2 sm:mb-4">Dienstleistungen</h3>
             <ul className="space-y-1.5 sm:space-y-2">
               <li><Link href="/suche" className="hover:text-white transition">Alle Dienstleistungen</Link></li>
-              <li><Link href="/suche?sort=rating" className="hover:text-white transition">Top-Anbieter</Link></li>
-              <li><Link href="/suche?sort=newest" className="hover:text-white transition">Neue Anbieter</Link></li>
-              <li><Link href="/auth?tab=register" className="hover:text-white transition">Dienstleister werden</Link></li>
             </ul>
           </div>
 
