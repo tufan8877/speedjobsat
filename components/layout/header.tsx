@@ -2,9 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { LogOut, User as UserIcon, Shield, Heart, Briefcase } from "lucide-react";
+import { LogOut, User as UserIcon, Shield, Heart } from "lucide-react";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import MobileMenu from "./mobile-menu";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -12,24 +11,6 @@ export default function Header() {
   const { user, isLoading, logout, logoutPending } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [, setLocation] = useLocation();
-
-  const { data: myJobs = [] } = useQuery<any[]>({
-    queryKey: ["/api/my-jobs"],
-    enabled: !!user,
-    queryFn: async () => {
-      const response = await fetch("/api/my-jobs", {
-        credentials: "include",
-        headers: { "Cache-Control": "no-cache" },
-      });
-
-      if (!response.ok) return [];
-      return response.json();
-    },
-  });
-
-  const hasOwnJob = !!user && Array.isArray(myJobs) && myJobs.length > 0;
-  const jobMenuHref = hasOwnJob ? "/auftraege" : "/auftrag-erstellen";
-  const jobMenuLabel = hasOwnJob ? "Mein Auftrag" : "Auftrag erstellen";
 
   const goHome = (event?: React.MouseEvent) => {
     event?.preventDefault();
@@ -54,9 +35,6 @@ export default function Header() {
             </Link>
 
             <nav className="hidden md:flex items-center space-x-6">
-              <Link href="/auftraege" className="text-gray-700 hover:text-primary transition-colors">
-                Aufträge
-              </Link>
               <Link href="/suche" className="text-gray-700 hover:text-primary transition-colors">
                 Dienstleistungen
               </Link>
@@ -102,12 +80,6 @@ export default function Header() {
                       <Link href="/profil" className="flex items-center">
                         <UserIcon className="mr-2 h-4 w-4" />
                         <span>Profil verwalten</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                      <Link href={jobMenuHref} className="flex items-center">
-                        <Briefcase className="mr-2 h-4 w-4" />
-                        <span>{jobMenuLabel}</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
@@ -173,7 +145,6 @@ export default function Header() {
           onClose={() => setMobileMenuOpen(false)}
           user={user}
           onLogout={logout}
-          hasOwnJob={hasOwnJob}
         />
       </header>
       <div className="site-header-spacer" aria-hidden="true" />
