@@ -1,5 +1,5 @@
 import express, { Express, Request, Response } from "express";
-import { isAuthenticated } from "./sqlite-auth";
+import { isAuthenticated } from "./auth";
 import { sqliteDb } from "./sqlite-db";
 import { jobListings } from "@shared/sqlite-schema";
 import { eq, and, desc } from "drizzle-orm";
@@ -61,7 +61,7 @@ export function setupJobRoutes(app: Express) {
         .limit(1);
 
       if (existingJobs.length > 0) {
-        return res.status(400).json({ message: "Pro Benutzer ist nur ein Auftrag erlaubt" });
+        return res.status(400).json({ message: "Pro Benutzer ist nur ein Auftrag erlaubt. Sie können Ihren bestehenden Auftrag bearbeiten." });
       }
 
       const contactEmail = getUserEmail(req);
@@ -156,10 +156,20 @@ export function setupJobRoutes(app: Express) {
         return res.status(401).json({ message: "Nicht authentifiziert" });
       }
 
+      const userId = Number((req.user as any).id);
+      const contactEmail = getUserEmail(req);
+
+      if (contactEmail) {
+        await sqliteDb
+          .update(jobListings)
+          .set({ contactInfo: contactEmail })
+          .where(eq(jobListings.userId, userId));
+      }
+
       const myJobs = await sqliteDb
         .select()
         .from(jobListings)
-        .where(eq(jobListings.userId, (req.user as any).id))
+        .where(eq(jobListings.userId, userId))
         .orderBy(desc(jobListings.createdAt));
 
       res.json(myJobs);
@@ -199,18 +209,25 @@ export function setupJobRoutes(app: Express) {
         });
       }
 
-      const contactEmail = getUserEmail(req) || existingJob.contactInfo;
+      const contactEmail = getUserEmail(req);
+      if (!contactEmail) {
+        return res.status(400).json({ message: "Keine registrierte E-Mail-Adresse im Benutzerkonto gefunden" });
+      }
 
       const updatedData = {
-        title: req.body.title,
-        description: req.body.description,
-        location: req.body.location,
-        date: req.body.date,
+        title: String(req.body?.title || existingJob.title).trim(),
+        description: String(req.body?.description || existingJob.description).trim(),
+        location: String(req.body?.location || existingJob.location).trim(),
+        date: req.body?.date || existingJob.date,
         contactInfo: contactEmail,
-        category: req.body.category,
-        images: req.body.images ? JSON.stringify(req.body.images) : existingJob.images,
-        status: req.body.status || existingJob.status,
+        category: String(req.body?.category || existingJob.category),
+        images: req.body?.images ? JSON.stringify(req.body.images) : existingJob.images,
+        status: req.body?.status || existingJob.status,
       };
+
+      if (!updatedData.title || !updatedData.description || !updatedData.location || !updatedData.category) {
+        return res.status(400).json({ message: "Titel, Beschreibung, Ort und Kategorie sind Pflichtfelder" });
+      }
 
       const [updatedJob] = await sqliteDb
         .update(jobListings)
