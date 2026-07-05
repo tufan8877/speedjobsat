@@ -151,7 +151,7 @@ export function FavoriteButton({
         className={`h-4 w-4 ${isFavorite ? "fill-red-500 text-red-500" : "fill-none group-hover:fill-red-300"}`}
       />
       <span className="ml-2">
-        {isFavorite ? "Favorisiert" : "Favorisieren"}
+        {isFavorite ? "Aus Favoriten entfernen" : "Zu Favoriten hinzufügen"}
       </span>
     </Button>
   );
