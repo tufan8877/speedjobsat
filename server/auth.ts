@@ -4,7 +4,10 @@ import { Express, Request, Response, NextFunction } from "express";
 import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
+import { eq } from "drizzle-orm";
 import { storage } from "./storage";
+import { db } from "./db";
+import { jobListings } from "@shared/schema";
 import type { User as AppUser } from "@shared/schema";
 
 const scryptAsync = promisify(scrypt);
@@ -262,6 +265,11 @@ export function setupAuth(app: Express) {
       if (profile) {
         await storage.updateProfile(profile.id, { email: normalizedEmail });
       }
+
+      await db
+        .update(jobListings)
+        .set({ contactInfo: normalizedEmail })
+        .where(eq(jobListings.userId, freshUser.id));
 
       req.login(updatedUser, (loginErr) => {
         if (loginErr) return next(loginErr);
