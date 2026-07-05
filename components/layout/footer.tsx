@@ -10,6 +10,7 @@ export default function Footer() {
             <ul className="space-y-1.5 sm:space-y-2">
               <li><Link href="/ueber-uns" className="hover:text-white transition">Über speedjob.at</Link></li>
               <li><Link href="/kontakt" className="hover:text-white transition">Kontakt</Link></li>
+              <li><Link href="/impressum" className="hover:text-white transition">Impressum</Link></li>
             </ul>
           </div>
 
@@ -48,6 +49,10 @@ export default function Footer() {
               </li>
             </ul>
             <div className="mt-3 text-xs sm:text-sm leading-relaxed">
+              <Link href="/impressum" className="text-gray-400 hover:text-white transition">
+                Impressum
+              </Link>
+              <span className="text-gray-500"> · </span>
               <Link href="/datenschutz" className="text-gray-400 hover:text-white transition">
                 Datenschutz
               </Link>
