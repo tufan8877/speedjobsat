@@ -248,22 +248,23 @@ export function setupJobRoutes(app: Express) {
         return res.status(401).json({ message: "Nicht authentifiziert" });
       }
 
-      const jobId = parseInt(req.params.id);
+      const jobId = Number(req.params.id);
 
-      if (isNaN(jobId)) {
+      if (!Number.isFinite(jobId)) {
         return res.status(400).json({ message: "Ungültige Auftrags-ID" });
       }
 
       const [existingJob] = await sqliteDb
         .select()
         .from(jobListings)
-        .where(eq(jobListings.id, jobId));
+        .where(eq(jobListings.id, jobId))
+        .limit(1);
 
       if (!existingJob) {
         return res.status(404).json({ message: "Auftrag nicht gefunden" });
       }
 
-      const isOwner = existingJob.userId === (req.user as any).id;
+      const isOwner = Number(existingJob.userId) === Number((req.user as any).id);
       const isAdmin = (req.user as any).isAdmin === true;
 
       if (!isOwner && !isAdmin) {
@@ -272,9 +273,20 @@ export function setupJobRoutes(app: Express) {
         });
       }
 
-      await sqliteDb.delete(jobListings).where(eq(jobListings.id, jobId));
+      const deletedJobs = await sqliteDb
+        .delete(jobListings)
+        .where(eq(jobListings.id, jobId))
+        .returning();
 
-      res.status(200).json({ message: "Auftrag erfolgreich gelöscht" });
+      if (!deletedJobs.length) {
+        return res.status(500).json({ message: "Auftrag konnte nicht gelöscht werden" });
+      }
+
+      res.status(200).json({
+        success: true,
+        message: "Auftrag erfolgreich gelöscht",
+        deletedJob: deletedJobs[0],
+      });
     } catch (error) {
       console.error("Fehler beim Löschen des Auftrags:", error);
       res.status(500).json({ message: "Fehler beim Löschen des Auftrags" });
