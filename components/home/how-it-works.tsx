@@ -25,11 +25,12 @@ const steps = [
     ),
   },
   {
-    title: "Direkt kontaktieren",
-    text: "Registrierte Nutzer können die Kontaktdaten sehen und den Dienstleister direkt anschreiben oder anrufen.",
+    title: "Per E-Mail kontaktieren",
+    text: "Registrierte Nutzer können die E-Mail-Adresse sehen und den Dienstleister direkt per E-Mail kontaktieren.",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
+        <rect x="3" y="5" width="18" height="14" rx="2" />
+        <path d="m3 7 9 6 9-6" />
       </svg>
     ),
   },
@@ -47,7 +48,7 @@ export default function HowItWorks() {
             So funktioniert speedjob.at
           </h2>
           <p className="text-gray-600 leading-relaxed">
-            speedjob.at verbindet Kunden und Unternehmen mit lokalen Dienstleistern über übersichtliche Profile, Bewertungen und direkte Kontaktdaten.
+            speedjob.at verbindet Kunden und Unternehmen mit lokalen Dienstleistern über übersichtliche Profile, Bewertungen und direkte Kontaktaufnahme per E-Mail.
           </p>
         </div>
 
@@ -71,13 +72,13 @@ export default function HowItWorks() {
             <div className="p-5 sm:p-7">
               <h3 className="text-xl font-bold mb-2 text-gray-900">Sie sind Dienstleister?</h3>
               <p className="text-gray-600 leading-relaxed mb-5">
-                Erstellen Sie ein kostenloses Profil mit Ihren Leistungen, Regionen, Beschreibung und Kontaktdaten. So können Kunden Sie leichter finden und direkt kontaktieren.
+                Erstellen Sie ein kostenloses Profil mit Ihren Leistungen, Regionen, Beschreibung und E-Mail-Adresse. So können Kunden Sie leichter finden und per E-Mail kontaktieren.
               </p>
               <div className="flex flex-wrap gap-2 text-sm text-gray-700">
                 <span className="rounded-full bg-gray-100 px-3 py-1">Eigenes Profil</span>
                 <span className="rounded-full bg-gray-100 px-3 py-1">Bewertungen</span>
                 <span className="rounded-full bg-gray-100 px-3 py-1">Favoriten</span>
-                <span className="rounded-full bg-gray-100 px-3 py-1">Direkte Kontaktaufnahme</span>
+                <span className="rounded-full bg-gray-100 px-3 py-1">Kontakt per E-Mail</span>
               </div>
             </div>
 
