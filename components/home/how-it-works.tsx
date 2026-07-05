@@ -7,20 +7,20 @@ export default function HowItWorks() {
             So funktioniert speedjob.at
           </h2>
           <p className="text-gray-600 max-w-2xl mx-auto mb-4">
-            Finden Sie passende lokale Dienstleister oder erstellen Sie einen eigenen Auftrag.
+            Kunden und Unternehmen finden passende Dienstleister über Profile, Bewertungen und Suchfilter.
           </p>
           <div className="max-w-2xl mx-auto bg-blue-50 rounded-lg p-4 mb-6 sm:mb-8 border border-blue-100">
-            <h3 className="text-lg font-semibold text-blue-700 mb-2">Aufträge erstellen</h3>
+            <h3 className="text-lg font-semibold text-blue-700 mb-2">Fokus auf Profile</h3>
             <p className="text-gray-700 mb-2">
-              Nach der Registrierung können Sie über den Button „Auftrag erstellen“ Ihre Anfrage beschreiben.
+              Dienstleister erstellen ein Profil mit Dienstleistung, Region, Beschreibung und Kontaktdaten.
             </p>
             <p className="text-gray-700 text-sm">
-              <span className="font-medium">Hinweis:</span> Pro Benutzer ist nur ein Auftrag möglich.
+              Kunden können passende Profile suchen, speichern und direkt Kontakt aufnehmen.
             </p>
           </div>
         </div>
 
-        <h3 className="text-xl font-semibold mb-5 sm:mb-6 text-center text-primary">Für Kunden</h3>
+        <h3 className="text-xl font-semibold mb-5 sm:mb-6 text-center text-primary">Für Kunden und Unternehmen</h3>
         <div className="grid md:grid-cols-3 gap-7 sm:gap-8 mb-8 sm:mb-12">
           <div className="text-center">
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-primary-50 rounded-full flex items-center justify-center text-primary mx-auto mb-3 sm:mb-4">
@@ -38,7 +38,7 @@ export default function HowItWorks() {
             </div>
             <h3 className="text-lg font-semibold mb-2">2. Auswählen</h3>
             <p className="text-gray-600">
-              Vergleichen Sie Profile und Bewertungen, um einen passenden Dienstleister zu finden.
+              Vergleichen Sie Profile, Bewertungen und Beschreibungen, um den passenden Dienstleister zu finden.
             </p>
           </div>
 
@@ -53,15 +53,15 @@ export default function HowItWorks() {
           </div>
         </div>
 
-        <h3 className="text-xl font-semibold mb-5 sm:mb-6 text-center text-primary">Für Auftraggeber</h3>
+        <h3 className="text-xl font-semibold mb-5 sm:mb-6 text-center text-primary">Für Dienstleister</h3>
         <div className="grid md:grid-cols-3 gap-7 sm:gap-8">
           <div className="text-center">
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 mx-auto mb-3 sm:mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>
             </div>
-            <h3 className="text-lg font-semibold mb-2">1. Auftrag erstellen</h3>
+            <h3 className="text-lg font-semibold mb-2">1. Profil erstellen</h3>
             <p className="text-gray-600">
-              Registrieren Sie sich und beschreiben Sie Ihren Auftrag mit den wichtigsten Informationen.
+              Registrieren Sie sich und erstellen Sie Ihr Dienstleisterprofil mit allen wichtigen Informationen.
             </p>
           </div>
 
@@ -69,9 +69,9 @@ export default function HowItWorks() {
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 mx-auto mb-3 sm:mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 9.1V4L6 8.5l6 4.5V7.9c5 0 8.5 3.5 8.5 8.5s-3.5 8.5-8.5 8.5-8.5-3.5-8.5-8.5H2c0 5.5 4.5 10 10 10s10-4.5 10-10-4.5-10-10-10z"/></svg>
             </div>
-            <h3 className="text-lg font-semibold mb-2">2. Kontakte erhalten</h3>
+            <h3 className="text-lg font-semibold mb-2">2. Sichtbar werden</h3>
             <p className="text-gray-600">
-              Dienstleister können Ihren Auftrag sehen und Sie direkt kontaktieren.
+              Ihr Profil erscheint in der Suche und kann von Kunden sowie Unternehmen gefunden werden.
             </p>
           </div>
 
@@ -79,9 +79,9 @@ export default function HowItWorks() {
             <div className="w-14 h-14 sm:w-16 sm:h-16 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 mx-auto mb-3 sm:mb-4">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="m9 12 2 2 4-4"/></svg>
             </div>
-            <h3 className="text-lg font-semibold mb-2">3. Auftrag vergeben</h3>
+            <h3 className="text-lg font-semibold mb-2">3. Anfragen erhalten</h3>
             <p className="text-gray-600">
-              Vergleichen Sie Kontakte und wählen Sie eigenverantwortlich einen passenden Dienstleister.
+              Interessenten können Ihre Kontaktdaten sehen und Sie direkt kontaktieren.
             </p>
           </div>
         </div>
