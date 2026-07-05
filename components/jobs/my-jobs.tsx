@@ -1,13 +1,12 @@
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { JobListingCard } from "./job-listing-card";
 import { JobListing } from "@shared/sqlite-schema";
-import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -15,18 +14,20 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useState } from "react";
 import { Loader2, PlusCircle } from "lucide-react";
 
 export function MyJobs() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
-  const [deletingJobId, setDeletingJobId] = useState<number | null>(null);
+  const [jobToDelete, setJobToDelete] = useState<JobListing | null>(null);
 
   const { data: jobs, isLoading, error } = useQuery<JobListing[]>({
     queryKey: ["/api/my-jobs"],
     queryFn: async () => {
-      const response = await fetch("/api/my-jobs", { credentials: "include" });
+      const response = await fetch("/api/my-jobs", {
+        credentials: "include",
+        headers: { "Cache-Control": "no-cache" },
+      });
 
       if (!response.ok) {
         throw new Error("Fehler beim Abrufen Ihrer Aufträge");
@@ -38,11 +39,22 @@ export function MyJobs() {
 
   const deleteJobMutation = useMutation({
     mutationFn: async (jobId: number) => {
-      await apiRequest("DELETE", `/api/jobs/${jobId}`);
+      const response = await fetch(`/api/jobs/${jobId}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: { "Cache-Control": "no-cache" },
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Auftrag konnte nicht gelöscht werden");
+      }
+
+      return response.json();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/my-jobs"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["/api/my-jobs"] });
+      await queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
 
       toast({
         title: "Auftrag gelöscht",
@@ -57,13 +69,13 @@ export function MyJobs() {
       });
     },
     onSettled: () => {
-      setDeletingJobId(null);
+      setJobToDelete(null);
     },
   });
 
-  const handleDeleteJob = (jobId: number) => {
-    setDeletingJobId(jobId);
-    deleteJobMutation.mutate(jobId);
+  const confirmDelete = () => {
+    if (!jobToDelete) return;
+    deleteJobMutation.mutate(jobToDelete.id);
   };
 
   if (isLoading) {
@@ -111,40 +123,43 @@ export function MyJobs() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {jobs.slice(0, 1).map((job) => (
-          <AlertDialog key={job.id}>
-            <JobListingCard
-              job={job}
-              onDelete={(id) => setDeletingJobId(id)}
-              showActions={!deleteJobMutation.isPending || deletingJobId !== job.id}
-            />
-
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Auftrag löschen</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Sind Sie sicher, dass Sie diesen Auftrag löschen möchten? Danach können Sie einen neuen Auftrag erstellen.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Abbrechen</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={() => handleDeleteJob(job.id)}
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                >
-                  {deleteJobMutation.isPending && deletingJobId === job.id ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Löschen...
-                    </>
-                  ) : (
-                    "Löschen"
-                  )}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <JobListingCard
+            key={job.id}
+            job={job}
+            onDelete={() => setJobToDelete(job)}
+            showActions={!deleteJobMutation.isPending}
+          />
         ))}
       </div>
+
+      <AlertDialog open={!!jobToDelete} onOpenChange={(open) => !open && setJobToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Auftrag löschen</AlertDialogTitle>
+            <AlertDialogDescription>
+              Sind Sie sicher, dass Sie den Auftrag "{jobToDelete?.title}" löschen möchten? Danach können Sie einen neuen Auftrag erstellen.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={deleteJobMutation.isPending}>Abbrechen</AlertDialogCancel>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={confirmDelete}
+              disabled={deleteJobMutation.isPending}
+            >
+              {deleteJobMutation.isPending ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Löschen...
+                </>
+              ) : (
+                "Endgültig löschen"
+              )}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
