@@ -14,6 +14,7 @@ export default function AuthPage() {
   const initialTab = searchParams.get("tab") === "register" ? "register" : "login";
   const [activeTab, setActiveTab] = useState(initialTab);
   
+  // Update URL when tab changes
   const handleTabChange = (value: string) => {
     setActiveTab(value);
     const newParams = new URLSearchParams(search);
@@ -27,6 +28,7 @@ export default function AuthPage() {
     window.history.replaceState(null, "", newPath);
   };
   
+  // Redirect if already logged in
   useEffect(() => {
     if (user) {
       setLocation("/");
@@ -34,7 +36,7 @@ export default function AuthPage() {
   }, [user, setLocation]);
   
   if (user) {
-    return null;
+    return null; // Don't render during redirect
   }
   
   return (
@@ -50,7 +52,7 @@ export default function AuthPage() {
                   <span className="text-secondary">.at</span>
                 </h1>
                 <p className="mt-2 text-gray-600">
-                  Finden Sie private Dienstleister in ganz Österreich
+                  Verbinden Sie sich mit lokalen Dienstleistern in ganz Österreich
                 </p>
               </div>
               
@@ -71,7 +73,7 @@ export default function AuthPage() {
             <div className="lg:w-1/2 bg-white border border-gray-200 rounded-lg p-6 lg:p-8 shadow-xl">
               <div className="h-full flex flex-col justify-center">
                 <h2 className="text-2xl font-bold mb-6 text-gray-900">
-                  Die Plattform für private Dienstleister in Österreich
+                  Die Plattform für Dienstleister in Österreich
                 </h2>
                 
                 <div className="space-y-4 lg:space-y-6">
@@ -82,7 +84,7 @@ export default function AuthPage() {
                     <div>
                       <h3 className="font-semibold text-base lg:text-lg text-gray-900">Vertrauenswürdige Plattform</h3>
                       <p className="mt-1 text-sm lg:text-base text-gray-600">
-                        Nutzer können Bewertungen und Erfahrungsberichte einsehen, um passende Dienstleister zu finden.
+                        Nutzer können Bewertungen und Erfahrungsberichte einsehen, um die richtigen Dienstleister zu finden.
                       </p>
                     </div>
                   </div>
@@ -92,9 +94,9 @@ export default function AuthPage() {
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600 lg:w-6 lg:h-6"><circle cx="12" cy="12" r="10"/><path d="m16 10-4 4-2-2"/></svg>
                     </div>
                     <div>
-                      <h3 className="font-semibold text-base lg:text-lg text-gray-900">Kontakt per E-Mail</h3>
+                      <h3 className="font-semibold text-base lg:text-lg text-gray-900">Einfache Kontaktaufnahme</h3>
                       <p className="mt-1 text-sm lg:text-base text-gray-600">
-                        Registrierte Nutzer sehen die E-Mail-Adresse des Dienstleisters und können direkt Kontakt aufnehmen.
+                        Direkter Kontakt mit Dienstleistern ohne Umwege oder Vermittlungsgebühren.
                       </p>
                     </div>
                   </div>
@@ -106,7 +108,7 @@ export default function AuthPage() {
                     <div>
                       <h3 className="font-semibold text-base lg:text-lg text-gray-900">Kostenlose Registrierung</h3>
                       <p className="mt-1 text-sm lg:text-base text-gray-600">
-                        Erstellen Sie Ihr Profil kostenlos. Ihre E-Mail-Adresse muss zuerst bestätigt werden.
+                        Erstellen Sie Ihr Profil kostenlos und präsentieren Sie Ihre Dienstleistungen.
                       </p>
                     </div>
                   </div>
@@ -116,19 +118,19 @@ export default function AuthPage() {
                     <ul className="space-y-2 text-sm lg:text-base text-gray-600">
                       <li className="flex items-start">
                         <span className="text-primary font-medium mr-2">1.</span>
-                        <span>Kostenlos registrieren und E-Mail-Adresse bestätigen</span>
+                        <span>Kostenlos registrieren und Profil erstellen</span>
                       </li>
                       <li className="flex items-start">
                         <span className="text-primary font-medium mr-2">2.</span>
-                        <span>Profil erstellen oder Dienstleister suchen</span>
+                        <span>Dienstleister suchen oder Hilfsgesuche veröffentlichen</span>
                       </li>
                       <li className="flex items-start">
                         <span className="text-primary font-medium mr-2">3.</span>
-                        <span>Per E-Mail Kontakt aufnehmen</span>
+                        <span>Direkten Kontakt aufnehmen und Termine vereinbaren</span>
                       </li>
                       <li className="flex items-start">
                         <span className="text-primary font-medium mr-2">4.</span>
-                        <span>Nach Erfahrung Bewertungen abgeben</span>
+                        <span>Nach getaner Arbeit Bewertungen abgeben</span>
                       </li>
                     </ul>
                   </div>
