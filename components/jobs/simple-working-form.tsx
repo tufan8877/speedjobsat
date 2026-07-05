@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@/hooks/use-toast";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ const categories = [
 export function SimpleWorkingForm() {
   const { toast } = useToast();
   const { user } = useAuth();
+  const queryClient = useQueryClient();
   const [, navigate] = useLocation();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -61,26 +63,22 @@ export function SimpleWorkingForm() {
         category: formData.category,
       };
 
-      const localToken = localStorage.getItem("authToken");
-      const headers: Record<string, string> = {
-        "Content-Type": "application/json",
-      };
-
-      if (localToken) {
-        headers.Authorization = `Bearer ${localToken}`;
-      }
-
       const response = await fetch("/api/jobs", {
         method: "POST",
-        headers,
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(jobData),
         credentials: "include",
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`HTTP ${response.status}: ${errorText}`);
+        throw new Error(errorText || `HTTP ${response.status}`);
       }
+
+      await queryClient.invalidateQueries({ queryKey: ["/api/my-jobs"] });
+      await queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
 
       toast({
         title: "Auftrag erstellt!",
