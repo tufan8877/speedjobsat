@@ -7,7 +7,7 @@ export default function PrivacyPolicyPage() {
 
       <div className="mb-6">
         <p className="mb-4">
-          Diese Datenschutzerklärung informiert darüber, wie speedjob.at personenbezogene Daten verarbeitet. speedjob.at ist eine Online-Plattform zur Kontaktvermittlung zwischen Nutzern, Dienstleistern und Auftraggebern.
+          Diese Datenschutzerklärung informiert darüber, wie speedjob.at personenbezogene Daten verarbeitet. speedjob.at ist eine kostenlose Online-Plattform zur Suche und Darstellung privater Dienstleisterprofile.
         </p>
       </div>
 
@@ -26,7 +26,6 @@ export default function PrivacyPolicyPage() {
         <ul className="list-disc pl-6 space-y-2">
           <li><strong>Kontodaten:</strong> E-Mail-Adresse, verschlüsseltes Passwort, Benutzerstatus, Registrierungsdatum.</li>
           <li><strong>Profildaten:</strong> Name, Beschreibung, eine Hauptdienstleistung, Tätigkeitsregionen, Verfügbarkeit, Profilbild, automatisch verwendete Kontakt-E-Mail.</li>
-          <li><strong>Auftragsdaten:</strong> Titel, Beschreibung, Ort, Kategorie, Datum, automatisch verwendete Kontakt-E-Mail.</li>
           <li><strong>Bewertungsdaten:</strong> Sternebewertung, Kommentar, Zeitpunkt und zugeordnetes Profil.</li>
           <li><strong>Technische Daten:</strong> IP-Adresse, Browser, Gerätedaten, Zeitstempel, Logdaten und sicherheitsrelevante Ereignisse.</li>
           <li><strong>Supportdaten:</strong> Nachrichten, E-Mail-Kommunikation und Angaben, die Sie uns freiwillig übermitteln.</li>
@@ -38,8 +37,8 @@ export default function PrivacyPolicyPage() {
         <ul className="list-disc pl-6 space-y-2">
           <li>Bereitstellung und Betrieb der Plattform,</li>
           <li>Registrierung, Login und Verwaltung von Benutzerkonten,</li>
-          <li>Erstellung und Anzeige von Dienstleisterprofilen, Aufträgen und Bewertungen,</li>
-          <li>Kontaktvermittlung zwischen Nutzern,</li>
+          <li>Erstellung und Anzeige von Dienstleisterprofilen und Bewertungen,</li>
+          <li>Kontaktvermittlung per E-Mail zwischen registrierten Nutzern und Dienstleistern,</li>
           <li>Missbrauchsvermeidung, Sicherheit, Fehleranalyse und Plattformschutz,</li>
           <li>Bearbeitung von Supportanfragen,</li>
           <li>Erfüllung gesetzlicher Pflichten und Durchsetzung unserer Rechte.</li>
@@ -66,7 +65,7 @@ export default function PrivacyPolicyPage() {
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-3">6. Kontakt-E-Mail</h2>
         <p className="mb-3">
-          Bei Profilen und Aufträgen wird die registrierte Konto-E-Mail automatisch als Kontakt-E-Mail verwendet. Frei eingegebene fremde Kontakt-E-Mails werden nicht als Kontaktmöglichkeit gespeichert. Dies dient der Missbrauchsvermeidung und Nachvollziehbarkeit.
+          Bei Profilen wird die registrierte Konto-E-Mail automatisch als Kontakt-E-Mail verwendet. Frei eingegebene fremde Kontakt-E-Mails werden nicht als Kontaktmöglichkeit gespeichert. Dies dient der Missbrauchsvermeidung und Nachvollziehbarkeit.
         </p>
       </div>
 
@@ -83,7 +82,7 @@ export default function PrivacyPolicyPage() {
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-3">8. Speicherdauer</h2>
         <p className="mb-3">
-          Wir speichern Daten nur so lange, wie sie für den jeweiligen Zweck erforderlich sind. Kontodaten, Profile, Aufträge und Bewertungen bleiben grundsätzlich gespeichert, solange das Konto oder der jeweilige Inhalt besteht. Gesetzliche Aufbewahrungspflichten, Sicherheitsinteressen und Nachweiszwecke können längere Speicherungen erforderlich machen.
+          Wir speichern Daten nur so lange, wie sie für den jeweiligen Zweck erforderlich sind. Kontodaten, Profile und Bewertungen bleiben grundsätzlich gespeichert, solange das Konto oder der jeweilige Inhalt besteht. Gesetzliche Aufbewahrungspflichten, Sicherheitsinteressen und Nachweiszwecke können längere Speicherungen erforderlich machen.
         </p>
       </div>
 
