@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { StarRating } from "@/components/ui/star-rating";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, MapPin, Clock, Phone, Mail, Share2, Calendar } from "lucide-react";
+import { Loader2, MapPin, Clock, Phone, Mail } from "lucide-react";
 import { ReviewForm } from "./review-form";
 import { useAuth } from "@/hooks/use-auth";
 import { formatDate } from "@/lib/utils";
@@ -42,9 +42,9 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
   }
   
   const profile = data as any;
-  // Bewertungen sind bereits im Profile enthalten
   const reviews = profile?.reviews || [];
   const isOwnProfile = user?.id === profile.userId;
+  const hasAlreadyReviewed = !!user && reviews.some((review: any) => review.userId === user.id);
   
   // Prüfen ob Benutzer ein eigenes Profil hat (für Zugriffsberechtigung)
   const { data: userProfile } = useQuery({
@@ -213,10 +213,19 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
         </TabsList>
         
         <TabsContent value="reviews" className="pt-6">
-          {!isOwnProfile && user && (
+          {!isOwnProfile && user && !hasAlreadyReviewed && (
             <div className="mb-8">
               <h3 className="text-lg font-semibold mb-4">Bewertung abgeben</h3>
               <ReviewForm profileId={profile.id} />
+            </div>
+          )}
+
+          {!isOwnProfile && user && hasAlreadyReviewed && (
+            <div className="mb-8 bg-green-50 border border-green-200 rounded-lg p-4">
+              <h3 className="text-lg font-semibold mb-2 text-green-800">Bewertung bereits abgegeben</h3>
+              <p className="text-green-700">
+                Sie haben dieses Profil bereits bewertet. Pro Profil ist nur eine Bewertung möglich.
+              </p>
             </div>
           )}
           
@@ -237,7 +246,7 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
                 Noch keine Bewertungen vorhanden.
               </div>
             ) : (
-              reviews.map((review) => (
+              reviews.map((review: any) => (
                 <Card key={review.id}>
                   <CardContent className="p-4">
                     <div className="flex justify-between items-start">
