@@ -7,11 +7,7 @@ import ProfilePage from "@/pages/profile-page";
 import SearchPage from "@/pages/search-page";
 import AdminPage from "@/pages/admin-page";
 import ProviderPage from "@/pages/provider-page";
-import JobsPage from "@/pages/jobs-page";
-import JobDetailPage from "@/pages/job-detail-page";
-import EditJobPage from "@/pages/edit-job-page";
 import FavoritesPage from "@/pages/favorites-page";
-import CreateJobPage from "@/pages/create-job-page";
 import { ProtectedRoute } from "@/lib/protected-route";
 
 // Statische Seiten
@@ -117,24 +113,15 @@ function App() {
       <ScrollManager />
 
       <Switch>
-        {/* Öffentliche Routen */}
         <Route path="/" component={HomePage} />
         <Route path="/auth" component={AuthPage} />
         <Route path="/suche" component={SearchPage} />
         <Route path="/anbieter/:id" component={ProviderPage} />
-        <ProtectedRoute path="/auftraege/bearbeiten/:id" component={EditJobPage} />
-        <Route path="/auftraege/:id">
-          {() => <JobDetailPage />}
-        </Route>
-        <Route path="/auftraege" component={JobsPage} />
 
-        {/* Geschützte Routen */}
         <ProtectedRoute path="/profil" component={ProfilePage} />
         <ProtectedRoute path="/favoriten" component={FavoritesPage} />
-        <ProtectedRoute path="/auftrag-erstellen" component={CreateJobPage} />
         <ProtectedRoute path="/admin" component={AdminPage} />
 
-        {/* Statische Seiten */}
         <Route path="/ueber-uns" component={AboutPage} />
         <Route path="/kontakt" component={ContactPage} />
         <Route path="/hilfe-faq" component={HelpFaqPage} />
