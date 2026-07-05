@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { StarRating } from "@/components/ui/star-rating";
 import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, MapPin, Clock, Phone, Mail } from "lucide-react";
+import { Loader2, MapPin, Clock, Mail } from "lucide-react";
 import { ReviewForm } from "./review-form";
 import { useAuth } from "@/hooks/use-auth";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
@@ -151,15 +151,6 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
                   </span>
                 </div>
                 
-                {user && profile.phoneNumber && (
-                  <div className="flex items-center text-gray-700">
-                    <Phone className="h-5 w-5 mr-2 flex-shrink-0" />
-                    <a href={`tel:${profile.phoneNumber}`} className="hover:text-primary">
-                      {profile.phoneNumber}
-                    </a>
-                  </div>
-                )}
-                
                 {user && profile.email && (
                   <div className="flex items-center text-gray-700">
                     <Mail className="h-5 w-5 mr-2 flex-shrink-0" />
@@ -172,7 +163,7 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
                 {!user && (
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
                     <p className="text-sm text-blue-800">
-                      💡 <strong>Kontaktdaten verfügbar:</strong> Registrieren Sie sich kostenlos, um Telefon und E-Mail zu sehen.
+                      💡 <strong>E-Mail-Adresse verfügbar:</strong> Registrieren Sie sich kostenlos, um die E-Mail-Adresse dieses Dienstleisters zu sehen.
                       <br />
                       <a href="/auth" className="text-primary font-medium hover:underline">Jetzt registrieren</a>
                     </p>
