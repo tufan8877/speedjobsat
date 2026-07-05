@@ -3,7 +3,6 @@ import Footer from "@/components/layout/footer";
 import HeroSection from "@/components/home/hero-section";
 import FeaturedServices from "@/components/home/featured-services";
 import ProviderListing from "@/components/home/provider-listing";
-import FeaturedJobs from "@/components/home/featured-jobs";
 import HowItWorks from "@/components/home/how-it-works";
 
 export default function HomePage() {
@@ -14,7 +13,6 @@ export default function HomePage() {
         <HeroSection />
         <FeaturedServices />
         <ProviderListing />
-        <FeaturedJobs />
         <HowItWorks />
       </main>
       <Footer />
