@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSearch } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,21 +10,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { apiRequest } from "@/lib/queryClient";
 
-// Login Schema
 const loginSchema = z.object({
   email: z.string().email("Bitte geben Sie eine gültige E-Mail-Adresse ein"),
-  password: z.string().min(1, "Bitte geben Sie Ihr Passwort ein")
+  password: z.string().min(1, "Bitte geben Sie Ihr Passwort ein"),
 });
 
-// Register Schema
 const registerSchema = z.object({
   email: z.string().email("Bitte geben Sie eine gültige E-Mail-Adresse ein"),
   password: z.string().min(8, "Passwort muss mindestens 8 Zeichen lang sein"),
   passwordConfirm: z.string(),
   terms: z.boolean().refine((val) => val === true, {
-    message: "Sie müssen die Nutzungsbedingungen akzeptieren"
-  })
+    message: "Sie müssen die Nutzungsbedingungen akzeptieren",
+  }),
 }).refine((data) => data.password === data.passwordConfirm, {
   message: "Passwörter stimmen nicht überein",
   path: ["passwordConfirm"],
@@ -32,34 +32,47 @@ const registerSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 type RegisterFormValues = z.infer<typeof registerSchema>;
 
+function verificationMessage(status: string | null) {
+  if (status === "success") return "E-Mail-Adresse erfolgreich bestätigt. Sie können sich jetzt anmelden.";
+  if (status === "expired") return "Der Bestätigungslink ist abgelaufen. Fordern Sie bitte eine neue Bestätigungs-E-Mail an.";
+  if (status === "invalid") return "Der Bestätigungslink ist ungültig oder wurde bereits verwendet.";
+  if (status === "missing") return "Der Bestätigungslink ist unvollständig.";
+  if (status === "error") return "E-Mail-Bestätigung fehlgeschlagen. Bitte versuchen Sie es erneut.";
+  return null;
+}
+
 export function LoginForm() {
   const { login, loginPending } = useAuth();
+  const search = useSearch();
+  const searchParams = new URLSearchParams(search);
+  const verifiedStatus = searchParams.get("verified");
+  const prefillEmail = searchParams.get("email") || "";
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [resendMessage, setResendMessage] = useState<string | null>(null);
+  const [resendPending, setResendPending] = useState(false);
   
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
+      email: prefillEmail,
       password: "",
     },
   });
 
   const onSubmit = async (values: LoginFormValues) => {
     setLoginError(null);
-    console.log("LOGIN FORM onSubmit called with:", values);
-    console.log("Login function available?", typeof login);
+    setResendMessage(null);
     
     try {
       const result = await login({
         email: values.email,
-        password: values.password
+        password: values.password,
       });
       
       if (!result) {
         setLoginError("Anmeldung fehlgeschlagen");
       }
     } catch (error) {
-      console.error("Login Error:", error);
       if (error instanceof Error) {
         setLoginError(error.message);
       } else {
@@ -68,14 +81,50 @@ export function LoginForm() {
     }
   };
 
+  const resendVerification = async () => {
+    const email = form.getValues("email");
+    setLoginError(null);
+    setResendMessage(null);
+
+    if (!email) {
+      setLoginError("Bitte geben Sie zuerst Ihre E-Mail-Adresse ein.");
+      return;
+    }
+
+    setResendPending(true);
+    try {
+      const response = await apiRequest("POST", "/api/resend-verification", { email });
+      const data = await response.json();
+      setResendMessage(data.message || "Bestätigungs-E-Mail wurde gesendet.");
+    } catch (error) {
+      setLoginError(error instanceof Error ? error.message : "Bestätigungs-E-Mail konnte nicht gesendet werden.");
+    } finally {
+      setResendPending(false);
+    }
+  };
+
+  const verifyText = verificationMessage(verifiedStatus);
+
   return (
     <Card>
       <CardContent className="pt-6">
         <h2 className="text-2xl font-bold mb-6 text-gray-900">Anmelden</h2>
+
+        {verifyText && (
+          <Alert className={`mb-4 ${verifiedStatus === "success" ? "bg-green-50 border-green-200 text-green-800" : "bg-orange-50 border-orange-200 text-orange-800"}`}>
+            <AlertDescription>{verifyText}</AlertDescription>
+          </Alert>
+        )}
         
         {loginError && (
           <Alert variant="destructive" className="mb-4">
             <AlertDescription>{loginError}</AlertDescription>
+          </Alert>
+        )}
+
+        {resendMessage && (
+          <Alert className="mb-4 bg-blue-50 border-blue-200 text-blue-800">
+            <AlertDescription>{resendMessage}</AlertDescription>
           </Alert>
         )}
         
@@ -127,6 +176,17 @@ export function LoginForm() {
               {loginPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Anmelden
             </Button>
+
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              disabled={resendPending}
+              onClick={resendVerification}
+            >
+              {resendPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Bestätigungs-E-Mail erneut senden
+            </Button>
           </form>
         </Form>
       </CardContent>
@@ -137,6 +197,7 @@ export function LoginForm() {
 export function RegisterForm() {
   const { register, registerPending } = useAuth();
   const [registerError, setRegisterError] = useState<string | null>(null);
+  const [registerSuccess, setRegisterSuccess] = useState<string | null>(null);
   
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -150,21 +211,23 @@ export function RegisterForm() {
 
   const onSubmit = async (values: RegisterFormValues) => {
     setRegisterError(null);
-    console.log("REGISTER FORM onSubmit called with:", values);
-    console.log("Register function available?", typeof register);
+    setRegisterSuccess(null);
     
     try {
       const result = await register({
         email: values.email,
         password: values.password,
-        passwordConfirm: values.passwordConfirm
+        passwordConfirm: values.passwordConfirm,
       });
       
       if (!result) {
         setRegisterError("Registrierung fehlgeschlagen");
+        return;
       }
+
+      setRegisterSuccess(result.message || "Registrierung erfolgreich. Bitte bestätigen Sie Ihre E-Mail-Adresse über den Link in Ihrem Postfach.");
+      form.reset({ email: values.email, password: "", passwordConfirm: "", terms: false });
     } catch (error) {
-      console.error("Register Error:", error);
       if (error instanceof Error) {
         setRegisterError(error.message);
       } else {
@@ -181,6 +244,12 @@ export function RegisterForm() {
         {registerError && (
           <Alert variant="destructive" className="mb-4">
             <AlertDescription>{registerError}</AlertDescription>
+          </Alert>
+        )}
+
+        {registerSuccess && (
+          <Alert className="mb-4 bg-green-50 border-green-200 text-green-800">
+            <AlertDescription>{registerSuccess}</AlertDescription>
           </Alert>
         )}
         
