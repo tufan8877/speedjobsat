@@ -48,7 +48,7 @@ export default function HowItWorks() {
             So funktioniert speedjob.at
           </h2>
           <p className="text-gray-600 leading-relaxed">
-            speedjob.at verbindet Kunden und Unternehmen mit lokalen Dienstleistern über übersichtliche Profile, Bewertungen und direkte Kontaktaufnahme per E-Mail.
+            speedjob.at bringt Kunden und Unternehmen mit privaten Dienstleistern aus der Umgebung zusammen – über übersichtliche Profile, Bewertungen und Kontaktaufnahme per E-Mail.
           </p>
         </div>
 
@@ -70,7 +70,7 @@ export default function HowItWorks() {
         <div className="max-w-5xl mx-auto rounded-2xl border border-primary/10 bg-white shadow-sm overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr]">
             <div className="p-5 sm:p-7">
-              <h3 className="text-xl font-bold mb-2 text-gray-900">Sie sind Dienstleister?</h3>
+              <h3 className="text-xl font-bold mb-2 text-gray-900">Sie sind privater Dienstleister?</h3>
               <p className="text-gray-600 leading-relaxed mb-5">
                 Erstellen Sie ein kostenloses Profil mit Ihren Leistungen, Regionen, Beschreibung und E-Mail-Adresse. So können Kunden Sie leichter finden und per E-Mail kontaktieren.
               </p>
