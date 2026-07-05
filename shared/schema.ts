@@ -18,6 +18,9 @@ export const users = pgTable("users", {
   password: text("password").notNull(),
   status: userStatusEnum("status").notNull().default("active"),
   isAdmin: boolean("is_admin").notNull().default(false),
+  emailVerified: boolean("email_verified").notNull().default(true),
+  emailVerificationToken: text("email_verification_token"),
+  emailVerificationExpires: timestamp("email_verification_expires", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
