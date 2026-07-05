@@ -9,14 +9,18 @@ interface MobileMenuProps {
   onClose: () => void;
   user: User | null;
   onLogout: () => void;
+  hasOwnJob?: boolean;
 }
 
-export default function MobileMenu({ isOpen, onClose, user, onLogout }: MobileMenuProps) {
+export default function MobileMenu({ isOpen, onClose, user, onLogout, hasOwnJob = false }: MobileMenuProps) {
   const [, setLocation] = useLocation();
 
   if (!isOpen) return null;
 
   const initials = user?.email ? user.email.substring(0, 2).toUpperCase() : "";
+  const jobMenuItem = hasOwnJob
+    ? { href: "/auftraege", label: "Mein Auftrag" }
+    : { href: "/auftrag-erstellen", label: "Auftrag erstellen" };
 
   const goHome = (event?: React.MouseEvent) => {
     event?.preventDefault();
@@ -32,6 +36,7 @@ export default function MobileMenu({ isOpen, onClose, user, onLogout }: MobileMe
   const menuItems = user
     ? [
         { href: "/profil", label: "Mein Profil" },
+        jobMenuItem,
         { href: "/profil?tab=settings", label: "Einstellungen" },
         { href: "/favoriten", label: "Meine Favoriten" },
         { href: "/ueber-uns", label: "Über uns" },
