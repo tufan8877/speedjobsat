@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { StarRating } from "@/components/ui/star-rating";
-import { Loader2, MapPin, Clock, Phone, Mail, Share2 } from "lucide-react";
+import { Loader2, MapPin, Clock, Mail, Share2 } from "lucide-react";
 import { useSearch } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
@@ -249,15 +249,6 @@ export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
                             <span>{profile.availablePeriods?.length ? profile.availablePeriods.join(", ") : "Nach Vereinbarung"}</span>
                           </div>
 
-                          {user && profile.phoneNumber && (
-                            <div className="flex items-center text-gray-600 text-sm">
-                              <Phone className="h-4 w-4 mr-2 flex-shrink-0" />
-                              <a href={`tel:${profile.phoneNumber}`} className="hover:text-primary">
-                                {profile.phoneNumber}
-                              </a>
-                            </div>
-                          )}
-
                           {user && profile.email && (
                             <div className="flex items-center text-gray-600 text-sm">
                               <Mail className="h-4 w-4 mr-2 flex-shrink-0" />
@@ -267,10 +258,10 @@ export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
                             </div>
                           )}
 
-                          {!user && (profile.phoneNumber || profile.email) && (
+                          {!user && profile.email && (
                             <div className="flex items-center text-orange-600 text-sm">
-                              <Phone className="h-4 w-4 mr-2 flex-shrink-0" />
-                              <span>📋 Registrierung erforderlich</span>
+                              <Mail className="h-4 w-4 mr-2 flex-shrink-0" />
+                              <span>Registrierung erforderlich, um die E-Mail-Adresse zu sehen</span>
                             </div>
                           )}
 
