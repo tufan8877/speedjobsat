@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Loader2, MapPin, Clock, Phone, Mail } from "lucide-react";
 import { ReviewForm } from "./review-form";
 import { useAuth } from "@/hooks/use-auth";
+import { FavoriteButton } from "@/components/favorites/favorite-button";
 import { formatDate } from "@/lib/utils";
 import type { Profile } from "@shared/schema";
 
@@ -46,16 +47,7 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
   const isOwnProfile = user?.id === profile.userId;
   const hasAlreadyReviewed = !!user && reviews.some((review: any) => review.userId === user.id);
   
-  // Prüfen ob Benutzer ein eigenes Profil hat (für Zugriffsberechtigung)
-  const { data: userProfile } = useQuery({
-    queryKey: ["/api/my-profile"],
-    enabled: !!user,
-  });
-  const hasOwnProfile = !!userProfile;
-  // Nur echte Bewertungen anzeigen
   const reviewCount = reviews.length;
-  
-  // Durchschnittliche Bewertung nur aus echten Bewertungen berechnen
   const averageRating = reviews.length > 0 
     ? reviews.reduce((sum: any, review: any) => sum + review.rating, 0) / reviews.length 
     : null;
@@ -79,7 +71,7 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
                 </Badge>
               </div>
               
-              <div className="mt-4 text-center md:hidden">
+              <div className="mt-4 text-center md:hidden w-full">
                 <h1 className="text-2xl font-bold">{profile.firstName} {profile.lastName}</h1>
                 <p className="text-primary font-medium mt-1">
                   {typeof profile.services === 'string' 
@@ -97,18 +89,28 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
                     <p className="text-sm text-gray-500">Noch keine Bewertungen</p>
                   )}
                 </div>
+                {!isOwnProfile && (
+                  <div className="mt-4">
+                    <FavoriteButton profileId={profile.id} />
+                  </div>
+                )}
               </div>
             </div>
             
             <div className="md:w-2/3 md:pl-8">
               <div className="hidden md:block">
-                <h1 className="text-3xl font-bold">{profile.firstName} {profile.lastName}</h1>
-                <p className="text-primary font-medium text-lg mt-1">
-                  {typeof profile.services === 'string' 
-                    ? JSON.parse(profile.services)[0] || 'Dienstleister'
-                    : profile.services?.[0] || 'Dienstleister'
-                  }
-                </p>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <h1 className="text-3xl font-bold">{profile.firstName} {profile.lastName}</h1>
+                    <p className="text-primary font-medium text-lg mt-1">
+                      {typeof profile.services === 'string' 
+                        ? JSON.parse(profile.services)[0] || 'Dienstleister'
+                        : profile.services?.[0] || 'Dienstleister'
+                      }
+                    </p>
+                  </div>
+                  {!isOwnProfile && <FavoriteButton profileId={profile.id} />}
+                </div>
                 <div className="mt-2">
                   {averageRating && averageRating > 0 ? (
                     <StarRating 
@@ -149,7 +151,6 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
                   </span>
                 </div>
                 
-                {/* Kontaktdaten nur für registrierte Benutzer */}
                 {user && profile.phoneNumber && (
                   <div className="flex items-center text-gray-700">
                     <Phone className="h-5 w-5 mr-2 flex-shrink-0" />
@@ -168,7 +169,6 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
                   </div>
                 )}
                 
-                {/* Hinweis für nicht registrierte Benutzer */}
                 {!user && (
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
                     <p className="text-sm text-blue-800">
