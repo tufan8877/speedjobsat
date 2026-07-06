@@ -66,44 +66,94 @@ function getMailConfig() {
   const host = process.env.SMTP_HOST?.trim();
   const port = Number(process.env.SMTP_PORT || 587);
   const user = process.env.SMTP_USER?.trim();
-  const pass = process.env.SMTP_PASS;
+  const pass = process.env.SMTP_PASS?.replace(/\s+/g, "");
   const from = process.env.MAIL_FROM?.trim() || user;
 
   if (!host || !user || !pass || !from) return null;
   return { host, port, user, pass, from };
 }
 
+function withTimeout<T>(promise: Promise<T>, timeoutMs: number, message: string): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error(message)), timeoutMs);
+    promise
+      .then((value) => {
+        clearTimeout(timer);
+        resolve(value);
+      })
+      .catch((error) => {
+        clearTimeout(timer);
+        reject(error);
+      });
+  });
+}
+
+function readableMailError(error: unknown) {
+  const raw = error instanceof Error ? error.message : String(error || "");
+  const lower = raw.toLowerCase();
+
+  if (lower.includes("timeout") || lower.includes("timed out")) {
+    return "Der E-Mail-Server antwortet nicht. Bitte SMTP_HOST, SMTP_PORT und Render-ENV prüfen.";
+  }
+
+  if (lower.includes("invalid login") || lower.includes("authentication") || lower.includes("username and password")) {
+    return "SMTP Login fehlgeschlagen. Bitte SMTP_USER und SMTP_PASS prüfen. Bei Gmail muss SMTP_PASS ein App-Passwort sein, nicht das normale Passwort.";
+  }
+
+  if (lower.includes("self signed") || lower.includes("certificate")) {
+    return "SMTP-Zertifikatfehler. Bitte SMTP_HOST/SMTP_PORT prüfen.";
+  }
+
+  return raw || "E-Mail konnte nicht gesendet werden.";
+}
+
 async function sendRegistrationCode(email: string, code: string) {
   const config = getMailConfig();
   if (!config) {
-    throw new Error("E-Mail-Versand ist nicht eingerichtet. Bitte SMTP-Daten auf Render setzen.");
+    throw new Error("E-Mail-Versand ist nicht eingerichtet. Bitte SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS und MAIL_FROM auf Render setzen.");
   }
 
   const transporter = nodemailer.createTransport({
     host: config.host,
     port: config.port,
     secure: config.port === 465,
+    requireTLS: config.port === 587,
+    connectionTimeout: 8000,
+    greetingTimeout: 8000,
+    socketTimeout: 10000,
     auth: {
       user: config.user,
       pass: config.pass,
     },
+    tls: {
+      servername: config.host,
+    },
   });
 
-  await transporter.sendMail({
-    from: config.from,
-    to: email,
-    subject: "speedjob.at – Registrierungscode",
-    text: `Ihr Registrierungscode für speedjob.at lautet: ${code}\n\nDer Code ist 15 Minuten gültig.`,
-    html: `
-      <div style="font-family:Arial,sans-serif;line-height:1.6;color:#111827">
-        <h2 style="margin:0 0 12px;color:#111827">speedjob.at Registrierung</h2>
-        <p>Ihr Registrierungscode lautet:</p>
-        <div style="font-size:28px;font-weight:bold;letter-spacing:6px;background:#f3f4f6;padding:14px 18px;border-radius:8px;display:inline-block">${code}</div>
-        <p>Der Code ist 15 Minuten gültig.</p>
-        <p style="font-size:13px;color:#6b7280">Falls Sie sich nicht bei speedjob.at registriert haben, können Sie diese E-Mail ignorieren.</p>
-      </div>
-    `,
-  });
+  try {
+    await withTimeout(
+      transporter.sendMail({
+        from: config.from,
+        to: email,
+        subject: "speedjob.at – Registrierungscode",
+        text: `Ihr Registrierungscode für speedjob.at lautet: ${code}\n\nDer Code ist 15 Minuten gültig.`,
+        html: `
+          <div style="font-family:Arial,sans-serif;line-height:1.6;color:#111827">
+            <h2 style="margin:0 0 12px;color:#111827">speedjob.at Registrierung</h2>
+            <p>Ihr Registrierungscode lautet:</p>
+            <div style="font-size:28px;font-weight:bold;letter-spacing:6px;background:#f3f4f6;padding:14px 18px;border-radius:8px;display:inline-block">${code}</div>
+            <p>Der Code ist 15 Minuten gültig.</p>
+            <p style="font-size:13px;color:#6b7280">Falls Sie sich nicht bei speedjob.at registriert haben, können Sie diese E-Mail ignorieren.</p>
+          </div>
+        `,
+      }),
+      12000,
+      "SMTP Versand Timeout nach 12 Sekunden",
+    );
+  } catch (error) {
+    console.error("SMTP Fehler:", error);
+    throw new Error(readableMailError(error));
+  }
 }
 
 async function upsertEnvAdminUser() {
