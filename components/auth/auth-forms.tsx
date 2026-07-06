@@ -255,6 +255,9 @@ export function RegisterForm() {
           <div className="space-y-4">
             <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-sm text-gray-700">
               Code gesendet an: <strong>{pendingEmail}</strong>
+              <p className="mt-2 text-xs text-gray-600">
+                Bitte prüfen Sie auch Ihren Spam- oder Junk-Ordner, falls die E-Mail nicht im Posteingang erscheint.
+              </p>
             </div>
 
             <Form {...codeForm}>
