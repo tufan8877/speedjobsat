@@ -9,6 +9,7 @@ interface AuthContextType {
   error: string | null;
   login: (data: LoginUser) => Promise<User | null>;
   register: (data: RegisterUser) => Promise<any>;
+  confirmRegistration: (email: string, code: string) => Promise<any>;
   logout: () => Promise<void>;
   loginPending: boolean;
   registerPending: boolean;
@@ -21,10 +22,11 @@ const AuthContext = createContext<AuthContextType>({
   error: null,
   login: async () => null,
   register: async () => null,
+  confirmRegistration: async () => null,
   logout: async () => {},
   loginPending: false,
   registerPending: false,
-  logoutPending: false,
+  logoutPending: false
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -119,8 +121,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         } else {
           setUser(result);
         }
-      } else {
-        setUser(null);
       }
 
       await new Promise((resolve) => setTimeout(resolve, 100));
@@ -137,6 +137,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       toast({
         title: "Registrierung fehlgeschlagen",
+        description: errorMessage,
+        variant: "destructive",
+      });
+
+      return null;
+    } finally {
+      setRegisterPending(false);
+    }
+  };
+
+  const confirmRegistration = async (email: string, code: string): Promise<any> => {
+    setRegisterPending(true);
+    setError(null);
+
+    try {
+      const response = await apiRequest("POST", "/api/confirm-registration", { email, code });
+      const result = await response.json();
+
+      if ((result as any).user) {
+        setUser((result as any).user);
+      } else if ((result as any).id) {
+        setUser(result);
+      } else {
+        const freshUserResponse = await apiRequest("GET", "/api/user");
+        const freshUser = await freshUserResponse.json();
+        setUser(freshUser);
+      }
+
+      toast({
+        title: "Registrierung erfolgreich",
+        description: "Ihr Konto wurde erstellt und Sie sind angemeldet.",
+      });
+
+      return result;
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Code konnte nicht bestätigt werden";
+      setError(errorMessage);
+
+      toast({
+        title: "Code-Bestätigung fehlgeschlagen",
         description: errorMessage,
         variant: "destructive",
       });
@@ -182,6 +222,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         error,
         login,
         register,
+        confirmRegistration,
         logout,
         loginPending,
         registerPending,
