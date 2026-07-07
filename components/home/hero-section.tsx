@@ -5,9 +5,11 @@ import { Label } from "@/components/ui/label";
 import { federalStates, serviceCategories } from "@shared/schema";
 import { useLocation } from "wouter";
 import { useState } from "react";
+import { useAuth } from "@/hooks/use-auth";
 
 export default function HeroSection() {
   const [, setLocation] = useLocation();
+  const { user } = useAuth();
   const [service, setService] = useState<string>("");
   const [region, setRegion] = useState<string>("");
 
@@ -43,9 +45,9 @@ export default function HeroSection() {
             <Button
               variant="outline"
               className="w-full sm:w-auto border-primary text-primary hover:bg-primary/5 px-5 py-6 text-base md:px-6 md:py-5 md:text-base"
-              onClick={() => setLocation("/auth?tab=register")}
+              onClick={() => setLocation(user ? "/profil" : "/auth?tab=register")}
             >
-              Profil erstellen
+              {user ? "Mein Profil" : "Profil erstellen"}
             </Button>
           </div>
 
