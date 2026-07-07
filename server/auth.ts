@@ -107,16 +107,33 @@ function withTimeout<T>(promise: Promise<T>, timeoutMs: number, message: string)
   });
 }
 
+function extractBrevoMessage(raw: string) {
+  const jsonStart = raw.indexOf("{");
+  if (jsonStart === -1) return raw;
+  try {
+    const parsed = JSON.parse(raw.slice(jsonStart));
+    const message = parsed?.message || parsed?.error || parsed?.code;
+    return message ? String(message) : raw;
+  } catch {
+    return raw;
+  }
+}
+
 function readableMailError(error: unknown) {
   const raw = error instanceof Error ? error.message : String(error || "");
   const lower = raw.toLowerCase();
+  const brevoText = extractBrevoMessage(raw);
 
-  if (lower.includes("brevo") || lower.includes("unauthorized") || lower.includes("api key")) {
-    return "Brevo API fehlgeschlagen. Bitte BREVO_API_KEY und verifizierte MAIL_FROM-Adresse prüfen.";
+  if (lower.includes("not verified") || lower.includes("sender") || lower.includes("from")) {
+    return `Brevo: Absender nicht verifiziert oder MAIL_FROM falsch. Detail: ${brevoText}`;
   }
 
-  if (lower.includes("sender") || lower.includes("from") || lower.includes("not verified")) {
-    return "Absender nicht verifiziert. Bitte die MAIL_FROM-Adresse in Brevo unter Absender verifizieren.";
+  if (lower.includes("unauthorized") || lower.includes("api key") || lower.includes("invalid api")) {
+    return `Brevo: API-Key falsch oder nicht aktiv. Detail: ${brevoText}`;
+  }
+
+  if (lower.includes("brevo api fehler")) {
+    return `Brevo Fehler: ${brevoText}`;
   }
 
   if (lower.includes("timeout") || lower.includes("timed out")) {
