@@ -136,7 +136,7 @@ export function LoginForm() {
 }
 
 export function RegisterForm() {
-  const { register, registerPending } = useAuth();
+  const { register, registerPending, login } = useAuth();
   const [registerError, setRegisterError] = useState<string | null>(null);
   const [registerInfo, setRegisterInfo] = useState<string | null>(null);
   const [pendingEmail, setPendingEmail] = useState<string | null>(null);
@@ -203,10 +203,19 @@ export function RegisterForm() {
         code: values.code,
       });
       const data = await response.json();
-      setRegisterInfo(data.message || "E-Mail bestätigt. Sie werden weitergeleitet.");
+      setRegisterInfo(data.message || "E-Mail bestätigt. Sie werden angemeldet.");
+
+      const password = form.getValues("password");
+      const loggedInUser = await login({ email: pendingEmail, password });
+
+      if (!loggedInUser) {
+        setRegisterError("Konto wurde erstellt, aber automatische Anmeldung war nicht möglich. Bitte melden Sie sich normal an.");
+        return;
+      }
+
       window.setTimeout(() => {
         window.location.href = "/profil";
-      }, 600);
+      }, 300);
     } catch (error) {
       setRegisterError(error instanceof Error ? error.message : "Code konnte nicht bestätigt werden");
     } finally {
@@ -284,7 +293,7 @@ export function RegisterForm() {
 
                 <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white" disabled={confirmPending}>
                   {confirmPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                  E-Mail bestätigen und Konto erstellen
+                  E-Mail bestätigen und automatisch anmelden
                 </Button>
 
                 <Button type="button" variant="outline" className="w-full" disabled={resendPending} onClick={resendCode}>
