@@ -136,7 +136,7 @@ export function LoginForm() {
 }
 
 export function RegisterForm() {
-  const { register, registerPending } = useAuth();
+  const { register, confirmRegistration, registerPending } = useAuth();
   const [registerError, setRegisterError] = useState<string | null>(null);
   const [registerInfo, setRegisterInfo] = useState<string | null>(null);
   const [pendingEmail, setPendingEmail] = useState<string | null>(null);
@@ -198,15 +198,18 @@ export function RegisterForm() {
     setRegisterInfo(null);
 
     try {
-      const response = await apiRequest("POST", "/api/confirm-registration", {
-        email: pendingEmail,
-        code: values.code,
-      });
-      const data = await response.json();
-      setRegisterInfo(data.message || "E-Mail bestätigt. Sie werden weitergeleitet.");
+      const result = await confirmRegistration(pendingEmail, values.code);
 
-      await new Promise((resolve) => window.setTimeout(resolve, 500));
-      window.location.replace("/profil");
+      if (!result) {
+        setRegisterError("Code konnte nicht bestätigt werden");
+        return;
+      }
+
+      setRegisterInfo(result.message || "E-Mail bestätigt. Sie werden weitergeleitet.");
+
+      window.setTimeout(() => {
+        window.location.href = "/profil";
+      }, 300);
     } catch (error) {
       setRegisterError(error instanceof Error ? error.message : "Code konnte nicht bestätigt werden");
     } finally {
@@ -282,8 +285,8 @@ export function RegisterForm() {
                   )}
                 />
 
-                <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white" disabled={confirmPending}>
-                  {confirmPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-white" disabled={confirmPending || registerPending}>
+                  {(confirmPending || registerPending) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                   E-Mail bestätigen und Konto erstellen
                 </Button>
 
