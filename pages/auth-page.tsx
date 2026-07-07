@@ -122,7 +122,7 @@ export default function AuthPage() {
                       </li>
                       <li className="flex items-start">
                         <span className="text-primary font-medium mr-2">2.</span>
-                        <span>Dienstleister suchen oder Hilfsgesuche veröffentlichen</span>
+                        <span>Dienstleister suchen und passende Profile ansehen</span>
                       </li>
                       <li className="flex items-start">
                         <span className="text-primary font-medium mr-2">3.</span>
