@@ -26,7 +26,7 @@ export default function HeroSection() {
         <div className="max-w-5xl mx-auto text-center">
           <div className="mb-6 sm:mb-7 md:mb-6">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-title mb-3 leading-tight text-primary tracking-tight">
-              Finden Sie lokale Fachkräfte in Österreich
+              Finde lokale Fachkräfte in Österreich
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Installateure, Elektriker, Mechaniker, Pflegekräfte und weitere Dienstleister mit eigenem Profil und Bewertungen.
