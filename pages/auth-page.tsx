@@ -52,7 +52,7 @@ export default function AuthPage() {
                   <span className="text-secondary">.at</span>
                 </h1>
                 <p className="mt-2 text-gray-600">
-                  Verbinden Sie sich mit lokalen Dienstleistern in ganz Österreich
+                  Verbinde dich mit lokalen Dienstleistern in ganz Österreich
                 </p>
               </div>
               
