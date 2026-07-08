@@ -27,12 +27,21 @@ export default function HeroSection() {
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto text-center">
           <div className="mb-6 sm:mb-7 md:mb-6">
+            <span className="inline-flex items-center rounded-full bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary mb-4">
+              Profile für Dienstleister in Österreich
+            </span>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-title mb-3 leading-tight text-primary tracking-tight">
-              Finde lokale Fachkräfte in Österreich
+              Finde passende Dienstleister in deiner Nähe
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Installateure, Elektriker, Mechaniker, Pflegekräfte und weitere Dienstleister mit eigenem Profil und Bewertungen.
+              Suche Profile aus Handwerk, Gastro, IT, Reinigung, Transport und weiteren Bereichen. Vergleiche Leistungen, Regionen und Bewertungen und kontaktiere passende Dienstleister direkt per E-Mail.
             </p>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-2 mb-6 text-sm text-gray-700">
+            <span className="rounded-full bg-gray-100 px-3 py-1">Kostenloses Profil</span>
+            <span className="rounded-full bg-gray-100 px-3 py-1">Kontakt per E-Mail</span>
+            <span className="rounded-full bg-gray-100 px-3 py-1">Bewertungen & Favoriten</span>
           </div>
 
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-6 md:mb-6">
@@ -47,7 +56,7 @@ export default function HeroSection() {
               className="w-full sm:w-auto border-primary text-primary hover:bg-primary/5 px-5 py-6 text-base md:px-6 md:py-5 md:text-base"
               onClick={() => setLocation(user ? "/profil" : "/auth?tab=register")}
             >
-              {user ? "Mein Profil" : "Profil erstellen"}
+              {user ? "Mein Profil" : "Kostenloses Profil erstellen"}
             </Button>
           </div>
 
@@ -78,7 +87,7 @@ export default function HeroSection() {
                   </Label>
                   <Select value={region} onValueChange={setRegion}>
                     <SelectTrigger className="w-full h-12 px-3 bg-gray-50 border border-gray-200 rounded text-gray-800">
-                      <SelectValue placeholder="Wählen Sie ein Bundesland" />
+                      <SelectValue placeholder="Bundesland wählen" />
                     </SelectTrigger>
                     <SelectContent>
                       {federalStates.map((state) => (
@@ -99,7 +108,7 @@ export default function HeroSection() {
                       <circle cx="11" cy="11" r="8" />
                       <path d="m21 21-4.3-4.3" />
                     </svg>
-                    Suchen
+                    Profile suchen
                   </Button>
                 </div>
               </div>
