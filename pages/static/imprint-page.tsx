@@ -1,6 +1,9 @@
 import StaticPage from "@/components/static/static-page";
 
 export default function ImprintPage() {
+  const contactEmail = "kontakt@speedjob.at";
+  const street = "Heiligenstädterstraße 152";
+
   return (
     <StaticPage title="Impressum">
       <p className="mb-6 font-semibold">Angaben gemäß österreichischem E-Commerce-Gesetz</p>
@@ -8,7 +11,7 @@ export default function ImprintPage() {
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-3">Betreiber dieser Website</h2>
         <p className="mb-1"><strong>Tufan Dönmezyürek</strong></p>
-        <p className="mb-1">Heiligenstädterstraße 152</p>
+        <p className="mb-1">{street}</p>
         <p className="mb-1">1190 Wien</p>
         <p className="mb-1">Österreich</p>
       </div>
@@ -16,7 +19,7 @@ export default function ImprintPage() {
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-3">Kontakt</h2>
         <p className="mb-1">
-          E-Mail: <a href="mailto:kontaktspeedjob@gmail.com" className="text-primary hover:underline">kontaktspeedjob@gmail.com</a>
+          E-Mail: <a href={`mailto:${contactEmail}`} className="text-primary hover:underline">{contactEmail}</a>
         </p>
         <p className="mb-1">Website: speedjob.at</p>
       </div>
@@ -24,7 +27,7 @@ export default function ImprintPage() {
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-3">Verantwortlich für den Inhalt</h2>
         <p className="mb-1">Tufan Dönmezyürek</p>
-        <p className="mb-1">Heiligenstädterstraße 152</p>
+        <p className="mb-1">{street}</p>
         <p className="mb-1">1190 Wien, Österreich</p>
       </div>
 
