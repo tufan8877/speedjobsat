@@ -1,6 +1,8 @@
 import StaticPage from "@/components/static/static-page";
 
 export default function AboutPage() {
+  const contactEmail = "kontakt@speedjob.at";
+
   return (
     <StaticPage title="Über uns">
       <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-5">
@@ -68,7 +70,7 @@ export default function AboutPage() {
       
       <p className="mb-4">
         Haben Sie Fragen oder Anregungen? Wir freuen uns über Ihre Nachricht an 
-        <a href="mailto:kontaktspeedjob@gmail.com" className="text-primary hover:underline ml-1 break-all sm:break-normal">kontaktspeedjob@gmail.com</a>.
+        <a href={`mailto:${contactEmail}`} className="text-primary hover:underline ml-1 break-all sm:break-normal">{contactEmail}</a>.
       </p>
     </StaticPage>
   );
