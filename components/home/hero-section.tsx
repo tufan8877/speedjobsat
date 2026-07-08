@@ -60,7 +60,7 @@ export default function HeroSection() {
             </Button>
           </div>
 
-          <Card className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100">
+          <Card className="bg-white rounded-xl shadow-lg overflow-visible border border-gray-100">
             <CardContent className="p-4 sm:p-5 md:p-6 text-left">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
                 <div>
@@ -71,7 +71,7 @@ export default function HeroSection() {
                     <SelectTrigger className="w-full h-12 px-3 bg-gray-50 border border-gray-200 rounded text-gray-800">
                       <SelectValue placeholder="Kategorie wählen" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent position="popper" side="bottom" align="start" avoidCollisions={false} className="z-[100]">
                       {serviceCategories.map((category) => (
                         <SelectItem key={category} value={category}>
                           {category}
@@ -89,7 +89,7 @@ export default function HeroSection() {
                     <SelectTrigger className="w-full h-12 px-3 bg-gray-50 border border-gray-200 rounded text-gray-800">
                       <SelectValue placeholder="Bundesland wählen" />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent position="popper" side="bottom" align="start" avoidCollisions={false} className="z-[100]">
                       {federalStates.map((state) => (
                         <SelectItem key={state} value={state}>
                           {state}
