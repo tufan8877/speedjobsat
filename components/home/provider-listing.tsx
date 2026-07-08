@@ -55,9 +55,14 @@ export default function ProviderListing() {
     <section className="py-8 sm:py-12 bg-gray-50">
       <div className="container mx-auto px-4">
         <div className="flex flex-row items-center justify-between gap-3 mb-6 sm:mb-8">
-          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-title">
-            Aktuelle Dienstleistungen
-          </h2>
+          <div>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold font-title">
+              Neue Profile
+            </h2>
+            <p className="text-gray-600 mt-2 hidden sm:block">
+              Aktuelle Dienstleisterprofile mit Region, Verfügbarkeit und Bewertungen.
+            </p>
+          </div>
           <Link href="/suche">
             <Button variant="ghost" size="sm" className="text-primary hover:text-primary/80 whitespace-nowrap">
               Alle anzeigen →
@@ -75,7 +80,7 @@ export default function ProviderListing() {
           </div>
         ) : providers.length === 0 ? (
           <div className="text-center py-10 text-gray-500">
-            Keine Dienstleistungen gefunden. Schauen Sie später wieder vorbei!
+            Noch keine Profile vorhanden. Erstellen Sie das erste kostenlose Profil auf speedjob.at.
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
@@ -146,12 +151,10 @@ export default function ProviderListing() {
 
                       {user ? (
                         <div className="space-y-1">
-                          {provider.phoneNumber && <div className="text-xs sm:text-sm text-gray-600">📞 {provider.phoneNumber}</div>}
-                          {provider.email && <div className="text-xs sm:text-sm text-gray-600 break-all">✉️ {provider.email}</div>}
-                          {!provider.phoneNumber && !provider.email && <div className="text-xs sm:text-sm text-gray-600">Kontakt über Profil</div>}
+                          {provider.email ? <div className="text-xs sm:text-sm text-gray-600 break-all">✉️ {provider.email}</div> : <div className="text-xs sm:text-sm text-gray-600">Kontakt über Profil</div>}
                         </div>
                       ) : (
-                        <div className="text-xs sm:text-sm text-gray-600">📋 Registrierung erforderlich</div>
+                        <div className="text-xs sm:text-sm text-gray-600">📋 Registrierung erforderlich, um die E-Mail-Adresse zu sehen</div>
                       )}
                     </div>
 
@@ -172,7 +175,7 @@ export default function ProviderListing() {
         <div className="mt-8 sm:mt-10 text-center">
           <Link href="/suche">
             <Button variant="outline" className="border-primary text-primary hover:bg-primary/5 w-full sm:w-auto">
-              Mehr Dienstleistungen anzeigen
+              Mehr Profile anzeigen
             </Button>
           </Link>
         </div>
