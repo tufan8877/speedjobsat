@@ -9,6 +9,15 @@ type ProfileForCount = {
   services?: string[] | string | null;
 };
 
+const preferredServices = [
+  "Installateur",
+  "Elektriker",
+  "Reinigung",
+  "Transport",
+  "Computer & IT",
+  "Handwerker",
+];
+
 function ServiceToolboxIcon() {
   return (
     <svg
@@ -72,25 +81,33 @@ export default function FeaturedServices() {
 
   const providerCounts = useMemo(() => countProvidersByService(data?.profiles || []), [data?.profiles]);
   const displayedServices = useMemo(() => {
-    return [...serviceCategories]
+    const activeServices = [...serviceCategories]
       .filter((service) => (providerCounts[service] || 0) > 0)
       .sort((a, b) => {
         const countDiff = (providerCounts[b] || 0) - (providerCounts[a] || 0);
         if (countDiff !== 0) return countDiff;
         return serviceCategories.indexOf(a) - serviceCategories.indexOf(b);
-      })
+      });
+
+    const fallbackServices = preferredServices.filter((service) =>
+      serviceCategories.includes(service as (typeof serviceCategories)[number]),
+    );
+
+    return [...activeServices, ...fallbackServices]
+      .filter((service, index, array) => array.indexOf(service) === index)
       .slice(0, 6);
   }, [providerCounts]);
-
-  if (displayedServices.length === 0) {
-    return null;
-  }
 
   return (
     <section className="py-12 bg-white">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-2xl md:text-3xl font-bold font-title">Beliebte Dienstleistungen</h2>
+        <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-3 mb-8">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-bold font-title">Kategorien auf speedjob.at</h2>
+            <p className="text-gray-600 mt-2 max-w-2xl">
+              Von Handwerk bis IT: Nutzer können gezielt nach Dienstleistung und Bundesland suchen.
+            </p>
+          </div>
           <Link href="/suche" className="text-primary hover:underline font-medium hidden md:flex items-center">
             Alle anzeigen
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
@@ -112,7 +129,7 @@ export default function FeaturedServices() {
                 </div>
                 <h3 className="font-medium text-gray-800 group-hover:text-primary">{service}</h3>
                 <p className="text-sm text-gray-500 mt-1">
-                  {count} {count === 1 ? "Anbieter" : "Anbieter"}
+                  {count > 0 ? `${count} ${count === 1 ? "Profil" : "Profile"}` : "Kategorie ansehen"}
                 </p>
               </Link>
             );
