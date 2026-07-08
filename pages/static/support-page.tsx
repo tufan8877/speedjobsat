@@ -24,7 +24,7 @@ export default function SupportPage() {
           </div>
           <h3 className="text-lg font-semibold mb-2">E-Mail Support</h3>
           <p className="mb-4 text-gray-600">Kontaktieren Sie uns bei technischen oder kontobezogenen Anliegen.</p>
-          <a href="mailto:kontaktspeedjob@gmail.com" className="mt-auto text-primary hover:underline font-medium">kontaktspeedjob@gmail.com</a>
+          <a href="mailto:kontakt@speedjob.at" className="mt-auto text-primary hover:underline font-medium">kontakt@speedjob.at</a>
         </div>
 
         <div className="bg-white border rounded-lg p-6 flex flex-col items-center text-center">
@@ -42,7 +42,7 @@ export default function SupportPage() {
           </div>
           <h3 className="text-lg font-semibold mb-2">Melden & Feedback</h3>
           <p className="mb-4 text-gray-600">Melden Sie technische Fehler, verdächtige Profile oder geben Sie Feedback.</p>
-          <a href="mailto:kontaktspeedjob@gmail.com?subject=speedjob.at%20Support" className="mt-auto"><Button variant="outline">Nachricht senden</Button></a>
+          <a href="mailto:kontakt@speedjob.at?subject=speedjob.at%20Support" className="mt-auto"><Button variant="outline">Nachricht senden</Button></a>
         </div>
       </div>
 
