@@ -1,6 +1,8 @@
 import StaticPage from "@/components/static/static-page";
 
 export default function TermsOfServicePage() {
+  const contactEmail = "kontakt@speedjob.at";
+
   return (
     <StaticPage title="Nutzungsbedingungen">
       <p className="mb-4 text-sm text-gray-500">Letzte Aktualisierung: 28. Juni 2026</p>
@@ -20,7 +22,7 @@ export default function TermsOfServicePage() {
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-3">1. Rolle von speedjob.at</h2>
         <p className="mb-3">
-          speedjob.at stellt eine technische Plattform bereit, auf der Nutzer Dienstleisterprofile veröffentlichen, Hilfsgesuche bzw. Aufträge einstellen, Profile suchen, Kontaktinformationen einsehen und Bewertungen abgeben können. speedjob.at vermittelt lediglich den Kontakt und übernimmt keine Verantwortung für die tatsächliche Durchführung, Qualität, Sicherheit, Rechtmäßigkeit, Bezahlung oder das Ergebnis einer Dienstleistung.
+          speedjob.at stellt eine technische Plattform bereit, auf der Nutzer Dienstleisterprofile veröffentlichen, Profile suchen, Kontaktinformationen einsehen und Bewertungen abgeben können. speedjob.at vermittelt lediglich den Kontakt und übernimmt keine Verantwortung für die tatsächliche Durchführung, Qualität, Sicherheit, Rechtmäßigkeit, Bezahlung oder das Ergebnis einer Dienstleistung.
         </p>
         <p className="mb-3 font-semibold">
           Verträge entstehen ausschließlich zwischen den jeweiligen Nutzern. speedjob.at wird nicht Partei solcher Verträge.
@@ -32,7 +34,7 @@ export default function TermsOfServicePage() {
         <ul className="list-disc pl-6 space-y-2">
           <li>Die Registrierung ist nur Personen erlaubt, die mindestens 18 Jahre alt und geschäftsfähig sind.</li>
           <li>Alle Angaben müssen wahrheitsgemäß, aktuell und vollständig sein.</li>
-          <li>Pro Benutzerkonto ist grundsätzlich nur ein Dienstleisterprofil und nur ein aktiver Auftrag zulässig.</li>
+          <li>Pro Benutzerkonto ist grundsätzlich nur ein Dienstleisterprofil zulässig.</li>
           <li>Pro Dienstleisterprofil darf nur eine Hauptdienstleistung angeboten werden.</li>
           <li>Die Kontakt-E-Mail wird automatisch aus der registrierten Konto-E-Mail übernommen.</li>
           <li>Benutzer sind selbst für die Sicherheit ihres Kontos und Passworts verantwortlich.</li>
@@ -53,7 +55,7 @@ export default function TermsOfServicePage() {
       </div>
 
       <div className="mb-6">
-        <h2 className="text-xl font-semibold mb-3">4. Eigenverantwortung bei Aufträgen und Dienstleistungen</h2>
+        <h2 className="text-xl font-semibold mb-3">4. Eigenverantwortung bei Dienstleistungen</h2>
         <p className="mb-3">
           Nutzer müssen selbst prüfen, ob ein Dienstleister geeignet, seriös, qualifiziert, versichert und rechtlich berechtigt ist, eine bestimmte Leistung zu erbringen. Dienstleister müssen selbst sicherstellen, dass sie alle rechtlichen, steuerlichen, sozialversicherungsrechtlichen, gewerberechtlichen und sonstigen Verpflichtungen einhalten.
         </p>
@@ -75,14 +77,14 @@ export default function TermsOfServicePage() {
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-3">6. Sperrung, Löschung und Moderation</h2>
         <p className="mb-3">
-          speedjob.at kann Konten, Profile, Aufträge, Bewertungen oder sonstige Inhalte jederzeit ablehnen, bearbeiten, ausblenden, sperren oder löschen, wenn ein Verstoß gegen diese Bedingungen, gesetzliche Vorschriften, Sicherheitsinteressen oder berechtigte Interessen der Plattform oder anderer Nutzer vorliegt.
+          speedjob.at kann Konten, Profile, Bewertungen oder sonstige Inhalte jederzeit ablehnen, bearbeiten, ausblenden, sperren oder löschen, wenn ein Verstoß gegen diese Bedingungen, gesetzliche Vorschriften, Sicherheitsinteressen oder berechtigte Interessen der Plattform oder anderer Nutzer vorliegt.
         </p>
       </div>
 
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-3">7. Haftungsausschluss</h2>
         <p className="mb-3 font-semibold">
-          Soweit gesetzlich zulässig, haftet speedjob.at nicht für Schäden, Verluste, Verletzungen, Sachschäden, Vermögensschäden, Datenverluste, Zahlungsausfälle, mangelhafte Leistungen, Betrug, Streitigkeiten, Verzögerungen, Unfälle oder sonstige Nachteile, die aus Kontakten, Aufträgen, Dienstleistungen, Treffen, Zahlungen oder Vereinbarungen zwischen Nutzern entstehen.
+          Soweit gesetzlich zulässig, haftet speedjob.at nicht für Schäden, Verluste, Verletzungen, Sachschäden, Vermögensschäden, Datenverluste, Zahlungsausfälle, mangelhafte Leistungen, Betrug, Streitigkeiten, Verzögerungen, Unfälle oder sonstige Nachteile, die aus Kontakten, Dienstleistungen, Treffen, Zahlungen oder Vereinbarungen zwischen Nutzern entstehen.
         </p>
         <p className="mb-3">
           speedjob.at haftet insbesondere nicht für Handlungen, Unterlassungen, Aussagen, Qualifikationen, Preise, Verfügbarkeit, Zuverlässigkeit oder Arbeitsergebnisse von Nutzern. Die Nutzung der Plattform und jede daraus folgende Kontaktaufnahme erfolgt auf eigenes Risiko.
@@ -124,7 +126,7 @@ export default function TermsOfServicePage() {
         <h2 className="text-xl font-semibold mb-3">12. Kontakt</h2>
         <p className="mb-3">
           Bei Fragen zu diesen Nutzungsbedingungen kontaktieren Sie uns bitte unter:
-          <a href="mailto:kontaktspeedjob@gmail.com" className="text-primary hover:underline ml-1">kontaktspeedjob@gmail.com</a>
+          <a href={`mailto:${contactEmail}`} className="text-primary hover:underline ml-1">{contactEmail}</a>
         </p>
       </div>
     </StaticPage>
