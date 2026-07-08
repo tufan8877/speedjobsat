@@ -1,6 +1,8 @@
 import StaticPage from "@/components/static/static-page";
 
 export default function PrivacyPolicyPage() {
+  const contactEmail = "kontakt@speedjob.at";
+
   return (
     <StaticPage title="Datenschutzerklärung">
       <p className="mb-6 font-semibold">Letzte Aktualisierung: 28. Juni 2026</p>
@@ -17,7 +19,7 @@ export default function PrivacyPolicyPage() {
           Verantwortlich für die Datenverarbeitung auf dieser Website ist speedjob.at.
         </p>
         <p className="mb-3">
-          Kontakt: <a href="mailto:kontaktspeedjob@gmail.com" className="text-primary hover:underline">kontaktspeedjob@gmail.com</a>
+          Kontakt: <a href={`mailto:${contactEmail}`} className="text-primary hover:underline">{contactEmail}</a>
         </p>
       </div>
 
@@ -25,7 +27,7 @@ export default function PrivacyPolicyPage() {
         <h2 className="text-xl font-semibold mb-3">2. Welche Daten verarbeitet werden</h2>
         <ul className="list-disc pl-6 space-y-2">
           <li><strong>Kontodaten:</strong> E-Mail-Adresse, verschlüsseltes Passwort, Benutzerstatus, Registrierungsdatum.</li>
-          <li><strong>Profildaten:</strong> Name, Beschreibung, eine Hauptdienstleistung, Tätigkeitsregionen, Verfügbarkeit, Profilbild, automatisch verwendete Kontakt-E-Mail.</li>
+          <li><strong>Profildaten:</strong> Name, Beschreibung, Hauptdienstleistung, Tätigkeitsregionen, Verfügbarkeit, Profilbild und Kontakt-E-Mail.</li>
           <li><strong>Bewertungsdaten:</strong> Sternebewertung, Kommentar, Zeitpunkt und zugeordnetes Profil.</li>
           <li><strong>Technische Daten:</strong> IP-Adresse, Browser, Gerätedaten, Zeitstempel, Logdaten und sicherheitsrelevante Ereignisse.</li>
           <li><strong>Supportdaten:</strong> Nachrichten, E-Mail-Kommunikation und Angaben, die Sie uns freiwillig übermitteln.</li>
@@ -58,7 +60,7 @@ export default function PrivacyPolicyPage() {
       <div className="mb-6">
         <h2 className="text-xl font-semibold mb-3">5. Sichtbarkeit von Daten</h2>
         <p className="mb-3">
-          Öffentliche oder registrierten Nutzern zugängliche Inhalte können je nach Funktion Profilinformationen, Dienstleistung, Region, Beschreibung, Bewertungen und Kontakt-E-Mail enthalten. Kontaktinformationen werden nur im Rahmen der Plattformfunktion angezeigt. Nutzer sind selbst verantwortlich dafür, welche Inhalte sie veröffentlichen.
+          Öffentliche oder registrierten Nutzern zugängliche Inhalte können je nach Funktion Profilinformationen, Dienstleistung, Region, Beschreibung, Bewertungen und Kontakt-E-Mail enthalten. Nutzer sind selbst verantwortlich dafür, welche Inhalte sie veröffentlichen.
         </p>
       </div>
 
@@ -112,7 +114,7 @@ export default function PrivacyPolicyPage() {
           <li>Widerruf einer erteilten Einwilligung mit Wirkung für die Zukunft.</li>
         </ul>
         <p className="mt-3">
-          Zur Ausübung Ihrer Rechte kontaktieren Sie uns unter <a href="mailto:kontaktspeedjob@gmail.com" className="text-primary hover:underline">kontaktspeedjob@gmail.com</a>.
+          Zur Ausübung Ihrer Rechte kontaktieren Sie uns unter <a href={`mailto:${contactEmail}`} className="text-primary hover:underline">{contactEmail}</a>.
         </p>
       </div>
 
