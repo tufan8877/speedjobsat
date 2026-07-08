@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 
 const steps = [
   {
-    title: "Fachkraft suchen",
-    text: "Wählen Sie Dienstleistung und Bundesland aus und finden Sie passende Profile in Ihrer Nähe.",
+    title: "Profil suchen",
+    text: "Wähle Dienstleistung und Bundesland aus und finde passende Dienstleisterprofile in deiner Nähe.",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="11" cy="11" r="8" />
@@ -13,8 +13,8 @@ const steps = [
     ),
   },
   {
-    title: "Profil vergleichen",
-    text: "Sehen Sie Leistungen, Regionen, Beschreibung, Bewertungen und Favoriten auf einen Blick.",
+    title: "Profile vergleichen",
+    text: "Sieh dir Leistungen, Region, Beschreibung, Verfügbarkeit und Bewertungen übersichtlich an.",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
@@ -25,8 +25,8 @@ const steps = [
     ),
   },
   {
-    title: "Per E-Mail kontaktieren",
-    text: "Registrierte Nutzer können die E-Mail-Adresse sehen und den Dienstleister direkt per E-Mail kontaktieren.",
+    title: "Direkt kontaktieren",
+    text: "Registrierte Nutzer sehen die E-Mail-Adresse und kontaktieren den Dienstleister direkt.",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="5" width="18" height="14" rx="2" />
@@ -48,7 +48,7 @@ export default function HowItWorks() {
             So funktioniert speedjob.at
           </h2>
           <p className="text-gray-600 leading-relaxed">
-            speedjob.at bringt private Kunden mit privaten Dienstleistern aus der Umgebung zusammen – über übersichtliche Profile, Bewertungen und Kontaktaufnahme per E-Mail.
+            speedjob.at verbindet Kunden mit Dienstleistern über übersichtliche Profile, Bewertungen und Kontaktaufnahme per E-Mail.
           </p>
         </div>
 
@@ -70,9 +70,9 @@ export default function HowItWorks() {
         <div className="max-w-5xl mx-auto rounded-2xl border border-primary/10 bg-white shadow-sm overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr]">
             <div className="p-5 sm:p-7">
-              <h3 className="text-xl font-bold mb-2 text-gray-900">Sie sind privater Dienstleister?</h3>
+              <h3 className="text-xl font-bold mb-2 text-gray-900">Du bist Dienstleister?</h3>
               <p className="text-gray-600 leading-relaxed mb-5">
-                Erstellen Sie ein kostenloses Profil mit Ihren Leistungen, Regionen, Beschreibung und E-Mail-Adresse. So können private Kunden Sie leichter finden und per E-Mail kontaktieren.
+                Erstelle kostenlos dein Profil mit Leistung, Region, Beschreibung und Kontakt-E-Mail. So können dich Kunden leichter finden und direkt kontaktieren.
               </p>
               <div className="flex flex-wrap gap-2 text-sm text-gray-700">
                 <span className="rounded-full bg-gray-100 px-3 py-1">Eigenes Profil</span>
@@ -84,10 +84,10 @@ export default function HowItWorks() {
 
             <div className="bg-primary/5 p-5 sm:p-7 flex flex-col justify-center gap-3">
               <Link href="/auth?tab=register">
-                <Button className="w-full h-11">Profil erstellen</Button>
+                <Button className="w-full h-11">Kostenloses Profil erstellen</Button>
               </Link>
               <Link href="/suche">
-                <Button variant="outline" className="w-full h-11 bg-white">Dienstleister ansehen</Button>
+                <Button variant="outline" className="w-full h-11 bg-white">Profile ansehen</Button>
               </Link>
               <p className="text-xs text-gray-500 text-center mt-1">
                 Registrierung dauert nur wenige Minuten.
