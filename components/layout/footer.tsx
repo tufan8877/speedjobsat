@@ -1,6 +1,8 @@
 import { Link } from "wouter";
 
 export default function Footer() {
+  const contactEmail = "kontakt@speedjob.at";
+
   return (
     <footer className="bg-gray-800 text-gray-300 text-sm sm:text-base">
       <div className="container px-4 py-5 sm:py-8">
@@ -36,9 +38,9 @@ export default function Footer() {
             <h3 className="text-white font-semibold text-base sm:text-lg mb-2 sm:mb-4">Kontakt</h3>
             <ul className="space-y-1.5 sm:space-y-2">
               <li className="min-w-0">
-                <a href="mailto:kontaktspeedjob@gmail.com" className="hover:text-white transition inline-flex items-center min-w-0 leading-snug">
+                <a href={`mailto:${contactEmail}`} className="hover:text-white transition inline-flex items-center min-w-0 leading-snug">
                   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 flex-shrink-0"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                  <span className="truncate max-w-[260px] sm:max-w-none">kontaktspeedjob@gmail.com</span>
+                  <span className="truncate max-w-[260px] sm:max-w-none">{contactEmail}</span>
                 </a>
               </li>
               <li>
