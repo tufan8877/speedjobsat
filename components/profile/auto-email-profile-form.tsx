@@ -15,7 +15,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Loader2, Save } from "lucide-react";
@@ -157,7 +156,7 @@ export default function AutoEmailProfileForm() {
               <FormField control={form.control} name="firstName" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Vorname</FormLabel>
-                  <FormControl><Input placeholder="z. B. Tufan" {...field} /></FormControl>
+                  <FormControl><Input placeholder="z. B. Max" {...field} /></FormControl>
                   <FormDescription>Dieser Name wird im Profil angezeigt.</FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -165,7 +164,7 @@ export default function AutoEmailProfileForm() {
               <FormField control={form.control} name="lastName" render={({ field }) => (
                 <FormItem>
                   <FormLabel>Nachname</FormLabel>
-                  <FormControl><Input placeholder="z. B. Dönmezyürek" {...field} /></FormControl>
+                  <FormControl><Input placeholder="z. B. Mustermann" {...field} /></FormControl>
                   <FormDescription>Kann vollständig oder abgekürzt angegeben werden.</FormDescription>
                   <FormMessage />
                 </FormItem>
@@ -200,18 +199,18 @@ export default function AutoEmailProfileForm() {
               <FormItem>
                 <FormLabel>Hauptdienstleistung</FormLabel>
                 <FormDescription>Wählen Sie die wichtigste Dienstleistung aus. Das hilft Kunden, Sie schneller zu finden.</FormDescription>
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <FormControl>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Dienstleistung wählen" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
+                <FormControl>
+                  <select
+                    value={field.value}
+                    onChange={(event) => field.onChange(event.target.value)}
+                    className="flex h-12 w-full appearance-none rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    <option value="" disabled>Dienstleistung wählen</option>
                     {serviceCategories.map((service) => (
-                      <SelectItem key={service} value={service}>{service}</SelectItem>
+                      <option key={service} value={service}>{service}</option>
                     ))}
-                  </SelectContent>
-                </Select>
+                  </select>
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )} />
