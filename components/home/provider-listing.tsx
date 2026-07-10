@@ -4,7 +4,7 @@ import { StarRating } from "@/components/ui/star-rating";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
-import { Profile } from "@shared/schema";
+import { Profile, getServiceCategoryLabel } from "@shared/schema";
 import { useAuth } from "@/hooks/use-auth";
 
 interface ProfileWithStats extends Profile {
@@ -108,7 +108,7 @@ export default function ProviderListing() {
                           {provider.firstName} {provider.lastName}
                         </h3>
                         <p className="text-primary font-medium truncate text-sm sm:text-base">
-                          {services[0] || "Dienstleistung"}
+                          {services[0] ? getServiceCategoryLabel(services[0]) : "Dienstleistung"}
                         </p>
                         <div className="flex items-center text-blue-600 text-xs sm:text-sm mt-1 mb-2">
                           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-1 flex-shrink-0">
