@@ -10,6 +10,7 @@ import { Loader2, MapPin, Clock, Mail, Share2 } from "lucide-react";
 import { useSearch } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
+import { getServiceCategoryLabel } from "@shared/schema";
 
 interface SearchResultsProps {
   initialPage?: number;
@@ -154,9 +155,9 @@ export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
             {isLoading ? "Suche läuft..." : `${totalProfiles} Dienstleister gefunden`}
           </h2>
           <p className="text-gray-600 text-sm mt-1">
-            {service && `Dienstleistung: ${service}`}
+            {service && `Dienstleistung: ${getServiceCategoryLabel(service)}`}
             {region && ` | Region: ${region}`}
-            {name && ` | Name: ${name}`}
+            {name && ` | Filter: ${name}`}
           </p>
         </div>
 
@@ -228,7 +229,9 @@ export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
                               {profile.isAvailable ? "Verfügbar" : "Teilweise verfügbar"}
                             </Badge>
                           </div>
-                          <p className="text-primary font-medium">{profile.services?.[0] || "Dienstleistung"}</p>
+                          <p className="text-primary font-medium">
+                            {profile.services?.[0] ? getServiceCategoryLabel(profile.services[0]) : "Dienstleistung"}
+                          </p>
                           {profile.reviews && profile.reviews.length > 0 ? (
                             <StarRating rating={averageRating} reviewCount={profile.reviews.length} size="sm" />
                           ) : (
@@ -274,9 +277,9 @@ export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
                         </div>
 
                         <div className="mt-4 flex flex-wrap gap-2">
-                          {profile.services.map((service: string) => (
-                            <Badge key={service} variant="outline" className="bg-primary-50 text-primary border-primary">
-                              {service}
+                          {profile.services.map((serviceItem: string) => (
+                            <Badge key={serviceItem} variant="outline" className="bg-primary-50 text-primary border-primary">
+                              {getServiceCategoryLabel(serviceItem)}
                             </Badge>
                           ))}
                         </div>
