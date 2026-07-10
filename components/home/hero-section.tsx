@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { federalStates, serviceCategories } from "@shared/schema";
+import { federalStates, serviceCategories, getServiceCategoryLabel } from "@shared/schema";
 import { useLocation } from "wouter";
 import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
@@ -74,7 +74,7 @@ export default function HeroSection() {
                     <SelectContent position="popper" side="bottom" align="start" avoidCollisions={false} className="z-[100]">
                       {serviceCategories.map((category) => (
                         <SelectItem key={category} value={category}>
-                          {category}
+                          {getServiceCategoryLabel(category)}
                         </SelectItem>
                       ))}
                     </SelectContent>
