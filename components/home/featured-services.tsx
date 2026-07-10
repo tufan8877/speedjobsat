@@ -2,7 +2,7 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { serviceCategories } from "@shared/schema";
+import { serviceCategories, getServiceCategoryLabel } from "@shared/schema";
 
 type ProfileForCount = {
   id?: number;
@@ -127,7 +127,7 @@ export default function FeaturedServices() {
                 <div className="w-12 h-12 bg-primary-50 rounded-full flex items-center justify-center text-primary mx-auto mb-3 group-hover:bg-primary/10 transition">
                   <ServiceToolboxIcon />
                 </div>
-                <h3 className="font-medium text-gray-800 group-hover:text-primary">{service}</h3>
+                <h3 className="font-medium text-gray-800 group-hover:text-primary">{getServiceCategoryLabel(service)}</h3>
                 <p className="text-sm text-gray-500 mt-1">
                   {count > 0 ? `${count} ${count === 1 ? "Profil" : "Profile"}` : "Kategorie ansehen"}
                 </p>
