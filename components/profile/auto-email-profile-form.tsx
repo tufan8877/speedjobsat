@@ -7,7 +7,7 @@ import { z } from "zod";
 import { apiRequest } from "@/lib/queryClient";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
-import { federalStates, serviceCategories, availabilityPeriods } from "@shared/schema";
+import { federalStates, serviceCategories, availabilityPeriods, getServiceCategoryLabel } from "@shared/schema";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -31,7 +31,7 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
-const descriptionExample = `Beispiel: Ich bin Installateur mit Erfahrung in Thermenservice, Störungsbehebung und Reparaturen. Ich arbeite zuverlässig, sauber und bin in Wien und Niederösterreich verfügbar.`;
+const descriptionExample = `Beispiel: Ich bin Installateur oder Installateurin mit Erfahrung in Thermenservice, Störungsbehebung und Reparaturen. Ich arbeite zuverlässig, sauber und bin in Wien und Niederösterreich verfügbar.`;
 
 function CheckList({ items, value, onChange }: { items: string[]; value: string[]; onChange: (value: string[]) => void }) {
   return (
@@ -180,7 +180,7 @@ export default function AutoEmailProfileForm() {
                 <FormControl>
                   <Textarea placeholder={descriptionExample} className="min-h-[150px]" {...field} />
                 </FormControl>
-                <p className="text-xs text-gray-500">Beispielbereiche: Installateur, Elektriker, Kellner, Koch, IT-Techniker, Reinigung, Transport, Handwerker.</p>
+                <p className="text-xs text-gray-500">Beispielbereiche: Installateur/in, Elektriker/in, Kellner/in, Koch/Köchin, IT-Techniker/in, Reinigung, Transport, Handwerker/in.</p>
                 <FormMessage />
               </FormItem>
             )} />
@@ -207,7 +207,7 @@ export default function AutoEmailProfileForm() {
                   >
                     <option value="" disabled>Dienstleistung wählen</option>
                     {serviceCategories.map((service) => (
-                      <option key={service} value={service}>{service}</option>
+                      <option key={service} value={service}>{getServiceCategoryLabel(service)}</option>
                     ))}
                   </select>
                 </FormControl>
