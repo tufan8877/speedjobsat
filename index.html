@@ -4,87 +4,37 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" />
 
-    <!-- Tailwind/CSS MUSS geladen werden -->
     <link rel="stylesheet" href="/index.css" />
 
-    <!-- Moderate Cache-Control -->
     <meta http-equiv="Cache-Control" content="no-cache" />
     <meta http-equiv="Pragma" content="no-cache" />
 
-    <!-- Frame-Schutz und bessere Kompatibilität -->
-    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
     <meta name="format-detection" content="telephone=no" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 
-    <!-- SEO und Beschreibung -->
-    <title>speedjob.at - Lokale Dienstleister in Österreich</title>
+    <title>speedjob.at - Dienstleisterprofile in Österreich</title>
     <meta
       name="description"
-      content="Finden Sie lokale Dienstleister in Österreich. Profile erstellen, Bewertungen sammeln und Hilfsgesuche veröffentlichen."
+      content="Finde Dienstleisterprofile in Österreich oder erstelle kostenlos dein eigenes Profil. Suche nach Dienstleistung, Region und Bewertungen."
     />
-    <meta name="keywords" content="Dienstleister, Österreich, Handwerker, Service, Jobs, Wien, Salzburg, Graz" />
+    <meta name="keywords" content="Dienstleister, Österreich, Handwerker, Profile, Wien, IT, Gastro, Reinigung" />
     <meta name="author" content="speedjob.at" />
 
-    <!-- Open Graph für soziale Medien -->
-    <meta property="og:title" content="speedjob.at - Lokale Dienstleister in Österreich" />
+    <meta property="og:title" content="speedjob.at - Dienstleisterprofile in Österreich" />
     <meta
       property="og:description"
-      content="Finden Sie lokale Dienstleister in Österreich. Profile erstellen, Bewertungen sammeln und Hilfsgesuche veröffentlichen."
+      content="Finde Dienstleisterprofile in Österreich oder erstelle kostenlos dein eigenes Profil."
     />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://speedjob.at" />
 
-    <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   </head>
 
   <body>
     <div id="root"></div>
-
-    <!-- ULTIMATIVE Cache-Clearing und Frame-busting -->
-    <script>
-      (function () {
-        function registerServiceWorker() {
-          if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(function () {});
-          }
-        }
-
-        function isReplit() {
-          try {
-            return window.location.hostname.includes("replit.com") || window.location.hostname.includes("replit.app");
-          } catch (e) {
-            return false;
-          }
-        }
-
-        function breakOutIfNeeded() {
-          if (top !== self && !isReplit()) {
-            try {
-              top.location = self.location;
-            } catch (e) {}
-          }
-        }
-
-        function ensureFullSize() {
-          document.documentElement.style.height = "100vh";
-          document.documentElement.style.width = "100vw";
-          document.body.style.height = "100vh";
-          document.body.style.width = "100vw";
-          document.body.style.margin = "0";
-          document.body.style.padding = "0";
-        }
-
-        registerServiceWorker();
-        breakOutIfNeeded();
-        ensureFullSize();
-        window.addEventListener("resize", ensureFullSize);
-      })();
-    </script>
-
     <script type="module" src="/main.tsx"></script>
-    <script type="text/javascript" src="https://replit.com/public/js/replit-dev-banner.js"></script>
   </body>
 </html>
