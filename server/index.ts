@@ -3,7 +3,6 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import path from "path";
 import cors from "cors";
-import fs from "fs";
 
 const app = express();
 const isProduction = process.env.NODE_ENV === "production";
@@ -19,6 +18,14 @@ app.use(cors({
 
 // Sicherheits-Header für Browser und Security-Scanner
 app.use((req, res, next) => {
+  const scriptSource = isProduction
+    ? "script-src 'self'"
+    : "script-src 'self' 'unsafe-inline' 'unsafe-eval'";
+
+  const connectSource = isProduction
+    ? "connect-src 'self'"
+    : "connect-src 'self' ws: wss:";
+
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
   res.setHeader("X-Frame-Options", "DENY");
@@ -33,12 +40,12 @@ app.use((req, res, next) => {
       "form-action 'self'",
       "frame-ancestors 'none'",
       "object-src 'none'",
-      "script-src 'self' 'unsafe-inline' https://replit.com",
+      scriptSource,
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: blob:",
+      "img-src 'self' data: blob: https:",
       "font-src 'self' data:",
-      "connect-src 'self' https: wss:",
-      "media-src 'self' blob:",
+      connectSource,
+      "media-src 'self' blob: https:",
       "worker-src 'self' blob:",
       "manifest-src 'self'",
       isProduction ? "upgrade-insecure-requests" : "",
