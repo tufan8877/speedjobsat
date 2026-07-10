@@ -208,7 +208,7 @@ export function RegisterForm() {
       setRegisterInfo(result.message || "E-Mail bestätigt. Sie werden weitergeleitet.");
 
       window.setTimeout(() => {
-        window.location.href = "/profil";
+        window.location.href = "/";
       }, 300);
     } catch (error) {
       setRegisterError(error instanceof Error ? error.message : "Code konnte nicht bestätigt werden");
