@@ -6,57 +6,86 @@ import cors from "cors";
 import fs from "fs";
 
 const app = express();
+const isProduction = process.env.NODE_ENV === "production";
 
 // CORS für Session-Cookies konfigurieren - MUSS VOR allen anderen Middlewares sein
 app.use(cors({
-  origin: true, // Development - alle Origins erlaubt
-  credentials: true, // Cookies mitsenden
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
-  exposedHeaders: ['Set-Cookie']
+  origin: true,
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+  exposedHeaders: ["Set-Cookie"],
 }));
 
-// Einfache Sicherheits-Header ohne Frame-Blockierung
+// Sicherheits-Header für Browser und Security-Scanner
 app.use((req, res, next) => {
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=(), usb=()");
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+  res.setHeader("Cross-Origin-Resource-Policy", "same-origin");
+  res.setHeader(
+    "Content-Security-Policy",
+    [
+      "default-src 'self'",
+      "base-uri 'self'",
+      "form-action 'self'",
+      "frame-ancestors 'none'",
+      "object-src 'none'",
+      "script-src 'self' 'unsafe-inline' https://replit.com",
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: blob:",
+      "font-src 'self' data:",
+      "connect-src 'self' https: wss:",
+      "media-src 'self' blob:",
+      "worker-src 'self' blob:",
+      "manifest-src 'self'",
+      isProduction ? "upgrade-insecure-requests" : "",
+    ].filter(Boolean).join("; "),
+  );
+
+  if (isProduction) {
+    res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  }
+
   next();
 });
 
 // Moderate Cache-Control nur für API-Routen
-app.use('/api', (req, res, next) => {
-  res.setHeader('Cache-Control', 'no-cache, max-age=0');
-  res.setHeader('Pragma', 'no-cache');
+app.use("/api", (req, res, next) => {
+  res.setHeader("Cache-Control", "no-cache, max-age=0");
+  res.setHeader("Pragma", "no-cache");
   next();
 });
 
 // Body parsing middleware
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-app.use(express.text({ limit: '10mb' }));
-app.use(express.raw({ limit: '10mb' }));
+app.use(express.json({ limit: "10mb" }));
+app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+app.use(express.text({ limit: "10mb" }));
+app.use(express.raw({ limit: "10mb" }));
 
 // Service Worker mit Anti-Cache Headers servieren
-app.get('/sw.js', (req, res) => {
-  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
-  res.setHeader('Pragma', 'no-cache');
-  res.setHeader('Expires', '-1');
-  res.setHeader('Content-Type', 'application/javascript');
-  
+app.get("/sw.js", (req, res) => {
+  res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "-1");
+  res.setHeader("Content-Type", "application/javascript");
+
   const swPath = path.resolve("client/public/sw.js");
   try {
     res.sendFile(swPath);
   } catch (error) {
-    res.status(404).send('Service Worker not found');
+    res.status(404).send("Service Worker not found");
   }
 });
 
 // Statische Dateien für Uploads servieren
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.use((req, res, next) => {
   const start = Date.now();
-  const path = req.path;
+  const requestPath = req.path;
   let capturedJsonResponse: Record<string, any> | undefined = undefined;
 
   const originalResJson = res.json;
@@ -67,8 +96,8 @@ app.use((req, res, next) => {
 
   res.on("finish", () => {
     const duration = Date.now() - start;
-    if (path.startsWith("/api")) {
-      let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
+    if (requestPath.startsWith("/api")) {
+      let logLine = `${req.method} ${requestPath} ${res.statusCode} in ${duration}ms`;
       if (capturedJsonResponse) {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
@@ -85,8 +114,8 @@ app.use((req, res, next) => {
 });
 
 // Direkter, einfacher Login-Endpunkt für Notfälle
-app.get('/direktlogin', (req, res) => {
-  res.sendFile(path.resolve(process.cwd(), 'direktlogin.html'));
+app.get("/direktlogin", (req, res) => {
+  res.sendFile(path.resolve(process.cwd(), "direktlogin.html"));
 });
 
 (async () => {
@@ -100,17 +129,12 @@ app.get('/direktlogin', (req, res) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
   if (app.get("env") === "development") {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
 
-  // Render (und andere PaaS) geben den Port über process.env.PORT vor.
-  // Lokal fällt es auf 5000 zurück.
   const port = Number(process.env.PORT) || 5000;
   server.listen({
     port,
