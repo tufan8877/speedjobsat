@@ -41,13 +41,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const authToken = localStorage.getItem("authToken");
-
-        if (!authToken && !document.cookie.includes("speedjobs.sid")) {
-          setIsLoading(false);
-          return;
-        }
-
         const response = await apiRequest("GET", "/api/user");
         const userData = await response.json();
         setUser(userData);
