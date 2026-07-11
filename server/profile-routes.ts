@@ -304,7 +304,7 @@ export function setupProfileRoutes(app: Express) {
   app.delete("/api/reviews/:id", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const reviewId = Number(req.params.id);
-      if (!Number.isFinite(profileId)) {
+      if (!Number.isFinite(reviewId)) {
         return res.status(400).json({ message: "Ungültige Bewertungs-ID" });
       }
 
