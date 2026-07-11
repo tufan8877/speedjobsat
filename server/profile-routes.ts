@@ -27,6 +27,12 @@ function getRegisteredEmail(req: Request): string {
   return String((req.user as any)?.email || "").trim().toLowerCase();
 }
 
+function normalizePhoneNumber(value: unknown): string | null {
+  const phoneNumber = String(value || "").trim();
+  if (!phoneNumber) return null;
+  return phoneNumber.slice(0, 30);
+}
+
 function normalizeProfilePayload(body: any, userId?: number, registeredEmail?: string) {
   const payload: any = {
     firstName: body?.firstName ?? null,
@@ -35,7 +41,7 @@ function normalizeProfilePayload(body: any, userId?: number, registeredEmail?: s
     services: oneStringArray(body?.services),
     customServices: body?.customServices ?? null,
     regions: toStringArray(body?.regions),
-    phoneNumber: null,
+    phoneNumber: normalizePhoneNumber(body?.phoneNumber),
     email: registeredEmail || null,
     socialMedia: null,
     availablePeriods: toStringArray(body?.availablePeriods),
@@ -298,7 +304,7 @@ export function setupProfileRoutes(app: Express) {
   app.delete("/api/reviews/:id", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const reviewId = Number(req.params.id);
-      if (!Number.isFinite(reviewId)) {
+      if (!Number.isFinite(profileId)) {
         return res.status(400).json({ message: "Ungültige Bewertungs-ID" });
       }
 
@@ -309,7 +315,7 @@ export function setupProfileRoutes(app: Express) {
       }
 
       if (existingReview.userId !== userId && !req.user!.isAdmin) {
-        return res.status(403).json({ message: "Sie haben keine Berechtigung zum Löschen dieser Bewertung" });
+        return res.status(403).json({ message: "Sie haben keine Berechtigung zum Löschen der Bewertung" });
       }
 
       const deleted = await storage.deleteReview(reviewId);
