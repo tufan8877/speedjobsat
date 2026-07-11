@@ -22,6 +22,12 @@ import { Loader2, Save } from "lucide-react";
 const schema = z.object({
   firstName: z.string().optional().default(""),
   lastName: z.string().optional().default(""),
+  phoneNumber: z
+    .string()
+    .max(30, "Die Telefonnummer ist zu lang")
+    .regex(/^[0-9+\s()\/-]*$/, "Bitte geben Sie eine gültige Telefonnummer ein")
+    .optional()
+    .default(""),
   description: z.string().optional().default(""),
   service: z.string().min(1, "Wählen Sie eine Dienstleistung aus"),
   regions: z.array(z.string()).min(1, "Wählen Sie mindestens ein Bundesland aus"),
@@ -31,7 +37,7 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
-const descriptionExample = `Beispiel: Ich bin Installateur oder Installateurin mit Erfahrung in Thermenservice, Störungsbehebung und Reparaturen. Ich arbeite zuverlässig, sauber und bin in Wien und Niederösterreich verfügbar.`;
+const descriptionExample = `Beispiel: Ich biete Installateurarbeiten mit Erfahrung in Thermenservice, Störungsbehebung und Reparaturen an. Ich arbeite zuverlässig, sauber und bin in Wien und Niederösterreich verfügbar.`;
 
 function CheckList({ items, value, onChange }: { items: string[]; value: string[]; onChange: (value: string[]) => void }) {
   return (
@@ -61,6 +67,7 @@ export default function AutoEmailProfileForm() {
     defaultValues: {
       firstName: "",
       lastName: "",
+      phoneNumber: "",
       description: "",
       service: "",
       regions: [],
@@ -80,6 +87,7 @@ export default function AutoEmailProfileForm() {
     form.reset({
       firstName: profile.firstName || "",
       lastName: profile.lastName || "",
+      phoneNumber: profile.phoneNumber || "",
       description: profile.description || "",
       service: savedServices[0] || "",
       regions: Array.isArray(profile.regions) ? profile.regions : profile.region ? [profile.region] : [],
@@ -100,7 +108,7 @@ export default function AutoEmailProfileForm() {
       queryClient.invalidateQueries({ queryKey: ["/api/my-profile"] });
       toast({
         title: "Profil gespeichert",
-        description: "Ihr Profil wurde gespeichert. Ihre registrierte E-Mail wurde automatisch als Kontakt hinterlegt.",
+        description: "Ihr Profil wurde gespeichert. Ihre registrierte E-Mail bleibt die feste Kontaktmöglichkeit.",
       });
     },
     onError: (error: any) => {
@@ -171,6 +179,19 @@ export default function AutoEmailProfileForm() {
               )} />
             </div>
 
+            <FormField control={form.control} name="phoneNumber" render={({ field }) => (
+              <FormItem>
+                <FormLabel>Handynummer <span className="font-normal text-gray-500">(optional)</span></FormLabel>
+                <FormControl>
+                  <Input type="tel" inputMode="tel" placeholder="z. B. +43 676 1234567" {...field} />
+                </FormControl>
+                <FormDescription>
+                  Die registrierte E-Mail bleibt verpflichtend. Die Handynummer wird nur zusätzlich angezeigt, wenn Sie sie freiwillig eintragen.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )} />
+
             <FormField control={form.control} name="description" render={({ field }) => (
               <FormItem>
                 <FormLabel>Beschreibung</FormLabel>
@@ -180,7 +201,7 @@ export default function AutoEmailProfileForm() {
                 <FormControl>
                   <Textarea placeholder={descriptionExample} className="min-h-[150px]" {...field} />
                 </FormControl>
-                <p className="text-xs text-gray-500">Beispielbereiche: Installateur/in, Elektriker/in, Kellner/in, Koch/Köchin, IT-Techniker/in, Reinigung, Transport, Handwerker/in.</p>
+                <p className="text-xs text-gray-500">Beispielbereiche: Installateurarbeiten, Elektroarbeiten, Gastronomie, IT-Service, Reinigung, Transport und Handwerksarbeiten.</p>
                 <FormMessage />
               </FormItem>
             )} />
@@ -235,10 +256,10 @@ export default function AutoEmailProfileForm() {
 
             <Alert className="bg-blue-50 border-blue-200 text-blue-900">
               <AlertDescription>
-                Als Kontaktmöglichkeit wird automatisch Ihre registrierte E-Mail verwendet:<br />
+                Ihre registrierte E-Mail ist die feste Kontaktmöglichkeit:<br />
                 <strong>{user?.email || "Ihre registrierte E-Mail"}</strong>
                 <br />
-                Sie können Ihre E-Mail-Adresse jederzeit in den{" "}
+                Die Handynummer ist freiwillig und wird nur zusätzlich angezeigt. Ihre E-Mail können Sie in den{" "}
                 <Link href="/profil?tab=settings" className="font-semibold underline underline-offset-2 hover:text-blue-700">
                   Einstellungen
                 </Link>{" "}
