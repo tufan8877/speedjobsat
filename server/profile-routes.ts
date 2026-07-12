@@ -33,6 +33,23 @@ function normalizePhoneNumber(value: unknown): string | null {
   return phoneNumber.slice(0, 30);
 }
 
+function normalizeProfileImage(value: unknown): string | null {
+  if (value === null || value === undefined || value === "") return null;
+  if (typeof value !== "string") throw new Error("Ungültiges Profilbild");
+
+  const image = value.trim();
+  const allowedPrefix = /^data:image\/(jpeg|png|webp);base64,/i;
+  if (!allowedPrefix.test(image)) {
+    throw new Error("Das Profilbild muss als JPG, PNG oder WebP gespeichert werden");
+  }
+
+  if (image.length > 2_000_000) {
+    throw new Error("Das verarbeitete Profilbild ist zu groß");
+  }
+
+  return image;
+}
+
 function normalizeProfilePayload(body: any, userId?: number, registeredEmail?: string) {
   const payload: any = {
     firstName: body?.firstName ?? null,
@@ -46,7 +63,7 @@ function normalizeProfilePayload(body: any, userId?: number, registeredEmail?: s
     socialMedia: null,
     availablePeriods: toStringArray(body?.availablePeriods),
     isAvailable: typeof body?.isAvailable === "boolean" ? body.isAvailable : true,
-    profileImage: body?.profileImage ?? null,
+    profileImage: normalizeProfileImage(body?.profileImage),
   };
 
   if (typeof userId === "number") {
@@ -103,7 +120,12 @@ export function setupProfileRoutes(app: Express) {
         return res.status(400).json({ message: "Keine registrierte E-Mail-Adresse im Benutzerkonto gefunden" });
       }
 
-      const profileData = normalizeProfilePayload(req.body, userId, registeredEmail);
+      let profileData: any;
+      try {
+        profileData = normalizeProfilePayload(req.body, userId, registeredEmail);
+      } catch (error: any) {
+        return res.status(400).json({ message: error.message || "Ungültige Profildaten" });
+      }
 
       if (!profileData.services || profileData.services.length !== 1) {
         return res.status(400).json({ message: "Pro Profil ist genau eine Dienstleistung erlaubt" });
