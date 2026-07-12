@@ -8,6 +8,7 @@ import { StarRating } from "@/components/ui/star-rating";
 import { Separator } from "@/components/ui/separator";
 import { Loader2, MapPin, Clock, Mail, Phone, Share2 } from "lucide-react";
 import { ReviewForm } from "./review-form";
+import VerifiedBadge from "./verified-badge";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
@@ -119,9 +120,10 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
                 </AvatarFallback>
               </Avatar>
 
-              <div className="mt-4 text-center">
+              <div className="mt-4 flex flex-col items-center gap-2 text-center">
                 <Badge variant="default">{profile.isAvailable ? "Verfügbar" : "Teilweise verfügbar"}</Badge>
-                <p className="mt-2 text-sm font-medium text-gray-500">Profil {profileNumber}</p>
+                <VerifiedBadge profileId={profile.id} />
+                <p className="text-sm font-medium text-gray-500">Profil {profileNumber}</p>
               </div>
 
               <div className="mt-4 flex w-full max-w-xs gap-2">
@@ -147,7 +149,10 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
 
             <div className="md:w-2/3 md:pl-8">
               <div className="hidden md:block">
-                <h1 className="text-3xl font-bold">{profile.firstName} {profile.lastName}</h1>
+                <div className="flex flex-wrap items-center gap-3">
+                  <h1 className="text-3xl font-bold">{profile.firstName} {profile.lastName}</h1>
+                  <VerifiedBadge profileId={profile.id} compact />
+                </div>
                 <p className="text-primary font-medium text-lg mt-1">{mainService}</p>
                 <div className="mt-2">
                   {averageRating && averageRating > 0 ? (
