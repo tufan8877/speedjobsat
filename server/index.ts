@@ -133,7 +133,7 @@ app.get("/direktlogin", (req, res) => {
     const message = err.message || "Internal Server Error";
 
     res.status(status).json({ message });
-    throw err;
+    console.error("Unbehandelter Serverfehler:", err);
   });
 
   if (app.get("env") === "development") {
@@ -143,11 +143,14 @@ app.get("/direktlogin", (req, res) => {
   }
 
   const port = Number(process.env.PORT) || 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
+  const host = "0.0.0.0";
+
+  server.on("error", (error) => {
+    console.error("Server konnte nicht gestartet werden:", error);
+    process.exit(1);
+  });
+
+  server.listen(port, host, () => {
+    log(`serving on http://${host}:${port}`);
   });
 })();
