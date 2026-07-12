@@ -6,6 +6,7 @@ import { setupFavoritesRoutes } from "./favorites-routes";
 import { setupProfileRoutes } from "./profile-routes";
 import { setupProfileViewRoutes } from "./profile-view-routes";
 import { setupProfileVerificationRoutes } from "./profile-verification-routes";
+import { setupProfileGalleryRoutes } from "./profile-gallery-routes";
 import { setupAdmin } from "./admin";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -15,6 +16,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   setupProfileRoutes(app);
   setupProfileViewRoutes(app);
   setupProfileVerificationRoutes(app);
+  setupProfileGalleryRoutes(app);
   setupAdmin(app);
 
   const httpServer = createServer(app);
