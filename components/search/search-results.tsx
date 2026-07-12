@@ -281,7 +281,7 @@ export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
                           {!user && profile.email && (
                             <div className="flex items-center text-sm text-orange-600">
                               <Mail className="mr-2 h-4 w-4 flex-shrink-0" />
-                              <span>Registrierung erforderlich, um die E-Mail-Adresse zu sehen</span>
+                              <span>Registrierung erforderlich, um die Kontaktdaten zu sehen</span>
                             </div>
                           )}
 
