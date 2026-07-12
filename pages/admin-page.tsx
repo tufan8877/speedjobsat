@@ -4,21 +4,20 @@ import { useLocation } from "wouter";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import AdminDashboard from "@/components/admin/admin-dashboard";
+import ProfileVerificationPanel from "@/components/admin/profile-verification-panel";
 import { AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function AdminPage() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
-  
-  // Redirect non-admin users
+
   useEffect(() => {
     if (user && !user.isAdmin) {
       setLocation("/");
     }
   }, [user, setLocation]);
-  
-  // If not admin, show access denied
+
   if (user && !user.isAdmin) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -38,14 +37,20 @@ export default function AdminPage() {
       </div>
     );
   }
-  
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
       <main className="flex-1 bg-gray-50 py-8">
         <div className="container mx-auto px-4">
-          <h1 className="text-2xl font-bold mb-6">Admin-Bereich</h1>
-          <AdminDashboard />
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-2xl font-bold">Admin-Bereich</h1>
+              <p className="mt-1 text-sm text-gray-600">Profile verwalten und geprüfte Dienstleister freigeben.</p>
+            </div>
+            <ProfileVerificationPanel />
+            <AdminDashboard />
+          </div>
         </div>
       </main>
       <Footer />
