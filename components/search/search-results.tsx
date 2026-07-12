@@ -2,11 +2,10 @@ import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { StarRating } from "@/components/ui/star-rating";
-import { Loader2, MapPin, Clock, Mail, Share2 } from "lucide-react";
+import { ChevronDown, Loader2, MapPin, Clock, Mail, Share2 } from "lucide-react";
 import { useSearch } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
@@ -171,20 +170,24 @@ export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
         </div>
 
         <div className="flex min-h-12 w-full shrink-0 items-center gap-3 md:w-auto">
-          <span className="whitespace-nowrap text-gray-600">Sortieren nach:</span>
+          <label htmlFor="profile-sort" className="whitespace-nowrap text-gray-600">Sortieren nach:</label>
           <div className="relative h-12 w-full min-w-0 md:w-48">
-            <Select value={sortBy} onValueChange={handleSortChange}>
-              <SelectTrigger className="absolute inset-0 h-12 min-h-12 max-h-12 w-full text-base">
-                <SelectValue placeholder="Sortieren nach" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="newest">Neueste</SelectItem>
-                <SelectItem value="rating">Bestbewertet</SelectItem>
-                <SelectItem value="reviews">Meiste Bewertungen</SelectItem>
-              </SelectContent>
-            </Select>
-            {isRefreshing && (
-              <Loader2 className="pointer-events-none absolute right-10 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-primary" />
+            <select
+              id="profile-sort"
+              value={sortBy}
+              onChange={(event) => handleSortChange(event.target.value)}
+              disabled={isRefreshing}
+              className="absolute inset-0 h-12 min-h-12 max-h-12 w-full appearance-none rounded-md border border-input bg-background px-3 pr-10 text-base leading-none outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:cursor-wait disabled:opacity-80"
+              style={{ WebkitAppearance: "none" }}
+            >
+              <option value="newest">Neueste</option>
+              <option value="rating">Bestbewertet</option>
+              <option value="reviews">Meiste Bewertungen</option>
+            </select>
+            {isRefreshing ? (
+              <Loader2 className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-primary" />
+            ) : (
+              <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
             )}
           </div>
         </div>
