@@ -17,7 +17,7 @@ import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Loader2, Save } from "lucide-react";
+import { CheckCircle2, Circle, Loader2, Save } from "lucide-react";
 
 const schema = z.object({
   firstName: z.string().optional().default(""),
@@ -96,6 +96,41 @@ export default function AutoEmailProfileForm() {
     });
   }, [profile, form]);
 
+  const watchedValues = form.watch();
+  const completionItems = [
+    {
+      label: "Vor- und Nachname",
+      complete: Boolean(watchedValues.firstName?.trim() && watchedValues.lastName?.trim()),
+    },
+    {
+      label: "Ausführliche Beschreibung",
+      complete: Boolean(watchedValues.description?.trim() && watchedValues.description.trim().length >= 50),
+    },
+    {
+      label: "Hauptdienstleistung",
+      complete: Boolean(watchedValues.service),
+    },
+    {
+      label: "Tätigkeitsregion",
+      complete: Boolean(watchedValues.regions?.length),
+    },
+    {
+      label: "Verfügbarkeitszeiten",
+      complete: Boolean(watchedValues.availablePeriods?.length),
+    },
+    {
+      label: "Profilbild",
+      complete: Boolean(profile?.profileImage),
+    },
+    {
+      label: "Registrierte E-Mail",
+      complete: Boolean(user?.email),
+    },
+  ];
+  const completedItems = completionItems.filter((item) => item.complete).length;
+  const completionPercentage = Math.round((completedItems / completionItems.length) * 100);
+  const missingItems = completionItems.filter((item) => !item.complete);
+
   const mutation = useMutation({
     mutationFn: async (values: FormValues) => {
       const res = await apiRequest("PUT", "/api/my-profile", {
@@ -137,6 +172,47 @@ export default function AutoEmailProfileForm() {
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <div className="mb-6 rounded-xl border border-gray-200 bg-white p-4 sm:p-5 shadow-sm">
+          <div className="flex items-center justify-between gap-4 mb-3">
+            <div>
+              <p className="font-semibold text-gray-900">Profilvollständigkeit</p>
+              <p className="text-sm text-gray-600">
+                {completionPercentage === 100
+                  ? "Ihr Profil ist vollständig."
+                  : "Vervollständigen Sie Ihr Profil, damit es professioneller wirkt."}
+              </p>
+            </div>
+            <span className="text-2xl font-bold text-primary whitespace-nowrap">{completionPercentage} %</span>
+          </div>
+
+          <progress
+            value={completionPercentage}
+            max={100}
+            className="h-3 w-full overflow-hidden rounded-full accent-primary"
+            aria-label={`Profil zu ${completionPercentage} Prozent vollständig`}
+          />
+
+          <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {completionItems.map((item) => (
+              <div key={item.label} className="flex items-center gap-2 text-sm">
+                {item.complete ? (
+                  <CheckCircle2 className="h-4 w-4 flex-shrink-0 text-green-600" />
+                ) : (
+                  <Circle className="h-4 w-4 flex-shrink-0 text-gray-400" />
+                )}
+                <span className={item.complete ? "text-gray-700" : "text-gray-500"}>{item.label}</span>
+              </div>
+            ))}
+          </div>
+
+          {missingItems.length > 0 && (
+            <p className="mt-4 text-xs text-gray-500">
+              Noch offen: {missingItems.map((item) => item.label).join(", ")}.
+            </p>
+          )}
+          <p className="mt-2 text-xs text-gray-500">Die freiwillige Handynummer wird für die 100 % nicht benötigt.</p>
+        </div>
+
         <div className="mb-6 rounded-lg border border-primary/10 bg-primary/5 p-4 text-sm text-gray-700">
           <p className="font-semibold text-gray-900 mb-2">Tipps für ein starkes Profil</p>
           <ul className="list-disc pl-5 space-y-1">
@@ -196,7 +272,7 @@ export default function AutoEmailProfileForm() {
               <FormItem>
                 <FormLabel>Beschreibung</FormLabel>
                 <FormDescription>
-                  Beschreiben Sie kurz Ihre Erfahrung, Ihre Leistungen und Ihre Arbeitsweise. Gute Profile wirken seriöser und werden eher kontaktiert.
+                  Beschreiben Sie kurz Ihre Erfahrung, Ihre Leistungen und Ihre Arbeitsweise. Für die Profilvollständigkeit werden mindestens 50 Zeichen berücksichtigt.
                 </FormDescription>
                 <FormControl>
                   <Textarea placeholder={descriptionExample} className="min-h-[150px]" {...field} />
