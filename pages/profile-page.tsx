@@ -12,6 +12,7 @@ import { Loader2, Settings, User, LogOut } from "lucide-react";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import AutoEmailProfileForm from "@/components/profile/auto-email-profile-form";
+import ProfileViewStats from "@/components/profile/profile-view-stats";
 import { AccountSettings } from "@/components/settings/settings-forms";
 
 export default function ProfilePage() {
@@ -85,6 +86,7 @@ export default function ProfilePage() {
               </div>
 
               <TabsContent value="profile">
+                <ProfileViewStats />
                 <AutoEmailProfileForm />
               </TabsContent>
 
