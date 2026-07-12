@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Loader2, MapPin, Clock, Mail, Phone, Share2 } from "lucide-react";
 import { ReviewForm } from "./review-form";
 import VerifiedBadge from "./verified-badge";
+import ProfileGallery from "./profile-gallery";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
@@ -225,6 +226,8 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
           )}
         </CardContent>
       </Card>
+
+      <ProfileGallery profileId={profile.id} />
 
       <section className="mt-8">
         <div className="w-full rounded-md border bg-white px-4 py-3 text-center text-base font-medium shadow-sm">
