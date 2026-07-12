@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -37,6 +38,18 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
   const { data, isLoading, error } = useQuery<Profile>({
     queryKey: [`/api/profiles/${profileId}`],
   });
+
+  useEffect(() => {
+    if (!data) return;
+
+    fetch(`/api/profiles/${profileId}/view`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "content-type": "application/json" },
+    }).catch(() => {
+      // Die Profilseite bleibt auch erreichbar, falls die Statistik kurz nicht verfügbar ist.
+    });
+  }, [data, profileId]);
 
   if (isLoading) {
     return (
