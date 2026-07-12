@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "wouter";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,7 +17,7 @@ import { Switch } from "@/components/ui/switch";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { CheckCircle2, Circle, Loader2, Save } from "lucide-react";
+import { Camera, CheckCircle2, Circle, Loader2, Save, Trash2 } from "lucide-react";
 
 const schema = z.object({
   firstName: z.string().optional().default(""),
@@ -57,10 +57,49 @@ function CheckList({ items, value, onChange }: { items: string[]; value: string[
   );
 }
 
+async function prepareProfileImage(file: File): Promise<string> {
+  if (!file.type.startsWith("image/")) {
+    throw new Error("Bitte wählen Sie eine Bilddatei aus.");
+  }
+
+  if (file.size > 10 * 1024 * 1024) {
+    throw new Error("Das Bild darf höchstens 10 MB groß sein.");
+  }
+
+  const objectUrl = URL.createObjectURL(file);
+
+  try {
+    const image = await new Promise<HTMLImageElement>((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => reject(new Error("Das Bild konnte nicht gelesen werden."));
+      img.src = objectUrl;
+    });
+
+    const maxSize = 900;
+    const scale = Math.min(1, maxSize / Math.max(image.naturalWidth, image.naturalHeight));
+    const width = Math.max(1, Math.round(image.naturalWidth * scale));
+    const height = Math.max(1, Math.round(image.naturalHeight * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("Das Bild konnte nicht verarbeitet werden.");
+
+    context.drawImage(image, 0, 0, width, height);
+    return canvas.toDataURL("image/jpeg", 0.82);
+  } finally {
+    URL.revokeObjectURL(objectUrl);
+  }
+}
+
 export default function AutoEmailProfileForm() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [isPreparingImage, setIsPreparingImage] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -84,6 +123,7 @@ export default function AutoEmailProfileForm() {
   useEffect(() => {
     if (!profile) return;
     const savedServices = Array.isArray(profile.services) ? profile.services : [];
+    setProfileImage(profile.profileImage || null);
     form.reset({
       firstName: profile.firstName || "",
       lastName: profile.lastName || "",
@@ -120,7 +160,7 @@ export default function AutoEmailProfileForm() {
     },
     {
       label: "Profilbild",
-      complete: Boolean(profile?.profileImage),
+      complete: Boolean(profileImage),
     },
     {
       label: "Registrierte E-Mail",
@@ -136,11 +176,14 @@ export default function AutoEmailProfileForm() {
       const res = await apiRequest("PUT", "/api/my-profile", {
         ...values,
         services: [values.service],
+        profileImage,
       });
       return res.json();
     },
-    onSuccess: () => {
+    onSuccess: (savedProfile: any) => {
+      setProfileImage(savedProfile?.profileImage || null);
       queryClient.invalidateQueries({ queryKey: ["/api/my-profile"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/profiles"] });
       toast({
         title: "Profil gespeichert",
         description: "Ihr Profil wurde gespeichert. Ihre registrierte E-Mail bleibt die feste Kontaktmöglichkeit.",
@@ -154,6 +197,27 @@ export default function AutoEmailProfileForm() {
       });
     },
   });
+
+  const handleImageChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+
+    setIsPreparingImage(true);
+    try {
+      const preparedImage = await prepareProfileImage(file);
+      setProfileImage(preparedImage);
+      toast({ title: "Profilbild ausgewählt", description: "Bitte speichern Sie jetzt Ihr Profil." });
+    } catch (error: any) {
+      toast({
+        title: "Bild konnte nicht geladen werden",
+        description: error.message || "Bitte wählen Sie ein anderes Bild aus.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsPreparingImage(false);
+    }
+  };
 
   if (isLoading) {
     return (
@@ -224,16 +288,50 @@ export default function AutoEmailProfileForm() {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit((values) => mutation.mutate(values))} className="space-y-8">
-            <div className="flex justify-center">
-              <Avatar className="h-24 w-24">
-                {profile?.profileImage ? (
-                  <AvatarImage src={profile.profileImage} alt="Profilbild" />
-                ) : (
-                  <AvatarFallback className="bg-primary text-white text-xl">
-                    {(form.watch("firstName")?.[0] || "?") + (form.watch("lastName")?.[0] || "")}
-                  </AvatarFallback>
-                )}
-              </Avatar>
+            <div className="rounded-xl border border-gray-200 p-4">
+              <div className="flex flex-col items-center gap-4">
+                <Avatar className="h-28 w-28">
+                  {profileImage ? (
+                    <AvatarImage src={profileImage} alt="Profilbild" className="object-cover" />
+                  ) : (
+                    <AvatarFallback className="bg-primary text-white text-xl">
+                      {(form.watch("firstName")?.[0] || "?") + (form.watch("lastName")?.[0] || "")}
+                    </AvatarFallback>
+                  )}
+                </Avatar>
+
+                <div className="text-center">
+                  <p className="font-medium">Profilbild <span className="font-normal text-gray-500">(optional)</span></p>
+                  <p className="mt-1 text-sm text-gray-500">JPG, PNG oder HEIC. Das Bild wird automatisch verkleinert.</p>
+                </div>
+
+                <div className="flex flex-col gap-2 sm:flex-row">
+                  <label className="inline-flex h-10 cursor-pointer items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-white hover:bg-primary/90">
+                    {isPreparingImage ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Camera className="mr-2 h-4 w-4" />}
+                    {profileImage ? "Bild ändern" : "Bild auswählen"}
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/heic,image/heif"
+                      className="sr-only"
+                      onChange={handleImageChange}
+                      disabled={isPreparingImage || mutation.isPending}
+                    />
+                  </label>
+
+                  {profileImage && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="text-red-600"
+                      onClick={() => setProfileImage(null)}
+                      disabled={isPreparingImage || mutation.isPending}
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Bild entfernen
+                    </Button>
+                  )}
+                </div>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -344,7 +442,7 @@ export default function AutoEmailProfileForm() {
             </Alert>
 
             <div className="flex justify-end">
-              <Button type="submit" disabled={mutation.isPending} className="bg-primary text-white flex items-center gap-2">
+              <Button type="submit" disabled={mutation.isPending || isPreparingImage} className="bg-primary text-white flex items-center gap-2">
                 {mutation.isPending ? <><Loader2 className="h-4 w-4 animate-spin" />Speichern...</> : <><Save className="h-4 w-4" />Profil speichern</>}
               </Button>
             </div>
