@@ -43,6 +43,24 @@ function visitorKey(req: Request) {
   return createHash("sha256").update(`${salt}:${source}`).digest("hex");
 }
 
+async function enrichProfiles(profiles: any[]) {
+  return Promise.all(
+    profiles.map(async (profile) => {
+      const reviews = await storage.getReviewsByProfileId(profile.id);
+      const averageRating = reviews.length
+        ? reviews.reduce((sum, review) => sum + Number(review.rating || 0), 0) / reviews.length
+        : 0;
+
+      return {
+        ...profile,
+        reviews,
+        reviewCount: reviews.length,
+        averageRating,
+      };
+    }),
+  );
+}
+
 export function setupProfileViewRoutes(app: Express) {
   app.post("/api/profiles/:id/view", async (req: Request, res: Response) => {
     try {
@@ -121,6 +139,48 @@ export function setupProfileViewRoutes(app: Express) {
     } catch (error) {
       console.error("Fehler beim Laden der Profilaufrufe:", error);
       return res.status(500).json({ message: "Profilaufrufe konnten nicht geladen werden" });
+    }
+  });
+
+  app.get("/api/top-profiles", async (_req: Request, res: Response) => {
+    try {
+      await ensureProfileViewsTable();
+      const allProfiles = await storage.getAllProfiles();
+      const activeProfiles = allProfiles.filter((profile: any) => profile.isAvailable !== false);
+      const enriched = await enrichProfiles(activeProfiles);
+
+      const newest = [...enriched]
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+        .slice(0, 4);
+
+      const topRated = [...enriched]
+        .filter((profile) => profile.reviewCount > 0)
+        .sort((a, b) => {
+          if (b.averageRating !== a.averageRating) return b.averageRating - a.averageRating;
+          return b.reviewCount - a.reviewCount;
+        })
+        .slice(0, 4);
+
+      const viewsResult = await pool.query(`
+        SELECT profile_id, COUNT(*)::int AS view_count
+        FROM profile_views
+        GROUP BY profile_id
+        ORDER BY view_count DESC
+        LIMIT 20
+      `);
+      const viewCounts = new Map<number, number>(
+        viewsResult.rows.map((row) => [Number(row.profile_id), Number(row.view_count || 0)]),
+      );
+      const mostViewed = [...enriched]
+        .map((profile) => ({ ...profile, viewCount: viewCounts.get(profile.id) || 0 }))
+        .filter((profile) => profile.viewCount > 0)
+        .sort((a, b) => b.viewCount - a.viewCount)
+        .slice(0, 4);
+
+      return res.json({ topRated, mostViewed, newest });
+    } catch (error) {
+      console.error("Fehler beim Laden der Top-Profile:", error);
+      return res.status(500).json({ message: "Top-Profile konnten nicht geladen werden" });
     }
   });
 }
