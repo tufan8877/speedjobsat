@@ -32,6 +32,36 @@ const stateCounts: Record<string, number> = {
   Burgenland: 4,
 };
 
+const serviceCounts: Record<(typeof serviceCategories)[number], number> = {
+  Installateur: 7,
+  Elektriker: 7,
+  Reinigung: 8,
+  Umzug: 6,
+  Transport: 7,
+  Gartenpflege: 7,
+  Haushaltshilfe: 6,
+  Pflege: 5,
+  Kinderbetreuung: 4,
+  Seniorenbetreuung: 4,
+  Nachhilfe: 4,
+  "Computer & IT": 6,
+  Handwerker: 4,
+  Maler: 3,
+  Dachdecker: 2,
+  Automechaniker: 3,
+  Schlosser: 2,
+  Masseur: 2,
+  Gastronomie: 2,
+  "Koch- & Küchenhilfe": 2,
+  "Service & Kellnerarbeiten": 2,
+  Bauarbeiten: 2,
+  Fliesenlegerarbeiten: 1,
+  Bodenlegerarbeiten: 1,
+  Montagearbeiten: 1,
+  Reparaturarbeiten: 1,
+  "Sonstige Dienstleistungen": 1,
+};
+
 const titleByService: Record<string, string> = {
   Installateur: "Installateurservice",
   Elektriker: "Elektroservice",
@@ -84,6 +114,21 @@ async function hashPassword(password: string) {
   return `${buf.toString("hex")}.${salt}`;
 }
 
+function buildServicePool(): string[] {
+  const pool: string[] = [];
+
+  for (const service of serviceCategories) {
+    const count = serviceCounts[service];
+    for (let i = 0; i < count; i += 1) pool.push(service);
+  }
+
+  if (pool.length !== 100) {
+    throw new Error(`Die Dienstleistungsverteilung enthält ${pool.length} statt 100 Einträge.`);
+  }
+
+  return pool;
+}
+
 function buildEntries() {
   const entries: Array<{
     internalEmail: string;
@@ -96,12 +141,14 @@ function buildEntries() {
     isAvailable: boolean;
   }> = [];
 
+  const servicePool = buildServicePool();
   let index = 0;
+
   for (const [state, count] of Object.entries(stateCounts)) {
     const places = locationsByState[state];
+
     for (let i = 0; i < count; i += 1) {
-      const service = serviceCategories[index % serviceCategories.length];
-      const secondService = serviceCategories[(index + 7) % serviceCategories.length];
+      const service = servicePool[index];
       const place = places[i % places.length];
       const periods = [
         availabilityPeriods[index % availabilityPeriods.length],
@@ -113,11 +160,12 @@ function buildEntries() {
         firstName: titleByService[service] || "Dienstleistungsangebot",
         lastName: place,
         description: `${descriptionOpeners[index % descriptionOpeners.length]} ${descriptionDetails[(index + i) % descriptionDetails.length]} Schwerpunkt: ${titleByService[service] || service} in ${place}.`,
-        services: index % 4 === 0 ? [service, secondService] : [service],
+        services: [service],
         regions: [state, place],
         availablePeriods: Array.from(new Set(periods)),
         isAvailable: index % 9 !== 0,
       });
+
       index += 1;
     }
   }
@@ -131,7 +179,7 @@ async function main() {
 
   const passwordHash = await hashPassword(randomBytes(32).toString("hex"));
   let created = 0;
-  let skipped = 0;
+  let updated = 0;
 
   for (const entry of entries) {
     const existingUsers = await db.select().from(users).where(eq(users.email, entry.internalEmail)).limit(1);
@@ -147,14 +195,7 @@ async function main() {
       user = inserted[0];
     }
 
-    const existingProfiles = await db.select().from(profiles).where(eq(profiles.userId, user.id)).limit(1);
-    if (existingProfiles.length > 0) {
-      skipped += 1;
-      continue;
-    }
-
-    await db.insert(profiles).values({
-      userId: user.id,
+    const profileData = {
       firstName: entry.firstName,
       lastName: entry.lastName,
       description: entry.description,
@@ -167,11 +208,25 @@ async function main() {
       availablePeriods: entry.availablePeriods,
       isAvailable: entry.isAvailable,
       profileImage: null,
+      updatedAt: new Date(),
+    };
+
+    const existingProfiles = await db.select().from(profiles).where(eq(profiles.userId, user.id)).limit(1);
+
+    if (existingProfiles.length > 0) {
+      await db.update(profiles).set(profileData).where(eq(profiles.id, existingProfiles[0].id));
+      updated += 1;
+      continue;
+    }
+
+    await db.insert(profiles).values({
+      userId: user.id,
+      ...profileData,
     });
     created += 1;
   }
 
-  console.log(`Starter-Profile abgeschlossen: ${created} erstellt, ${skipped} bereits vorhanden.`);
+  console.log(`Starter-Profile abgeschlossen: ${created} erstellt, ${updated} aktualisiert.`);
 }
 
 main()
