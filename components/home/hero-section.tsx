@@ -30,14 +30,11 @@ export default function HeroSection() {
       <div className="container mx-auto px-4">
         <div className="max-w-5xl mx-auto text-center">
           <div className="mb-6 sm:mb-7 md:mb-6">
-            <span className="inline-flex items-center rounded-full bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary mb-4">
-              Profile für Dienstleister in Österreich
-            </span>
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-title mb-3 leading-tight text-primary tracking-tight">
-              Finde passende Dienstleister in deiner Nähe
+              Finde passende Dienstleistungen in deiner Nähe
             </h1>
             <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Suche Profile aus Handwerk, Gastro, IT, Reinigung, Transport und weiteren Bereichen. Vergleiche Leistungen, Regionen und Bewertungen und kontaktiere passende Dienstleister direkt per E-Mail.
+              Suche Profile aus Handwerk, Gastro, IT, Reinigung, Transport und weiteren Bereichen. Vergleiche Leistungen, Regionen und Bewertungen und nimm direkt per E-Mail Kontakt auf.
             </p>
           </div>
 
@@ -121,7 +118,7 @@ export default function HeroSection() {
                       <circle cx="11" cy="11" r="8" />
                       <path d="m21 21-4.3-4.3" />
                     </svg>
-                    Profile suchen
+                    Dienstleistungen suchen
                   </Button>
                 </div>
               </div>
