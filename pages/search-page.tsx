@@ -17,7 +17,7 @@ export default function SearchPage() {
             <h1 className="text-2xl font-bold mb-6">
               {hasSearchParams 
                 ? "Suchergebnisse" 
-                : "Dienstleister in Österreich finden"}
+                : "Dienstleistungen in Österreich finden"}
             </h1>
             
             <SearchForm />
