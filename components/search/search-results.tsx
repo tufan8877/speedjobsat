@@ -28,37 +28,6 @@ function safeArray(value: any): string[] {
   return [];
 }
 
-function sortProfiles(profiles: any[], sortBy: string) {
-  const list = [...profiles];
-
-  if (sortBy === "newest") {
-    return list.sort((a, b) => {
-      const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-      const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
-      if (dateB !== dateA) return dateB - dateA;
-      return Number(b.id || 0) - Number(a.id || 0);
-    });
-  }
-
-  if (sortBy === "reviews") {
-    return list.sort((a, b) => (b.reviews?.length || 0) - (a.reviews?.length || 0));
-  }
-
-  if (sortBy === "rating") {
-    return list.sort((a, b) => {
-      const avgA = a.reviews?.length
-        ? a.reviews.reduce((sum: number, review: any) => sum + Number(review.rating || 0), 0) / a.reviews.length
-        : 0;
-      const avgB = b.reviews?.length
-        ? b.reviews.reduce((sum: number, review: any) => sum + Number(review.rating || 0), 0) / b.reviews.length
-        : 0;
-      return avgB - avgA;
-    });
-  }
-
-  return list;
-}
-
 export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
   const search = useSearch();
   const searchParams = new URLSearchParams(search);
@@ -98,7 +67,7 @@ export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
         params.append("page", currentPage.toString());
         params.append("pageSize", pageSize.toString());
 
-        const response = await fetch(`/api/profiles?${params.toString()}`, {
+        const response = await fetch(`/api/ranked-profiles?${params.toString()}`, {
           credentials: "include",
         });
 
@@ -115,7 +84,7 @@ export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
           reviews: Array.isArray(profile.reviews) ? profile.reviews : [],
         }));
 
-        setProfiles(sortProfiles(normalizedProfiles, sortBy));
+        setProfiles(normalizedProfiles);
         setTotalProfiles(data.total || 0);
       } catch (err) {
         setError(err as Error);
@@ -182,7 +151,7 @@ export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
             >
               <option value="newest">Neueste</option>
               <option value="rating">Top bewertet</option>
-              <option value="reviews">Meist angesehen</option>
+              <option value="views">Meist angesehen</option>
             </select>
             {isRefreshing ? (
               <Loader2 className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-primary" />
