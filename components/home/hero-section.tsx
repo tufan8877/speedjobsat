@@ -46,12 +46,6 @@ export default function HeroSection() {
 
           <div className="flex flex-col sm:flex-row justify-center gap-3 mb-6 md:mb-6">
             <Button
-              className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-semibold px-5 py-6 text-base md:px-6 md:py-5 md:text-base"
-              onClick={() => setLocation("/suche")}
-            >
-              Dienstleister suchen
-            </Button>
-            <Button
               variant="outline"
               className="w-full sm:w-auto border-primary text-primary hover:bg-primary/5 px-5 py-6 text-base md:px-6 md:py-5 md:text-base"
               onClick={() => setLocation(user ? "/profil" : "/auth?tab=register")}
