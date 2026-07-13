@@ -78,7 +78,7 @@ export default function TopProfiles() {
           <div>
             <div className="flex items-center gap-2">
               <Award className="h-6 w-6 text-primary" />
-              <h2 className="text-2xl sm:text-3xl font-bold font-title">Top-Dienstleister</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold font-title">Top-Dienstleistungen</h2>
             </div>
             <p className="text-gray-600 mt-2">Entdecke gut bewertete, häufig angesehene und neue Profile.</p>
           </div>
@@ -88,36 +88,19 @@ export default function TopProfiles() {
         </div>
 
         <div className="grid grid-cols-3 gap-2 mb-6 rounded-xl bg-gray-100 p-1">
-          <button
-            type="button"
-            onClick={() => setCategory("topRated")}
-            className={`flex items-center justify-center gap-1 rounded-lg px-2 py-3 text-xs sm:text-sm font-medium transition ${category === "topRated" ? "bg-white text-primary shadow-sm" : "text-gray-600"}`}
-          >
-            <Star className="h-4 w-4" />
-            Top bewertet
+          <button type="button" onClick={() => setCategory("topRated")} className={`flex items-center justify-center gap-1 rounded-lg px-2 py-3 text-xs sm:text-sm font-medium transition ${category === "topRated" ? "bg-white text-primary shadow-sm" : "text-gray-600"}`}>
+            <Star className="h-4 w-4" />Top bewertet
           </button>
-          <button
-            type="button"
-            onClick={() => setCategory("mostViewed")}
-            className={`flex items-center justify-center gap-1 rounded-lg px-2 py-3 text-xs sm:text-sm font-medium transition ${category === "mostViewed" ? "bg-white text-primary shadow-sm" : "text-gray-600"}`}
-          >
-            <Eye className="h-4 w-4" />
-            Meist angesehen
+          <button type="button" onClick={() => setCategory("mostViewed")} className={`flex items-center justify-center gap-1 rounded-lg px-2 py-3 text-xs sm:text-sm font-medium transition ${category === "mostViewed" ? "bg-white text-primary shadow-sm" : "text-gray-600"}`}>
+            <Eye className="h-4 w-4" />Meist angesehen
           </button>
-          <button
-            type="button"
-            onClick={() => setCategory("newest")}
-            className={`flex items-center justify-center gap-1 rounded-lg px-2 py-3 text-xs sm:text-sm font-medium transition ${category === "newest" ? "bg-white text-primary shadow-sm" : "text-gray-600"}`}
-          >
-            <Flame className="h-4 w-4" />
-            Neu
+          <button type="button" onClick={() => setCategory("newest")} className={`flex items-center justify-center gap-1 rounded-lg px-2 py-3 text-xs sm:text-sm font-medium transition ${category === "newest" ? "bg-white text-primary shadow-sm" : "text-gray-600"}`}>
+            <Flame className="h-4 w-4" />Neu
           </button>
         </div>
 
         {isLoading ? (
-          <div className="flex justify-center py-16">
-            <Loader2 className="h-9 w-9 animate-spin text-primary" />
-          </div>
+          <div className="flex justify-center py-16"><Loader2 className="h-9 w-9 animate-spin text-primary" /></div>
         ) : error ? (
           <Card><CardContent className="p-6 text-center text-gray-600">Top-Profile konnten gerade nicht geladen werden.</CardContent></Card>
         ) : profiles.length === 0 ? (
@@ -133,41 +116,21 @@ export default function TopProfiles() {
                     <div className="flex items-start gap-3">
                       <Avatar className="h-14 w-14 flex-shrink-0">
                         <AvatarImage src={profile.profileImage || undefined} />
-                        <AvatarFallback className="bg-primary text-white">
-                          {profile.firstName?.[0] || "D"}{profile.lastName?.[0] || ""}
-                        </AvatarFallback>
+                        <AvatarFallback className="bg-primary text-white">{profile.firstName?.[0] || "D"}{profile.lastName?.[0] || ""}</AvatarFallback>
                       </Avatar>
                       <div className="min-w-0 flex-1">
                         <h3 className="font-semibold truncate">{profile.firstName} {profile.lastName}</h3>
-                        <p className="text-sm font-medium text-primary truncate">
-                          {services[0] ? getServiceCategoryLabel(services[0]) : "Dienstleistung"}
-                        </p>
-                        <div className="mt-1">
-                          {profile.reviewCount ? (
-                            <StarRating rating={profile.averageRating || 0} reviewCount={profile.reviewCount} size="sm" />
-                          ) : (
-                            <span className="text-xs text-gray-500">Noch keine Bewertungen</span>
-                          )}
-                        </div>
+                        <p className="text-sm font-medium text-primary truncate">{services[0] ? getServiceCategoryLabel(services[0]) : "Dienstleistung"}</p>
+                        <div className="mt-1">{profile.reviewCount ? <StarRating rating={profile.averageRating || 0} reviewCount={profile.reviewCount} size="sm" /> : <span className="text-xs text-gray-500">Noch keine Bewertungen</span>}</div>
                       </div>
                     </div>
-
-                    <div className="mt-4 flex items-center text-sm text-gray-600">
-                      <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
-                      <span className="truncate">{regions.length ? regions.join(", ") : "Österreich"}</span>
-                    </div>
-
+                    <div className="mt-4 flex items-center text-sm text-gray-600"><MapPin className="h-4 w-4 mr-2 flex-shrink-0" /><span className="truncate">{regions.length ? regions.join(", ") : "Österreich"}</span></div>
                     <div className="mt-4 flex items-center justify-between gap-2">
-                      {category === "mostViewed" && (
-                        <Badge variant="outline"><Eye className="h-3 w-3 mr-1" />{profile.viewCount || 0} Aufrufe</Badge>
-                      )}
+                      {category === "mostViewed" && <Badge variant="outline"><Eye className="h-3 w-3 mr-1" />{profile.viewCount || 0} Aufrufe</Badge>}
                       {category === "newest" && <Badge variant="outline">Neu</Badge>}
                       {category === "topRated" && <Badge variant="outline">Top bewertet</Badge>}
                     </div>
-
-                    <Link href={`/anbieter/${profile.id}`}>
-                      <Button className="w-full mt-4">Profil ansehen</Button>
-                    </Link>
+                    <Link href={`/anbieter/${profile.id}`}><Button className="w-full mt-4">Profil ansehen</Button></Link>
                   </CardContent>
                 </Card>
               );
