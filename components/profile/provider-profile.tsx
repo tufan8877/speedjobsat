@@ -183,7 +183,6 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
                     <a href={`mailto:${profile.email}`} className="hover:text-primary break-all sm:break-normal">
                       {profile.email}
                     </a>
-                    <span className="ml-2 text-xs text-gray-500">Hauptkontakt</span>
                   </div>
                 )}
 
@@ -193,7 +192,6 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
                     <a href={`tel:${profile.phoneNumber}`} className="hover:text-primary">
                       {profile.phoneNumber}
                     </a>
-                    <span className="ml-2 text-xs text-gray-500">optional</span>
                   </div>
                 )}
 
