@@ -7,6 +7,7 @@ import { profiles, users, serviceCategories, availabilityPeriods } from "../shar
 const scryptAsync = promisify(scrypt);
 const CONTACT_EMAIL = "kontakt@speedjob.at";
 const SEED_PREFIX = "starter-profile-";
+const TOTAL_STARTER_PROFILES = 112;
 
 const locationsByState: Record<string, string[]> = {
   Wien: ["Wien 1", "Wien 2", "Wien 3", "Wien 4", "Wien 5", "Wien 6", "Wien 7", "Wien 8", "Wien 9", "Wien 10", "Wien 11", "Wien 12", "Wien 13", "Wien 14", "Wien 15", "Wien 16", "Wien 17", "Wien 18", "Wien 19", "Wien 20", "Wien 21", "Wien 22", "Wien 23"],
@@ -21,31 +22,31 @@ const locationsByState: Record<string, string[]> = {
 };
 
 const stateCounts: Record<string, number> = {
-  Wien: 33,
-  Niederösterreich: 15,
-  Oberösterreich: 12,
-  Steiermark: 10,
-  Salzburg: 8,
-  Tirol: 7,
-  Kärnten: 6,
+  Wien: 37,
+  Niederösterreich: 17,
+  Oberösterreich: 14,
+  Steiermark: 11,
+  Salzburg: 9,
+  Tirol: 8,
+  Kärnten: 7,
   Vorarlberg: 5,
   Burgenland: 4,
 };
 
 const serviceCounts: Record<(typeof serviceCategories)[number], number> = {
-  Installateur: 7,
-  Elektriker: 7,
-  Reinigung: 8,
-  Umzug: 6,
-  Transport: 7,
-  Gartenpflege: 7,
-  Haushaltshilfe: 6,
-  Pflege: 5,
+  Installateur: 22,
+  Elektriker: 12,
+  Reinigung: 7,
+  Umzug: 5,
+  Transport: 6,
+  Gartenpflege: 6,
+  Haushaltshilfe: 5,
+  Pflege: 4,
   Kinderbetreuung: 4,
   Seniorenbetreuung: 4,
   Nachhilfe: 4,
-  "Computer & IT": 6,
-  Handwerker: 4,
+  "Computer & IT": 5,
+  Handwerker: 3,
   Maler: 3,
   Dachdecker: 2,
   Automechaniker: 3,
@@ -115,18 +116,20 @@ async function hashPassword(password: string) {
 }
 
 function buildServicePool(): string[] {
-  const pool: string[] = [];
+  const servicePool: string[] = [];
 
   for (const service of serviceCategories) {
     const count = serviceCounts[service];
-    for (let i = 0; i < count; i += 1) pool.push(service);
+    for (let i = 0; i < count; i += 1) servicePool.push(service);
   }
 
-  if (pool.length !== 100) {
-    throw new Error(`Die Dienstleistungsverteilung enthält ${pool.length} statt 100 Einträge.`);
+  if (servicePool.length !== TOTAL_STARTER_PROFILES) {
+    throw new Error(
+      `Die Dienstleistungsverteilung enthält ${servicePool.length} statt ${TOTAL_STARTER_PROFILES} Einträge.`,
+    );
   }
 
-  return pool;
+  return servicePool;
 }
 
 function buildEntries() {
@@ -175,7 +178,9 @@ function buildEntries() {
 
 async function main() {
   const entries = buildEntries();
-  if (entries.length !== 100) throw new Error(`Es wurden ${entries.length} statt 100 Einträge erzeugt.`);
+  if (entries.length !== TOTAL_STARTER_PROFILES) {
+    throw new Error(`Es wurden ${entries.length} statt ${TOTAL_STARTER_PROFILES} Einträge erzeugt.`);
+  }
 
   const passwordHash = await hashPassword(randomBytes(32).toString("hex"));
   let created = 0;
