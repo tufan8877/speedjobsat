@@ -201,6 +201,16 @@ function buildServicePool() {
   return servicePool;
 }
 
+function buildDescription(service: string, index: number) {
+  const variants = serviceDescriptions[service];
+  if (!variants?.length) {
+    throw new Error(`Für die Dienstleistung "${service}" fehlt eine passende Beschreibung.`);
+  }
+
+  const serviceText = variants[index % variants.length];
+  return `${intros[index % intros.length]} ${serviceText} ${endings[(index * 2 + 1) % endings.length]}`;
+}
+
 async function main() {
   const starterUsers = await db
     .select({ id: users.id, email: users.email })
@@ -216,20 +226,30 @@ async function main() {
 
   for (let index = 0; index < starterUsers.length; index += 1) {
     const service = servicePool[index];
-    const variants = serviceDescriptions[service] || serviceDescriptions["Sonstige Dienstleistungen"];
-    const description = `${intros[index % intros.length]} ${variants[index % variants.length]} ${endings[(index * 2 + 1) % endings.length]}`;
+    const description = buildDescription(service, index);
 
-    await db
+    const updated = await db
       .update(profiles)
       .set({
         services: [service],
         description,
         updatedAt: new Date(),
       })
-      .where(eq(profiles.userId, starterUsers[index].id));
+      .where(eq(profiles.userId, starterUsers[index].id))
+      .returning({ services: profiles.services, description: profiles.description });
+
+    const saved = updated[0];
+    if (!saved || saved.services?.length !== 1 || saved.services[0] !== service) {
+      throw new Error(`Dienstleistung konnte für ${starterUsers[index].email} nicht korrekt gespeichert werden.`);
+    }
+
+    const serviceVariants = serviceDescriptions[service];
+    if (!serviceVariants.some((variant) => saved.description?.includes(variant))) {
+      throw new Error(`Beschreibung passt bei ${starterUsers[index].email} nicht zur Dienstleistung ${service}.`);
+    }
   }
 
-  console.log("Dienstleistungen und Beschreibungen der 112 Starterprofile wurden korrekt aufeinander abgestimmt.");
+  console.log("Alle 112 Starterprofile wurden geprüft: Jede Beschreibung passt exakt zur gespeicherten Dienstleistung.");
 }
 
 main()
