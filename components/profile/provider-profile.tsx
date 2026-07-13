@@ -194,16 +194,6 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
                     </a>
                   </div>
                 )}
-
-                {!user && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
-                    <p className="text-sm text-blue-800">
-                      💡 <strong>Kontaktdaten verfügbar:</strong> Registrieren Sie sich kostenlos, um die Kontaktdaten zu sehen.
-                      <br />
-                      <a href="/auth" className="text-primary font-medium hover:underline">Jetzt registrieren</a>
-                    </p>
-                  </div>
-                )}
               </div>
 
               <div className="mt-6 flex flex-wrap gap-2">
@@ -215,6 +205,16 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
               </div>
             </div>
           </div>
+
+          {!user && (
+            <div className="mt-6 w-full rounded-lg border border-blue-200 bg-blue-50 p-4">
+              <p className="text-sm leading-relaxed text-blue-800">
+                💡 <strong>Kontaktdaten verfügbar:</strong> Registrieren Sie sich kostenlos, um die Kontaktdaten zu sehen.
+                <br />
+                <a href="/auth" className="font-medium text-primary hover:underline">Jetzt registrieren</a>
+              </p>
+            </div>
+          )}
 
           {profile.description && (
             <div className="mt-8">
