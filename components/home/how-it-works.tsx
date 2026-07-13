@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 const steps = [
   {
     title: "Profil suchen",
-    text: "Wähle Dienstleistung und Bundesland aus und finde passende Dienstleisterprofile in deiner Nähe.",
+    text: "Wähle Dienstleistung und Bundesland aus und finde passende Angebote in deiner Nähe.",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <circle cx="11" cy="11" r="8" />
@@ -26,7 +26,7 @@ const steps = [
   },
   {
     title: "Direkt kontaktieren",
-    text: "Registrierte Nutzer sehen die E-Mail-Adresse und kontaktieren den Dienstleister direkt.",
+    text: "Registrierte Nutzer sehen die Kontaktdaten und können direkt Kontakt aufnehmen.",
     icon: (
       <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="5" width="18" height="14" rx="2" />
@@ -48,7 +48,7 @@ export default function HowItWorks() {
             So funktioniert speedjob.at
           </h2>
           <p className="text-gray-600 leading-relaxed">
-            speedjob.at verbindet Kunden mit Dienstleistern über übersichtliche Profile, Bewertungen und Kontaktaufnahme per E-Mail.
+            speedjob.at verbindet Menschen mit passenden Dienstleistungen über übersichtliche Profile, Bewertungen und Kontaktaufnahme per E-Mail.
           </p>
         </div>
 
@@ -70,9 +70,9 @@ export default function HowItWorks() {
         <div className="max-w-5xl mx-auto rounded-2xl border border-primary/10 bg-white shadow-sm overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_0.8fr]">
             <div className="p-5 sm:p-7">
-              <h3 className="text-xl font-bold mb-2 text-gray-900">Du bist Dienstleister?</h3>
+              <h3 className="text-xl font-bold mb-2 text-gray-900">Du bietest eine Dienstleistung an?</h3>
               <p className="text-gray-600 leading-relaxed mb-5">
-                Erstelle kostenlos dein Profil mit Leistung, Region, Beschreibung und Kontakt-E-Mail. So können dich Kunden leichter finden und direkt kontaktieren.
+                Erstelle kostenlos dein Profil mit Leistung, Region, Beschreibung und Kontakt-E-Mail. So können Interessierte dein Angebot leichter finden und direkt Kontakt aufnehmen.
               </p>
               <div className="flex flex-wrap gap-2 text-sm text-gray-700">
                 <span className="rounded-full bg-gray-100 px-3 py-1">Eigenes Profil</span>
