@@ -4,6 +4,7 @@ import { setupAuth } from "./auth";
 import { setupJobRoutes } from "./job-routes";
 import { setupFavoritesRoutes } from "./favorites-routes";
 import { setupProfileRoutes } from "./profile-routes";
+import { setupProfileCountRoutes } from "./profile-count-routes";
 import { setupProfileViewRoutes } from "./profile-view-routes";
 import { setupProfileVerificationRoutes } from "./profile-verification-routes";
 import { setupProfileGalleryRoutes } from "./profile-gallery-routes";
@@ -14,6 +15,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   setupJobRoutes(app);
   setupFavoritesRoutes(app);
   setupProfileRoutes(app);
+  setupProfileCountRoutes(app);
   setupProfileViewRoutes(app);
   setupProfileVerificationRoutes(app);
   setupProfileGalleryRoutes(app);
