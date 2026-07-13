@@ -181,8 +181,8 @@ export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
               style={{ WebkitAppearance: "none" }}
             >
               <option value="newest">Neueste</option>
-              <option value="rating">Bestbewertet</option>
-              <option value="reviews">Meiste Bewertungen</option>
+              <option value="rating">Top bewertet</option>
+              <option value="reviews">Meist angesehen</option>
             </select>
             {isRefreshing ? (
               <Loader2 className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-primary" />
