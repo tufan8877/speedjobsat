@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { federalStates, serviceCategories, getServiceCategoryLabel } from "@shared/schema";
@@ -12,11 +13,13 @@ export default function HeroSection() {
   const { user } = useAuth();
   const [service, setService] = useState<string>("");
   const [region, setRegion] = useState<string>("");
+  const [name, setName] = useState<string>("");
 
   const handleSearch = () => {
     const searchParams = new URLSearchParams();
     if (service) searchParams.append("service", service);
     if (region) searchParams.append("region", region);
+    if (name.trim()) searchParams.append("name", name.trim());
 
     const query = searchParams.toString();
     setLocation(query ? `/suche?${query}` : "/suche");
@@ -56,13 +59,13 @@ export default function HeroSection() {
 
           <Card className="bg-white rounded-xl shadow-lg overflow-visible border border-gray-100">
             <CardContent className="p-4 sm:p-5 md:p-6 text-left">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-5">
                 <div>
                   <Label htmlFor="service" className="text-gray-700 text-sm font-medium mb-2 block">
                     Dienstleistung
                   </Label>
                   <Select value={service} onValueChange={setService}>
-                    <SelectTrigger className="w-full h-12 px-3 bg-gray-50 border border-gray-200 rounded text-gray-800">
+                    <SelectTrigger className="w-full h-14 px-3 bg-gray-50 border border-gray-200 rounded text-base leading-normal text-gray-800 [&>span]:leading-normal">
                       <SelectValue placeholder="Kategorie wählen" />
                     </SelectTrigger>
                     <SelectContent position="popper" side="bottom" align="start" avoidCollisions={false} className="z-[100]">
@@ -80,7 +83,7 @@ export default function HeroSection() {
                     Bundesland
                   </Label>
                   <Select value={region} onValueChange={setRegion}>
-                    <SelectTrigger className="w-full h-12 px-3 bg-gray-50 border border-gray-200 rounded text-gray-800">
+                    <SelectTrigger className="w-full h-14 px-3 bg-gray-50 border border-gray-200 rounded text-base leading-normal text-gray-800 [&>span]:leading-normal">
                       <SelectValue placeholder="Bundesland wählen" />
                     </SelectTrigger>
                     <SelectContent position="popper" side="bottom" align="start" avoidCollisions={false} className="z-[100]">
@@ -93,9 +96,25 @@ export default function HeroSection() {
                   </Select>
                 </div>
 
+                <div>
+                  <Label htmlFor="name" className="text-gray-700 text-sm font-medium mb-2 block">
+                    Filter
+                  </Label>
+                  <Input
+                    id="name"
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                    placeholder="z. B. Mathematik, Therme, Küche"
+                    className="h-14 bg-gray-50 border-gray-200 text-base"
+                  />
+                  <p className="mt-2 text-xs text-gray-500">
+                    Durchsucht Namen, Dienstleistungen und Profilbeschreibungen.
+                  </p>
+                </div>
+
                 <div className="flex items-end">
                   <Button
-                    className="w-full h-12 bg-primary hover:bg-primary/90 text-white rounded font-medium transition text-base"
+                    className="w-full h-14 bg-primary hover:bg-primary/90 text-white rounded font-medium transition text-base"
                     onClick={handleSearch}
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
