@@ -60,7 +60,7 @@ export default function ProviderListing() {
               Neue Profile
             </h2>
             <p className="text-gray-600 mt-2 hidden sm:block">
-              Aktuelle Dienstleisterprofile mit Region, Verfügbarkeit und Bewertungen.
+              Aktuelle Angebote mit Region, Verfügbarkeit und Bewertungen.
             </p>
           </div>
           <Link href="/suche">
