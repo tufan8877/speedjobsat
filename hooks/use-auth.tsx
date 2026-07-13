@@ -125,7 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       return result;
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "Ein Fehler ist aufgetreten";
+      const errorMessage = "Der Bestätigungscode konnte momentan nicht versendet werden. Bitte versuchen Sie es später erneut.";
       setError(errorMessage);
 
       toast({
