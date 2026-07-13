@@ -43,6 +43,10 @@ function visitorKey(req: Request) {
   return createHash("sha256").update(`${salt}:${source}`).digest("hex");
 }
 
+function normalizeSearchText(value: unknown): string {
+  return String(value || "").trim().toLocaleLowerCase("de-AT");
+}
+
 async function enrichProfiles(profiles: any[]) {
   return Promise.all(
     profiles.map(async (profile) => {
@@ -58,6 +62,19 @@ async function enrichProfiles(profiles: any[]) {
         averageRating,
       };
     }),
+  );
+}
+
+async function getViewCounts() {
+  await ensureProfileViewsTable();
+  const result = await pool.query(`
+    SELECT profile_id, COUNT(*)::int AS view_count
+    FROM profile_views
+    GROUP BY profile_id
+  `);
+
+  return new Map<number, number>(
+    result.rows.map((row) => [Number(row.profile_id), Number(row.view_count || 0)]),
   );
 }
 
@@ -142,6 +159,79 @@ export function setupProfileViewRoutes(app: Express) {
     }
   });
 
+  app.get("/api/ranked-profiles", async (req: Request, res: Response) => {
+    try {
+      const service = String(req.query.service || "");
+      const region = String(req.query.region || "");
+      const name = String(req.query.name || "");
+      const sort = String(req.query.sort || "newest");
+      const page = Math.max(1, Number(req.query.page || 1));
+      const pageSize = Math.max(1, Math.min(50, Number(req.query.pageSize || 10)));
+
+      let profiles = await storage.getAllProfiles();
+
+      if (service && service !== "all") {
+        const normalizedService = normalizeSearchText(service);
+        profiles = profiles.filter((profile: any) =>
+          (profile.services || []).some((item: string) => normalizeSearchText(item) === normalizedService) ||
+          normalizeSearchText(profile.customServices).includes(normalizedService),
+        );
+      }
+
+      if (region && region !== "all") {
+        profiles = profiles.filter((profile: any) => (profile.regions || []).includes(region));
+      }
+
+      if (name.trim()) {
+        const keywords = normalizeSearchText(name).split(/\s+/).filter(Boolean);
+        profiles = profiles.filter((profile: any) => {
+          const searchableText = [
+            profile.firstName,
+            profile.lastName,
+            profile.description,
+            profile.customServices,
+            ...(profile.services || []),
+            ...(profile.regions || []),
+          ]
+            .map(normalizeSearchText)
+            .join(" ");
+
+          return keywords.every((keyword) => searchableText.includes(keyword));
+        });
+      }
+
+      const viewCounts = await getViewCounts();
+      const enriched = (await enrichProfiles(profiles)).map((profile) => ({
+        ...profile,
+        viewCount: viewCounts.get(profile.id) || 0,
+      }));
+
+      enriched.sort((a, b) => {
+        if (sort === "rating") {
+          if (b.averageRating !== a.averageRating) return b.averageRating - a.averageRating;
+          if (b.reviewCount !== a.reviewCount) return b.reviewCount - a.reviewCount;
+        } else if (sort === "views") {
+          if (b.viewCount !== a.viewCount) return b.viewCount - a.viewCount;
+        }
+
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        if (dateB !== dateA) return dateB - dateA;
+        return Number(b.id || 0) - Number(a.id || 0);
+      });
+
+      const total = enriched.length;
+      const offset = (page - 1) * pageSize;
+      return res.json({
+        profiles: enriched.slice(offset, offset + pageSize),
+        total,
+      });
+    } catch (error) {
+      console.error("Fehler beim Laden der sortierten Profile:", error);
+      return res.status(500).json({ message: "Profile konnten nicht sortiert geladen werden" });
+    }
+  });
+
   app.get("/api/top-profiles", async (_req: Request, res: Response) => {
     try {
       await ensureProfileViewsTable();
@@ -161,16 +251,7 @@ export function setupProfileViewRoutes(app: Express) {
         })
         .slice(0, 4);
 
-      const viewsResult = await pool.query(`
-        SELECT profile_id, COUNT(*)::int AS view_count
-        FROM profile_views
-        GROUP BY profile_id
-        ORDER BY view_count DESC
-        LIMIT 20
-      `);
-      const viewCounts = new Map<number, number>(
-        viewsResult.rows.map((row) => [Number(row.profile_id), Number(row.view_count || 0)]),
-      );
+      const viewCounts = await getViewCounts();
       const mostViewed = [...enriched]
         .map((profile) => ({ ...profile, viewCount: viewCounts.get(profile.id) || 0 }))
         .filter((profile) => profile.viewCount > 0)
