@@ -16,6 +16,7 @@ const preferredServices = [
 type ProfileCountsResponse = {
   counts: Record<string, number>;
   totalProfiles: number;
+  generatedAt?: string;
 };
 
 function ServiceToolboxIcon() {
@@ -42,11 +43,15 @@ function ServiceToolboxIcon() {
 
 export default function FeaturedServices() {
   const { data, isLoading } = useQuery<ProfileCountsResponse>({
-    queryKey: ["/api/profile-counts"],
+    queryKey: ["/api/profile-counts", "live"],
     queryFn: async () => {
-      const res = await fetch("/api/profile-counts", {
+      const res = await fetch(`/api/profile-counts?_=${Date.now()}`, {
         credentials: "include",
         cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
+        },
       });
 
       if (!res.ok) {
@@ -55,8 +60,11 @@ export default function FeaturedServices() {
 
       return res.json();
     },
-    refetchInterval: 5000,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
+    refetchInterval: 15000,
     staleTime: 0,
+    gcTime: 0,
   });
 
   const providerCounts = data?.counts || {};
