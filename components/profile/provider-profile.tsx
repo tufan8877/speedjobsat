@@ -200,7 +200,7 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
                 {!user && (
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
                     <p className="text-sm text-blue-800">
-                      💡 <strong>Kontaktdaten verfügbar:</strong> Registrieren Sie sich kostenlos, um die E-Mail-Adresse und eine eventuell hinterlegte Handynummer zu sehen.
+                      💡 <strong>Kontaktdaten verfügbar:</strong> Registrieren Sie sich kostenlos, um die Kontaktdaten zu sehen.
                       <br />
                       <a href="/auth" className="text-primary font-medium hover:underline">Jetzt registrieren</a>
                     </p>
