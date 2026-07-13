@@ -4,11 +4,6 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { serviceCategories, getServiceCategoryLabel } from "@shared/schema";
 
-type ProfileForCount = {
-  id?: number;
-  services?: string[] | string | null;
-};
-
 const preferredServices = [
   "Installateur",
   "Elektriker",
@@ -17,6 +12,11 @@ const preferredServices = [
   "Computer & IT",
   "Handwerker",
 ];
+
+type ProfileCountsResponse = {
+  counts: Record<string, number>;
+  totalProfiles: number;
+};
 
 function ServiceToolboxIcon() {
   return (
@@ -40,46 +40,27 @@ function ServiceToolboxIcon() {
   );
 }
 
-function safeArray(value: unknown): string[] {
-  if (Array.isArray(value)) return value.map(String).filter(Boolean);
-  if (typeof value === "string") {
-    try {
-      const parsed = JSON.parse(value);
-      if (Array.isArray(parsed)) return parsed.map(String).filter(Boolean);
-    } catch {
-      return value.split(",").map((item) => item.trim()).filter(Boolean);
-    }
-  }
-  return [];
-}
-
-function countProvidersByService(profiles: ProfileForCount[]) {
-  const counts: Record<string, number> = {};
-
-  for (const profile of profiles) {
-    const uniqueServices = new Set(safeArray(profile.services));
-    for (const service of uniqueServices) {
-      counts[service] = (counts[service] || 0) + 1;
-    }
-  }
-
-  return counts;
-}
-
 export default function FeaturedServices() {
-  const { data } = useQuery<{ profiles: ProfileForCount[] }>({
-    queryKey: ["/api/profiles", "service-counts-live"],
+  const { data, isLoading } = useQuery<ProfileCountsResponse>({
+    queryKey: ["/api/profile-counts"],
     queryFn: async () => {
-      const res = await fetch("/api/profiles?pageSize=1000&page=1", {
+      const res = await fetch("/api/profile-counts", {
         credentials: "include",
+        cache: "no-store",
       });
-      if (!res.ok) throw new Error("Dienstleister konnten nicht geladen werden");
+
+      if (!res.ok) {
+        throw new Error("Profilanzahlen konnten nicht geladen werden");
+      }
+
       return res.json();
     },
     refetchInterval: 5000,
+    staleTime: 0,
   });
 
-  const providerCounts = useMemo(() => countProvidersByService(data?.profiles || []), [data?.profiles]);
+  const providerCounts = data?.counts || {};
+
   const displayedServices = useMemo(() => {
     const activeServices = [...serviceCategories]
       .filter((service) => (providerCounts[service] || 0) > 0)
@@ -129,7 +110,11 @@ export default function FeaturedServices() {
                 </div>
                 <h3 className="font-medium text-gray-800 group-hover:text-primary">{getServiceCategoryLabel(service)}</h3>
                 <p className="text-sm text-gray-500 mt-1">
-                  {count > 0 ? `${count} ${count === 1 ? "Profil" : "Profile"}` : "Kategorie ansehen"}
+                  {isLoading
+                    ? "Wird geladen …"
+                    : count === 1
+                      ? "1 Profil"
+                      : `${count} Profile`}
                 </p>
               </Link>
             );
