@@ -109,7 +109,7 @@ export default function HeroSection() {
                   </p>
                 </div>
 
-                <div className="flex items-end">
+                <div className="md:pt-7">
                   <Button
                     className="w-full h-14 bg-primary hover:bg-primary/90 text-white rounded font-medium transition text-base"
                     onClick={handleSearch}
