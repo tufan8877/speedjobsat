@@ -3,15 +3,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { serviceCategories, getServiceCategoryLabel } from "@shared/schema";
+import { ArrowRight, BookOpen, Brush, Code2, Hammer, Languages, Music2, Sparkles, Truck, Wrench } from "lucide-react";
 
-const preferredServices = [
-  "Installateur",
-  "Elektriker",
-  "Reinigung",
-  "Transport",
-  "Computer & IT",
-  "Handwerker",
-];
+const preferredServices = ["Nachhilfe", "Computer & IT", "Handwerker", "Elektriker", "Reinigung", "Transport"];
 
 type ProfileCountsResponse = {
   counts: Record<string, number>;
@@ -19,27 +13,17 @@ type ProfileCountsResponse = {
   generatedAt?: string;
 };
 
-function ServiceToolboxIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      <path d="M10 6V5a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v1" />
-      <rect x="3" y="6" width="18" height="14" rx="2" />
-      <path d="M3 12h18" />
-      <path d="M12 12v3" />
-    </svg>
-  );
-}
+const serviceIcons: Record<string, any> = {
+  Nachhilfe: BookOpen,
+  "Computer & IT": Code2,
+  Handwerker: Hammer,
+  Elektriker: Wrench,
+  Reinigung: Sparkles,
+  Transport: Truck,
+  Maler: Brush,
+  Sprachen: Languages,
+  Musik: Music2,
+};
 
 export default function FeaturedServices() {
   const { data, isLoading } = useQuery<ProfileCountsResponse>({
@@ -48,16 +32,9 @@ export default function FeaturedServices() {
       const res = await fetch(`/api/profile-counts?_=${Date.now()}`, {
         credentials: "include",
         cache: "no-store",
-        headers: {
-          "Cache-Control": "no-cache",
-          Pragma: "no-cache",
-        },
+        headers: { "Cache-Control": "no-cache", Pragma: "no-cache" },
       });
-
-      if (!res.ok) {
-        throw new Error("Profilanzahlen konnten nicht geladen werden");
-      }
-
+      if (!res.ok) throw new Error("Profilanzahlen konnten nicht geladen werden");
       return res.json();
     },
     refetchOnMount: "always",
@@ -72,70 +49,54 @@ export default function FeaturedServices() {
   const displayedServices = useMemo(() => {
     const activeServices = [...serviceCategories]
       .filter((service) => (providerCounts[service] || 0) > 0)
-      .sort((a, b) => {
-        const countDiff = (providerCounts[b] || 0) - (providerCounts[a] || 0);
-        if (countDiff !== 0) return countDiff;
-        return serviceCategories.indexOf(a) - serviceCategories.indexOf(b);
-      });
-
-    const fallbackServices = preferredServices.filter((service) =>
-      serviceCategories.includes(service as (typeof serviceCategories)[number]),
-    );
-
-    return [...activeServices, ...fallbackServices]
-      .filter((service, index, array) => array.indexOf(service) === index)
-      .slice(0, 6);
+      .sort((a, b) => (providerCounts[b] || 0) - (providerCounts[a] || 0));
+    const fallbackServices = preferredServices.filter((service) => serviceCategories.includes(service as any));
+    return [...activeServices, ...fallbackServices].filter((service, index, array) => array.indexOf(service) === index).slice(0, 7);
   }, [providerCounts]);
 
   return (
-    <section className="py-12 bg-white">
+    <section className="bg-white py-14 sm:py-18">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row md:justify-between md:items-end gap-3 mb-8">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold font-title">Kategorien auf speedjob.at</h2>
-            <p className="text-gray-600 mt-2 max-w-2xl">
-              Von Handwerk bis IT: Nutzer können gezielt nach Dienstleistung und Bundesland suchen.
-            </p>
-          </div>
-          <Link href="/suche" className="text-primary hover:underline font-medium hidden md:flex items-center">
-            Alle anzeigen
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </Link>
+        <div className="mb-8 text-center">
+          <span className="inline-flex rounded-full bg-[#fff0e5] px-4 py-2 text-sm font-bold text-[#d94f00]">Für jede Fähigkeit die passende Kategorie</span>
+          <h2 className="mt-4 text-3xl font-black tracking-[-0.035em] text-[#072b4c] sm:text-4xl">
+            Entdecke Dienstleistungen auf <span className="text-[#ff6b0b]">Speedjob.at</span>
+          </h2>
+          <p className="mx-auto mt-3 max-w-2xl text-slate-600">Von Nachhilfe über IT bis Handwerk: Finde passende Profile in deiner Region.</p>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-7">
           {displayedServices.map((service) => {
             const count = providerCounts[service] || 0;
-
+            const Icon = serviceIcons[service] || Wrench;
             return (
               <Link
                 key={service}
                 href={`/suche?service=${encodeURIComponent(service)}`}
-                className="group bg-gray-50 hover:bg-gray-100 rounded-xl p-4 text-center transition"
+                className="group rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-[0_8px_24px_rgba(7,43,76,0.06)] transition-all hover:-translate-y-1 hover:border-[#ff6b0b]/40 hover:shadow-[0_16px_34px_rgba(7,43,76,0.12)]"
               >
-                <div className="w-12 h-12 bg-primary-50 rounded-full flex items-center justify-center text-primary mx-auto mb-3 group-hover:bg-primary/10 transition">
-                  <ServiceToolboxIcon />
+                <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#fff0e5] text-[#ff6b0b] transition group-hover:bg-[#ff6b0b] group-hover:text-white">
+                  <Icon className="h-6 w-6" />
                 </div>
-                <h3 className="font-medium text-gray-800 group-hover:text-primary">{getServiceCategoryLabel(service)}</h3>
-                <p className="text-sm text-gray-500 mt-1">
-                  {isLoading
-                    ? "Wird geladen …"
-                    : count === 1
-                      ? "1 Profil"
-                      : `${count} Profile`}
-                </p>
+                <h3 className="min-h-10 text-sm font-bold leading-tight text-[#072b4c] group-hover:text-[#ff6b0b]">{getServiceCategoryLabel(service)}</h3>
+                <p className="mt-2 text-xs text-slate-500">{isLoading ? "Wird geladen …" : count === 1 ? "1 Profil" : `${count} Profile`}</p>
               </Link>
             );
           })}
         </div>
 
-        <div className="mt-6 text-center md:hidden">
+        <div className="mt-8 text-center">
           <Link href="/suche">
-            <Button variant="link" className="text-primary hover:underline font-medium">
-              Alle anzeigen
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="ml-1"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <Button variant="outline" className="h-12 rounded-xl border-[#072b4c]/20 px-6 font-bold text-[#072b4c] hover:bg-[#072b4c]/5">
+              Alle Dienstleistungen ansehen <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
+        </div>
+
+        <div className="mt-12 grid gap-4 rounded-[1.75rem] border border-[#ff6b0b]/15 bg-gradient-to-r from-[#fff7f1] to-white p-5 sm:grid-cols-3 sm:p-7">
+          <div className="text-center sm:border-r sm:border-slate-200"><p className="text-2xl font-black text-[#072b4c]">{data?.totalProfiles ?? 0}</p><p className="text-sm text-slate-600">Aktive Profile</p></div>
+          <div className="text-center sm:border-r sm:border-slate-200"><p className="text-2xl font-black text-[#072b4c]">Ganz Österreich</p><p className="text-sm text-slate-600">Alle Bundesländer</p></div>
+          <div className="text-center"><p className="text-2xl font-black text-[#ff6b0b]">Kostenlos</p><p className="text-sm text-slate-600">Profil erstellen</p></div>
         </div>
       </div>
     </section>
