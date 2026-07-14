@@ -49,23 +49,11 @@ export default function Header() {
             </Link>
 
             <nav className="hidden items-center gap-8 lg:flex">
-              <Link href="/suche" className="font-semibold text-[#183550] transition-colors hover:text-[#ff6b0b]">
-                Dienstleistungen
-              </Link>
-              <Link href="/ueber-uns" className="font-semibold text-[#183550] transition-colors hover:text-[#ff6b0b]">
-                Über uns
-              </Link>
-              <Link href="/hilfe-faq" className="font-semibold text-[#183550] transition-colors hover:text-[#ff6b0b]">
-                So funktioniert’s
-              </Link>
-              <Link href="/kontakt" className="font-semibold text-[#183550] transition-colors hover:text-[#ff6b0b]">
-                Kontakt
-              </Link>
-              {user && (
-                <Link href="/favoriten" className="font-semibold text-[#183550] transition-colors hover:text-[#ff6b0b]">
-                  Favoriten
-                </Link>
-              )}
+              <Link href="/suche" className="font-semibold text-[#183550] transition-colors hover:text-[#ff6b0b]">Dienstleistungen</Link>
+              <Link href="/ueber-uns" className="font-semibold text-[#183550] transition-colors hover:text-[#ff6b0b]">Über uns</Link>
+              <Link href="/hilfe-faq" className="font-semibold text-[#183550] transition-colors hover:text-[#ff6b0b]">So funktioniert’s</Link>
+              <Link href="/kontakt" className="font-semibold text-[#183550] transition-colors hover:text-[#ff6b0b]">Kontakt</Link>
+              {user && <Link href="/favoriten" className="font-semibold text-[#183550] transition-colors hover:text-[#ff6b0b]">Favoriten</Link>}
             </nav>
 
             <div className="hidden items-center gap-3 md:flex">
@@ -77,9 +65,7 @@ export default function Header() {
                     <Button variant="ghost" className="relative h-10 w-10 rounded-full border border-slate-200">
                       <Avatar className="h-9 w-9">
                         <AvatarImage src={`https://avatar.vercel.sh/${user.email}`} alt={user.email} />
-                        <AvatarFallback className="bg-[#072b4c] text-white">
-                          {user.email.charAt(0).toUpperCase()}
-                        </AvatarFallback>
+                        <AvatarFallback className="bg-[#072b4c] text-white">{user.email.charAt(0).toUpperCase()}</AvatarFallback>
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
@@ -106,15 +92,26 @@ export default function Header() {
               )}
             </div>
 
-            <button className="rounded-xl p-2.5 hover:bg-slate-100 md:hidden" onClick={() => setMobileMenuOpen(!mobileMenuOpen)} aria-label="Menü öffnen">
+            <button
+              className="rounded-xl bg-slate-100 p-2.5 transition hover:bg-slate-200 md:hidden"
+              onClick={() => setMobileMenuOpen(true)}
+              aria-label="Menü öffnen"
+              aria-expanded={mobileMenuOpen}
+            >
               <div className="space-y-1.5"><div className="h-0.5 w-6 bg-[#072b4c]" /><div className="h-0.5 w-6 bg-[#072b4c]" /><div className="h-0.5 w-6 bg-[#072b4c]" /></div>
             </button>
           </div>
         </div>
-
-        <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} user={user} onLogout={logout} />
       </header>
+
       <div className="site-header-spacer" aria-hidden="true" />
+
+      <MobileMenu
+        isOpen={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        user={user}
+        onLogout={logout}
+      />
     </>
   );
 }
