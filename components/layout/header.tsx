@@ -121,7 +121,7 @@ export default function Header() {
             </div>
 
             <button
-              className="rounded-xl p-2.5 hover:bg-slate-100 md:hidden"
+              className="rounded-xl p-2.5 hover:bg-slate-100 lg:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Menü öffnen"
             >
