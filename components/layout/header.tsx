@@ -35,7 +35,7 @@ export default function Header() {
 
             <nav className="hidden items-center gap-7 lg:flex">
               <Link href="/suche" className="font-semibold text-primary/90 transition-colors hover:text-secondary">
-                Für Dienstleistungen
+                Dienstleistungen
               </Link>
               <Link href="/hilfe-faq" className="font-semibold text-primary/90 transition-colors hover:text-secondary">
                 Hilfe
