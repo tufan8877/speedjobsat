@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import { Award, Eye, Flame, Loader2, MapPin, Star } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { StarRating } from "@/components/ui/star-rating";
@@ -76,42 +75,46 @@ export default function TopProfiles() {
       <div className="container mx-auto px-4">
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-6">
           <div>
-            <div className="flex items-center gap-2">
-              <Award className="h-6 w-6 text-primary" />
-              <h2 className="text-2xl sm:text-3xl font-bold font-title">Top-Dienstleistungen</h2>
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent text-secondary">
+                <Award className="h-5 w-5" />
+              </div>
+              <h2 className="font-title text-2xl font-black text-primary sm:text-3xl">Top-Dienstleistungen</h2>
             </div>
-            <p className="text-gray-600 mt-2">Entdecke gut bewertete, häufig angesehene und neue Profile.</p>
+            <p className="text-slate-600 mt-2">Entdecke gut bewertete, häufig angesehene und neue Profile.</p>
           </div>
           <Link href="/suche">
-            <Button variant="outline" className="w-full sm:w-auto">Alle Profile ansehen</Button>
+            <Button variant="outline" className="w-full rounded-xl border-primary/20 font-bold text-primary hover:bg-primary/5 sm:w-auto">
+              Alle Profile ansehen
+            </Button>
           </Link>
         </div>
 
-        <div className="grid grid-cols-3 gap-2 mb-6 rounded-xl bg-gray-100 p-1">
-          <button type="button" onClick={() => setCategory("topRated")} className={`flex items-center justify-center gap-1 rounded-lg px-2 py-3 text-xs sm:text-sm font-medium transition ${category === "topRated" ? "bg-white text-primary shadow-sm" : "text-gray-600"}`}>
+        <div className="grid grid-cols-3 gap-1.5 mb-6 rounded-2xl bg-accent/60 p-1.5">
+          <button type="button" onClick={() => setCategory("topRated")} className={`flex items-center justify-center gap-1.5 rounded-xl px-2 py-3 text-xs font-bold transition sm:text-sm ${category === "topRated" ? "bg-white text-primary shadow-sm" : "text-primary/50"}`}>
             <Star className="h-4 w-4" />Top bewertet
           </button>
-          <button type="button" onClick={() => setCategory("mostViewed")} className={`flex items-center justify-center gap-1 rounded-lg px-2 py-3 text-xs sm:text-sm font-medium transition ${category === "mostViewed" ? "bg-white text-primary shadow-sm" : "text-gray-600"}`}>
+          <button type="button" onClick={() => setCategory("mostViewed")} className={`flex items-center justify-center gap-1.5 rounded-xl px-2 py-3 text-xs font-bold transition sm:text-sm ${category === "mostViewed" ? "bg-white text-primary shadow-sm" : "text-primary/50"}`}>
             <Eye className="h-4 w-4" />Meist angesehen
           </button>
-          <button type="button" onClick={() => setCategory("newest")} className={`flex items-center justify-center gap-1 rounded-lg px-2 py-3 text-xs sm:text-sm font-medium transition ${category === "newest" ? "bg-white text-primary shadow-sm" : "text-gray-600"}`}>
+          <button type="button" onClick={() => setCategory("newest")} className={`flex items-center justify-center gap-1.5 rounded-xl px-2 py-3 text-xs font-bold transition sm:text-sm ${category === "newest" ? "bg-white text-primary shadow-sm" : "text-primary/50"}`}>
             <Flame className="h-4 w-4" />Neu
           </button>
         </div>
 
         {isLoading ? (
-          <div className="flex justify-center py-16"><Loader2 className="h-9 w-9 animate-spin text-primary" /></div>
+          <div className="flex justify-center py-16"><Loader2 className="h-9 w-9 animate-spin text-secondary" /></div>
         ) : error ? (
-          <Card><CardContent className="p-6 text-center text-gray-600">Top-Profile konnten gerade nicht geladen werden.</CardContent></Card>
+          <Card className="rounded-2xl border-slate-100"><CardContent className="p-6 text-center text-slate-600">Top-Profile konnten gerade nicht geladen werden.</CardContent></Card>
         ) : profiles.length === 0 ? (
-          <Card><CardContent className="p-6 text-center text-gray-600">{categoryConfig[category].empty}</CardContent></Card>
+          <Card className="rounded-2xl border-slate-100"><CardContent className="p-6 text-center text-slate-600">{categoryConfig[category].empty}</CardContent></Card>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {profiles.map((profile) => {
               const services = safeArray(profile.services);
               const regions = safeArray(profile.regions);
               return (
-                <Card key={`${category}-${profile.id}`} className="overflow-hidden hover:shadow-md transition">
+                <Card key={`${category}-${profile.id}`} className="overflow-hidden rounded-2xl border-slate-100 shadow-sm transition hover:-translate-y-0.5 hover:shadow-lg">
                   <CardContent className="p-5">
                     <div className="flex items-start gap-3">
                       <Avatar className="h-14 w-14 flex-shrink-0">
@@ -119,18 +122,18 @@ export default function TopProfiles() {
                         <AvatarFallback className="bg-primary text-white">{profile.firstName?.[0] || "D"}{profile.lastName?.[0] || ""}</AvatarFallback>
                       </Avatar>
                       <div className="min-w-0 flex-1">
-                        <h3 className="font-semibold truncate">{profile.firstName} {profile.lastName}</h3>
-                        <p className="text-sm font-medium text-primary truncate">{services[0] ? getServiceCategoryLabel(services[0]) : "Dienstleistung"}</p>
-                        <div className="mt-1">{profile.reviewCount ? <StarRating rating={profile.averageRating || 0} reviewCount={profile.reviewCount} size="sm" /> : <span className="text-xs text-gray-500">Noch keine Bewertungen</span>}</div>
+                        <h3 className="font-bold text-primary truncate">{profile.firstName} {profile.lastName}</h3>
+                        <p className="text-sm font-semibold text-secondary truncate">{services[0] ? getServiceCategoryLabel(services[0]) : "Dienstleistung"}</p>
+                        <div className="mt-1">{profile.reviewCount ? <StarRating rating={profile.averageRating || 0} reviewCount={profile.reviewCount} size="sm" /> : <span className="text-xs text-slate-500">Noch keine Bewertungen</span>}</div>
                       </div>
                     </div>
-                    <div className="mt-4 flex items-center text-sm text-gray-600"><MapPin className="h-4 w-4 mr-2 flex-shrink-0" /><span className="truncate">{regions.length ? regions.join(", ") : "Österreich"}</span></div>
+                    <div className="mt-4 flex items-center text-sm text-slate-500"><MapPin className="h-4 w-4 mr-2 flex-shrink-0 text-secondary" /><span className="truncate">{regions.length ? regions.join(", ") : "Österreich"}</span></div>
                     <div className="mt-4 flex items-center justify-between gap-2">
-                      {category === "mostViewed" && <Badge variant="outline"><Eye className="h-3 w-3 mr-1" />{profile.viewCount || 0} Aufrufe</Badge>}
-                      {category === "newest" && <Badge variant="outline">Neu</Badge>}
-                      {category === "topRated" && <Badge variant="outline">Top bewertet</Badge>}
+                      {category === "mostViewed" && <span className="inline-flex items-center rounded-full bg-accent px-2.5 py-1 text-xs font-bold text-secondary"><Eye className="h-3 w-3 mr-1" />{profile.viewCount || 0} Aufrufe</span>}
+                      {category === "newest" && <span className="inline-flex items-center rounded-full bg-accent px-2.5 py-1 text-xs font-bold text-secondary">Neu</span>}
+                      {category === "topRated" && <span className="inline-flex items-center rounded-full bg-accent px-2.5 py-1 text-xs font-bold text-secondary">Top bewertet</span>}
                     </div>
-                    <Link href={`/anbieter/${profile.id}`}><Button className="w-full mt-4">Profil ansehen</Button></Link>
+                    <Link href={`/anbieter/${profile.id}`}><Button className="w-full mt-4 rounded-xl font-bold">Profil ansehen</Button></Link>
                   </CardContent>
                 </Card>
               );
