@@ -2,9 +2,10 @@ import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { LogOut, User as UserIcon, Shield, Heart } from "lucide-react";
+import { LogOut, User as UserIcon, Shield, Heart, UserRound } from "lucide-react";
 import { useState } from "react";
 import MobileMenu from "./mobile-menu";
+import BrandLogo from "./brand-logo";
 import { useAuth } from "@/hooks/use-auth";
 
 export default function Header() {
@@ -25,40 +26,41 @@ export default function Header() {
 
   return (
     <>
-      <header className="site-header-fixed shadow-sm border-b border-gray-200">
+      <header className="site-header-fixed border-b border-slate-100 bg-white">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            <Link href="/" onClick={goHome} className="flex items-center space-x-2 cursor-pointer">
-              <span className="text-primary text-2xl font-bold">
-                speedjob<span className="text-secondary">.at</span>
-              </span>
+          <div className="flex h-[70px] items-center justify-between">
+            <Link href="/" onClick={goHome} className="cursor-pointer" aria-label="speedjob.at Startseite">
+              <BrandLogo />
             </Link>
 
-            <nav className="hidden md:flex items-center space-x-6">
-              <Link href="/suche" className="text-gray-700 hover:text-primary transition-colors">
-                Dienstleistungen
+            <nav className="hidden items-center gap-7 lg:flex">
+              <Link href="/suche" className="font-semibold text-primary/90 transition-colors hover:text-secondary">
+                Für Dienstleister
               </Link>
-              <Link href="/ueber-uns" className="text-gray-700 hover:text-primary transition-colors">
+              <Link href="/auftraege" className="font-semibold text-primary/90 transition-colors hover:text-secondary">
+                Für Auftraggeber
+              </Link>
+              <Link href="/hilfe-faq" className="font-semibold text-primary/90 transition-colors hover:text-secondary">
+                So funktioniert's
+              </Link>
+              <Link href="/ueber-uns" className="font-semibold text-primary/90 transition-colors hover:text-secondary">
                 Über uns
               </Link>
-              <Link href="/support" className="text-gray-700 hover:text-primary transition-colors">
-                Support
-              </Link>
               {user && (
-                <Link href="/favoriten" className="text-gray-700 hover:text-primary transition-colors">
+                <Link href="/favoriten" className="font-semibold text-primary/90 transition-colors hover:text-secondary">
                   Favoriten
                 </Link>
               )}
             </nav>
 
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="hidden items-center gap-3 md:flex">
               {isLoading ? (
-                <div className="w-8 h-8 bg-gray-200 rounded-full animate-pulse"></div>
+                <div className="h-9 w-9 animate-pulse rounded-full bg-slate-200" />
               ) : user ? (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                      <Avatar className="h-8 w-8">
+                    <Button variant="ghost" className="relative h-10 w-10 rounded-full border border-slate-200">
+                      <Avatar className="h-9 w-9">
                         <AvatarImage src={`https://avatar.vercel.sh/${user.email}`} alt={user.email} />
                         <AvatarFallback className="bg-primary text-white">
                           {user.email.charAt(0).toUpperCase()}
@@ -70,22 +72,20 @@ export default function Header() {
                     <div className="flex items-center justify-start gap-2 p-2">
                       <div className="flex flex-col space-y-1 leading-none">
                         <p className="font-medium">{user.email}</p>
-                        <p className="text-xs text-muted-foreground break-all sm:break-normal">
-                          Status: {user.status}
-                        </p>
+                        <p className="break-all text-xs text-muted-foreground sm:break-normal">Status: {user.status}</p>
                       </div>
                     </div>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
                       <Link href="/profil" className="flex items-center">
                         <UserIcon className="mr-2 h-4 w-4" />
-                        <span>Profil verwalten</span>
+                        Profil verwalten
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link href="/favoriten" className="flex items-center">
                         <Heart className="mr-2 h-4 w-4" />
-                        <span>Favoriten</span>
+                        Favoriten
                       </Link>
                     </DropdownMenuItem>
                     {user.isAdmin && (
@@ -94,58 +94,50 @@ export default function Header() {
                         <DropdownMenuItem asChild>
                           <Link href="/admin" className="flex items-center">
                             <Shield className="mr-2 h-4 w-4" />
-                            <span>Admin-Bereich</span>
+                            Admin-Bereich
                           </Link>
                         </DropdownMenuItem>
                       </>
                     )}
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onClick={logout}
-                      disabled={logoutPending}
-                      className="text-red-600 focus:text-red-600"
-                    >
+                    <DropdownMenuItem onClick={logout} disabled={logoutPending} className="text-red-600 focus:text-red-600">
                       <LogOut className="mr-2 h-4 w-4" />
-                      <span>Abmelden</span>
+                      Abmelden
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               ) : (
-                <div className="flex items-center space-x-2">
-                  <Link href="/auth">
-                    <Button variant="outline" size="sm">
+                <>
+                  <Link href="/auth?tab=login">
+                    <Button variant="outline" className="h-10 rounded-xl border-primary/25 px-5 font-bold text-primary hover:bg-primary/5">
                       Anmelden
                     </Button>
                   </Link>
-                  <Link href="/auth">
-                    <Button size="sm">
+                  <Link href="/auth?tab=register">
+                    <Button className="h-10 rounded-xl bg-secondary px-5 font-bold text-white shadow-[0_8px_20px_rgba(255,107,11,0.25)] hover:bg-secondary/90">
+                      <UserRound className="mr-2 h-4 w-4" />
                       Registrieren
                     </Button>
                   </Link>
-                </div>
+                </>
               )}
             </div>
 
             <button
-              className="md:hidden p-2 rounded-md hover:bg-gray-100"
+              className="rounded-xl p-2.5 hover:bg-slate-100 md:hidden"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Menü öffnen"
             >
-              <div className="space-y-1">
-                <div className="w-6 h-0.5 bg-gray-600"></div>
-                <div className="w-6 h-0.5 bg-gray-600"></div>
-                <div className="w-6 h-0.5 bg-gray-600"></div>
+              <div className="space-y-1.5">
+                <div className="h-0.5 w-6 bg-primary" />
+                <div className="h-0.5 w-6 bg-primary" />
+                <div className="h-0.5 w-6 bg-primary" />
               </div>
             </button>
           </div>
         </div>
 
-        <MobileMenu
-          isOpen={mobileMenuOpen}
-          onClose={() => setMobileMenuOpen(false)}
-          user={user}
-          onLogout={logout}
-        />
+        <MobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} user={user} onLogout={logout} />
       </header>
       <div className="site-header-spacer" aria-hidden="true" />
     </>

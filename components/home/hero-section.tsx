@@ -1,119 +1,124 @@
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { federalStates, serviceCategories, getServiceCategoryLabel } from "@shared/schema";
 import { useLocation } from "wouter";
-import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
+import { ArrowRight, ShieldCheck, Search, Star, UserRound, Users } from "lucide-react";
+
+const features = [
+  { icon: UserRound, title: "Kostenloses Profil", text: "Einfach erstellen und starten" },
+  { icon: Search, title: "Mehr Sichtbarkeit", text: "Von Kunden in deiner Region gefunden" },
+  { icon: ShieldCheck, title: "Geschützte Daten", text: "Kontaktdaten bleiben privat" },
+  { icon: Star, title: "Bewertungen", text: "Baue Vertrauen auf und bekomme mehr Anfragen" },
+];
 
 export default function HeroSection() {
   const [, setLocation] = useLocation();
   const { user } = useAuth();
-  const [service, setService] = useState<string>("");
-  const [region, setRegion] = useState<string>("");
-
-  const handleSearch = () => {
-    const searchParams = new URLSearchParams();
-    if (service) searchParams.append("service", service);
-    if (region) searchParams.append("region", region);
-
-    const query = searchParams.toString();
-    setLocation(query ? `/suche?${query}` : "/suche");
-  };
 
   return (
-    <section className="bg-white text-gray-900 pt-8 pb-8 sm:pt-10 sm:pb-10 md:pt-8 md:pb-10 lg:pt-10 lg:pb-12 border-b border-gray-100">
-      <div className="container mx-auto px-4">
-        <div className="max-w-5xl mx-auto text-center">
-          <div className="mb-6 sm:mb-7 md:mb-6">
-            <span className="inline-flex items-center rounded-full bg-primary/10 px-4 py-1.5 text-sm font-semibold text-primary mb-4">
-              Profile für Dienstleister in Österreich
-            </span>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold font-title mb-3 leading-tight text-primary tracking-tight">
-              Finde passende Dienstleister in deiner Nähe
+    <section className="relative overflow-hidden bg-white">
+      <div className="container relative mx-auto px-4 pb-14 pt-10 lg:pb-20 lg:pt-14">
+        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-14">
+          <div>
+            <h1 className="font-title max-w-xl text-4xl font-black leading-[1.08] tracking-tight text-primary sm:text-5xl lg:text-[3.4rem]">
+              Deine Fähigkeiten.
+              <br />
+              Dein Profil.
+              <br />
+              <span className="text-secondary">Deine Chance.</span>
             </h1>
-            <p className="text-base sm:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Suche Profile aus Handwerk, Gastro, IT, Reinigung, Transport und weiteren Bereichen. Vergleiche Leistungen, Regionen und Bewertungen und kontaktiere passende Dienstleister direkt per E-Mail.
+            <p className="mt-6 max-w-lg text-lg leading-relaxed text-slate-600">
+              Präsentiere deine Dienstleistungen und finde passende Kunden in{" "}
+              <span className="font-semibold text-secondary">ganz Österreich</span>.
             </p>
-          </div>
 
-          <div className="flex flex-wrap justify-center gap-2 mb-6 text-sm text-gray-700">
-            <span className="rounded-full bg-gray-100 px-3 py-1">Kostenloses Profil</span>
-            <span className="rounded-full bg-gray-100 px-3 py-1">Kontakt per E-Mail</span>
-            <span className="rounded-full bg-gray-100 px-3 py-1">Bewertungen & Favoriten</span>
-          </div>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Button
+                onClick={() => setLocation(user ? "/profil" : "/auth?tab=register")}
+                className="h-13 rounded-xl bg-secondary px-6 text-base font-bold text-white shadow-[0_10px_24px_rgba(255,107,11,0.28)] hover:bg-secondary/90"
+              >
+                <UserRound className="mr-2 h-5 w-5" />
+                {user ? "Mein Profil öffnen" : "Kostenlos registrieren"}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setLocation("/suche")}
+                className="h-13 rounded-xl border-primary/20 px-6 text-base font-bold text-primary hover:bg-primary/5"
+              >
+                Mehr erfahren
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </div>
 
-          <div className="flex flex-col sm:flex-row justify-center gap-3 mb-6 md:mb-6">
-            <Button
-              className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white font-semibold px-5 py-6 text-base md:px-6 md:py-5 md:text-base"
-              onClick={() => setLocation("/suche")}
-            >
-              Dienstleister suchen
-            </Button>
-            <Button
-              variant="outline"
-              className="w-full sm:w-auto border-primary text-primary hover:bg-primary/5 px-5 py-6 text-base md:px-6 md:py-5 md:text-base"
-              onClick={() => setLocation(user ? "/profil" : "/auth?tab=register")}
-            >
-              {user ? "Mein Profil" : "Kostenloses Profil erstellen"}
-            </Button>
-          </div>
-
-          <Card className="bg-white rounded-xl shadow-lg overflow-visible border border-gray-100">
-            <CardContent className="p-4 sm:p-5 md:p-6 text-left">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-                <div>
-                  <Label htmlFor="service" className="text-gray-700 text-sm font-medium mb-2 block">
-                    Dienstleistung
-                  </Label>
-                  <Select value={service} onValueChange={setService}>
-                    <SelectTrigger className="w-full h-12 px-3 bg-gray-50 border border-gray-200 rounded text-gray-800">
-                      <SelectValue placeholder="Kategorie wählen" />
-                    </SelectTrigger>
-                    <SelectContent position="popper" side="bottom" align="start" avoidCollisions={false} className="z-[100]">
-                      {serviceCategories.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {getServiceCategoryLabel(category)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+            <div className="mt-9 grid grid-cols-2 gap-x-6 gap-y-6 sm:grid-cols-4">
+              {features.map(({ icon: Icon, title, text }) => (
+                <div key={title} className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent text-secondary">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-primary">{title}</p>
+                    <p className="mt-0.5 text-xs leading-snug text-slate-500">{text}</p>
+                  </div>
                 </div>
+              ))}
+            </div>
+          </div>
 
-                <div>
-                  <Label htmlFor="region" className="text-gray-700 text-sm font-medium mb-2 block">
-                    Bundesland
-                  </Label>
-                  <Select value={region} onValueChange={setRegion}>
-                    <SelectTrigger className="w-full h-12 px-3 bg-gray-50 border border-gray-200 rounded text-gray-800">
-                      <SelectValue placeholder="Bundesland wählen" />
-                    </SelectTrigger>
-                    <SelectContent position="popper" side="bottom" align="start" avoidCollisions={false} className="z-[100]">
-                      {federalStates.map((state) => (
-                        <SelectItem key={state} value={state}>
-                          {state}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+          <div className="relative mx-auto w-full max-w-xl lg:mt-4">
+            <div className="relative overflow-hidden rounded-[2rem] bg-slate-100 shadow-[0_30px_70px_rgba(7,43,76,0.18)]">
+              <img
+                src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=85"
+                alt="Junger Dienstleister arbeitet am Laptop"
+                className="h-[380px] w-full object-cover object-center sm:h-[460px]"
+              />
+            </div>
+
+            <div className="absolute left-4 top-4 hidden h-40 w-40 rounded-full bg-primary p-6 text-center shadow-[0_20px_45px_rgba(7,43,76,0.35)] sm:flex sm:flex-col sm:items-center sm:justify-center">
+              <p className="text-[13px] font-bold leading-snug text-white">
+                Für Studenten, Selbstständige &amp; Dienstleister aller Branchen
+              </p>
+            </div>
+
+            <div className="absolute -right-4 top-6 hidden rounded-2xl border border-slate-100 bg-white p-4 shadow-xl sm:block">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-accent text-secondary">
+                  <Users className="h-5 w-5" />
                 </div>
-
-                <div className="flex items-end">
-                  <Button
-                    className="w-full h-12 bg-primary hover:bg-primary/90 text-white rounded font-medium transition text-base"
-                    onClick={handleSearch}
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2">
-                      <circle cx="11" cy="11" r="8" />
-                      <path d="m21 21-4.3-4.3" />
-                    </svg>
-                    Profile suchen
-                  </Button>
+                <div>
+                  <p className="text-sm font-bold text-primary">Tausende</p>
+                  <p className="text-xs text-slate-500">zufriedene Kunden</p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+
+            <div className="absolute -right-4 top-1/2 hidden -translate-y-1/2 rounded-2xl border border-slate-100 bg-white p-4 shadow-xl sm:block">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-accent text-amber-500">
+                  <Star className="h-5 w-5 fill-current" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-primary">Bewertungen 5.0</p>
+                  <div className="mt-0.5 flex gap-0.5 text-amber-400">
+                    {Array.from({ length: 5 }).map((_, index) => (
+                      <Star key={index} className="h-3.5 w-3.5 fill-current" />
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="absolute -right-4 bottom-6 hidden rounded-2xl border border-slate-100 bg-white p-4 shadow-xl sm:block">
+              <div className="flex items-center gap-3">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-primary">Sicher &amp;</p>
+                  <p className="text-xs text-slate-500">vertrauensvoll</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>

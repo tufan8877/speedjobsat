@@ -4,7 +4,7 @@ export default function Footer() {
   const contactEmail = "kontakt@speedjob.at";
 
   return (
-    <footer className="bg-gray-800 text-gray-300 text-sm sm:text-base">
+    <footer className="bg-primary text-white/70 text-sm sm:text-base">
       <div className="container px-4 py-5 sm:py-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-x-5 gap-y-5 md:gap-8">
           <div>
@@ -44,29 +44,29 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <div className="flex items-center text-gray-300">
+                <div className="flex items-center text-white/70">
                   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 flex-shrink-0"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 5a3 3 0 1 1-3 3 3 3 0 0 1 3-3zm-7 7.5a7.5 7.5 0 0 1 14.993 0A8.5 8.5 0 0 1 12 17a8.5 8.5 0 0 1-7-2.5z"></path></svg>
                   Österreich
                 </div>
               </li>
             </ul>
             <div className="mt-3 text-xs sm:text-sm leading-relaxed">
-              <Link href="/impressum" className="text-gray-400 hover:text-white transition">
+              <Link href="/impressum" className="text-white/50 hover:text-white transition">
                 Impressum
               </Link>
-              <span className="text-gray-500"> · </span>
-              <Link href="/datenschutz" className="text-gray-400 hover:text-white transition">
+              <span className="text-white/40"> · </span>
+              <Link href="/datenschutz" className="text-white/50 hover:text-white transition">
                 Datenschutz
               </Link>
-              <span className="text-gray-500"> · </span>
-              <Link href="/nutzungsbedingungen" className="text-gray-400 hover:text-white transition">
+              <span className="text-white/40"> · </span>
+              <Link href="/nutzungsbedingungen" className="text-white/50 hover:text-white transition">
                 Nutzungsbedingungen
               </Link>
             </div>
           </div>
         </div>
 
-        <div className="mt-5 pt-4 border-t border-gray-700 flex flex-col md:flex-row justify-between items-start md:items-center gap-2 text-xs sm:text-sm">
+        <div className="mt-5 pt-4 border-t border-white/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-2 text-xs sm:text-sm">
           <p className="leading-snug">&copy; {new Date().getFullYear()} speedjob.at - Alle Rechte vorbehalten.</p>
           <div className="flex items-center">
             <svg className="h-3.5 w-auto mr-2" viewBox="0 0 36 24" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -67,116 +67,116 @@ body {
 :root {
   /* Base colors */
   --background: 0 0% 100%;
-  --foreground: 240 10% 3.9%;
-  
+  --foreground: 209 83% 16%;
+
   /* Card colors */
   --card: 0 0% 100%;
-  --card-foreground: 240 10% 3.9%;
-  
+  --card-foreground: 209 83% 16%;
+
   /* Popover colors */
   --popover: 0 0% 100%;
-  --popover-foreground: 240 10% 3.9%;
-  
-  /* Primary colors - Austrian blue */
-  --primary: 211 90% 36%;
+  --popover-foreground: 209 83% 16%;
+
+  /* Primary colors - Speedjob navy */
+  --primary: 209 83% 16%;
   --primary-foreground: 0 0% 100%;
-  
-  /* Secondary colors - Austrian red */
-  --secondary: 358 75% 59%;
+
+  /* Secondary colors - Speedjob orange */
+  --secondary: 24 100% 52%;
   --secondary-foreground: 0 0% 100%;
-  
+
   /* Muted colors */
   --muted: 240 4.8% 95.9%;
   --muted-foreground: 240 3.8% 46.1%;
-  
-  /* Accent colors */
-  --accent: 240 4.8% 95.9%;
-  --accent-foreground: 240 5.9% 10%;
-  
+
+  /* Accent colors - warm cream */
+  --accent: 27 85% 95%;
+  --accent-foreground: 209 83% 16%;
+
   /* Destructive colors */
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 98%;
-  
+
   /* Border and ring colors */
   --border: 240 5.9% 90%;
   --input: 240 5.9% 90%;
-  --ring: 211 90% 36%;
-  
+  --ring: 24 100% 52%;
+
   /* Chart colors */
-  --chart-1: 211 90% 36%;
-  --chart-2: 358 75% 59%;
+  --chart-1: 209 83% 16%;
+  --chart-2: 24 100% 52%;
   --chart-3: 134 70% 50%;
   --chart-4: 43 96% 58%;
   --chart-5: 262 83% 58%;
-  
+
   /* Sidebar colors */
-  --sidebar-background: 240 10% 3.9%;
+  --sidebar-background: 209 83% 16%;
   --sidebar-foreground: 0 0% 98%;
-  --sidebar-primary: 211 90% 36%;
+  --sidebar-primary: 24 100% 52%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 240 3.7% 15.9%;
+  --sidebar-accent: 209 60% 24%;
   --sidebar-accent-foreground: 0 0% 98%;
-  --sidebar-border: 240 3.7% 15.9%;
-  --sidebar-ring: 142.1 70.6% 45.3%;
-  
+  --sidebar-border: 209 60% 24%;
+  --sidebar-ring: 24 100% 52%;
+
   /* Border radius */
-  --radius: 0.5rem;
+  --radius: 0.75rem;
 }
 
 .dark {
   /* Base colors */
-  --background: 240 10% 3.9%;
+  --background: 209 60% 8%;
   --foreground: 0 0% 98%;
-  
+
   /* Card colors */
-  --card: 240 10% 3.9%;
+  --card: 209 55% 11%;
   --card-foreground: 0 0% 98%;
-  
+
   /* Popover colors */
-  --popover: 240 10% 3.9%;
+  --popover: 209 55% 11%;
   --popover-foreground: 0 0% 98%;
-  
-  /* Primary colors - Austrian blue */
-  --primary: 211 90% 50%;
-  --primary-foreground: 0 0% 100%;
-  
-  /* Secondary colors - Austrian red */
-  --secondary: 358 75% 59%;
+
+  /* Primary colors - Speedjob navy */
+  --primary: 209 70% 55%;
+  --primary-foreground: 209 83% 10%;
+
+  /* Secondary colors - Speedjob orange */
+  --secondary: 24 100% 58%;
   --secondary-foreground: 0 0% 100%;
-  
+
   /* Muted colors */
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  
+  --muted: 209 40% 18%;
+  --muted-foreground: 209 15% 65%;
+
   /* Accent colors */
-  --accent: 240 3.7% 15.9%;
+  --accent: 209 40% 18%;
   --accent-foreground: 0 0% 98%;
-  
+
   /* Destructive colors */
   --destructive: 0 62.8% 30.6%;
   --destructive-foreground: 0 0% 98%;
-  
+
   /* Border and ring colors */
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --ring: 211 90% 50%;
-  
+  --border: 209 40% 18%;
+  --input: 209 40% 18%;
+  --ring: 24 100% 58%;
+
   /* Chart colors */
-  --chart-1: 211 90% 50%;
-  --chart-2: 358 75% 59%;
+  --chart-1: 209 70% 55%;
+  --chart-2: 24 100% 58%;
   --chart-3: 134 70% 50%;
   --chart-4: 43 96% 58%;
   --chart-5: 262 83% 58%;
-  
+
   /* Sidebar colors */
-  --sidebar-background: 240 10% 3.9%;
+  --sidebar-background: 209 60% 8%;
   --sidebar-foreground: 0 0% 98%;
-  --sidebar-primary: 211 90% 50%;
+  --sidebar-primary: 24 100% 58%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 240 3.7% 15.9%;
+  --sidebar-accent: 209 40% 18%;
   --sidebar-accent-foreground: 0 0% 98%;
-  --sidebar-border: 240 3.7% 15.9%;
-  --sidebar-ring: 142.1 70.6% 45.3%;
+  --sidebar-border: 209 40% 18%;
+  --sidebar-ring: 24 100% 58%;
 }
 
 @layer base {
