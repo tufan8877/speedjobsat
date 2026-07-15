@@ -41,7 +41,7 @@ export default function HeroSection() {
               </Button>
               <Button
                 variant="outline"
-                onClick={() => setLocation("/suche")}
+                onClick={() => setLocation("/ueber-uns")}
                 className="h-13 rounded-xl border-primary/20 px-6 text-base font-bold text-primary hover:bg-primary/5"
               >
                 Mehr erfahren
