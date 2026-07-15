@@ -35,13 +35,13 @@ export default function MobileMenu({ isOpen, onClose, user, onLogout }: MobileMe
         { href: "/profil", label: "Mein Profil" },
         { href: "/profil?tab=settings", label: "Einstellungen" },
         { href: "/favoriten", label: "Meine Favoriten" },
-        { href: "/suche", label: "Für Dienstleistungen" },
+        { href: "/suche", label: "Dienstleistungen" },
         { href: "/hilfe-faq", label: "Hilfe" },
         { href: "/ueber-uns", label: "Über uns" },
         { href: "/support", label: "Support" },
       ]
     : [
-        { href: "/suche", label: "Für Dienstleistungen" },
+        { href: "/suche", label: "Dienstleistungen" },
         { href: "/hilfe-faq", label: "Hilfe" },
         { href: "/ueber-uns", label: "Über uns" },
         { href: "/support", label: "Support" },
