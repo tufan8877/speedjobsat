@@ -48,7 +48,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (err instanceof Error && !err.message.includes("401")) {
           console.error("Fehler beim Abrufen des Benutzers:", err);
         }
-        localStorage.removeItem("authToken");
         setUser(null);
       } finally {
         setIsLoading(false);
@@ -65,16 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const response = await apiRequest("POST", "/api/login", credentials);
       const userData = await response.json();
-
-      if ((userData as any).authToken) {
-        localStorage.setItem("authToken", (userData as any).authToken);
-        const { authToken, ...userWithoutToken } = userData as any;
-        setUser(userWithoutToken);
-      } else {
-        setUser(userData);
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      setUser(userData);
 
       toast({
         title: "Erfolgreich angemeldet",
@@ -107,16 +97,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const result = await response.json();
 
       if ((result as any).id) {
-        if ((result as any).authToken) {
-          localStorage.setItem("authToken", (result as any).authToken);
-          const { authToken, ...userWithoutToken } = result as any;
-          setUser(userWithoutToken);
-        } else {
-          setUser(result);
-        }
+        setUser(result);
       }
-
-      await new Promise((resolve) => setTimeout(resolve, 100));
 
       toast({
         title: (result as any).requiresCode ? "Bestätigungscode gesendet" : "Registrierung erfolgreich",
@@ -187,7 +169,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await apiRequest("POST", "/api/logout");
       setUser(null);
-      localStorage.removeItem("authToken");
 
       toast({
         title: "Abgemeldet",

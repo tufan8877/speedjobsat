@@ -39,7 +39,7 @@ type FormValues = z.infer<typeof schema>;
 
 const descriptionExample = `Beispiel: Ich biete Installateurarbeiten mit Erfahrung in Thermenservice, Störungsbehebung und Reparaturen an. Ich arbeite zuverlässig, sauber und bin in Wien und Niederösterreich verfügbar.`;
 
-function CheckList({ items, value, onChange }: { items: string[]; value: string[]; onChange: (value: string[]) => void }) {
+function CheckList({ items, value, onChange }: { items: readonly string[]; value: string[]; onChange: (value: string[]) => void }) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 mt-2">
       {items.map((item) => (

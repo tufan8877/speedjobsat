@@ -8,6 +8,10 @@ import SearchPage from "@/pages/search-page";
 import AdminPage from "@/pages/admin-page";
 import ProviderPage from "@/pages/provider-page";
 import FavoritesPage from "@/pages/favorites-page";
+import JobsPage from "@/pages/jobs-page";
+import CreateJobPage from "@/pages/create-job-page";
+import EditJobPage from "@/pages/edit-job-page";
+import JobDetailPage from "@/pages/job-detail-page";
 import { ProtectedRoute } from "@/lib/protected-route";
 
 // Statische Seiten
@@ -118,6 +122,11 @@ function App() {
         <Route path="/auth" component={AuthPage} />
         <Route path="/suche" component={SearchPage} />
         <Route path="/anbieter/:id" component={ProviderPage} />
+
+        <Route path="/auftraege" component={JobsPage} />
+        <Route path="/auftrag-erstellen" component={CreateJobPage} />
+        <Route path="/auftraege/bearbeiten/:id" component={EditJobPage} />
+        <Route path="/auftraege/:id" component={JobDetailPage} />
 
         <ProtectedRoute path="/profil" component={ProfilePage} />
         <ProtectedRoute path="/favoriten" component={FavoritesPage} />

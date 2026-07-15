@@ -120,11 +120,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Direkter, einfacher Login-Endpunkt für Notfälle
-app.get("/direktlogin", (req, res) => {
-  res.sendFile(path.resolve(process.cwd(), "direktlogin.html"));
-});
-
 (async () => {
   const server = await registerRoutes(app);
 

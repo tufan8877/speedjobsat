@@ -8,6 +8,15 @@ const scryptAsync = promisify(scrypt);
 const CONTACT_EMAIL = "kontakt@speedjob.at";
 const SEED_PREFIX = "starter-profile-";
 
+// Feste Zeitstempel weit in der Vergangenheit, damit Starterprofile echte,
+// neu erstellte Nutzerprofile nie aus der "Neueste Profile"-Sortierung verdrängen.
+// Deterministisch (index-basiert), also bei jedem Lauf identisch.
+const SEED_EPOCH = new Date("2024-01-01T00:00:00.000Z").getTime();
+const SEED_INTERVAL_MS = 6 * 60 * 60 * 1000; // 6 Stunden Abstand pro Profil
+function seedCreatedAt(index: number) {
+  return new Date(SEED_EPOCH + index * SEED_INTERVAL_MS);
+}
+
 const names = [
   "Daniel K.", "Sarah M.", "Emre A.", "Miriam S.", "Lukas P.", "Nina H.", "Mehmet Y.", "Julia B.",
   "David R.", "Selina T.", "Markus G.", "Aylin D.", "Thomas W.", "Lea F.", "Kerem C.", "Sophie N.",
@@ -252,14 +261,43 @@ async function main() {
   const entries = buildEntries();
   if (entries.length !== 112) throw new Error(`Es wurden ${entries.length} statt 112 Einträge erzeugt.`);
 
-  const oldSeedUsers = await db.select({ id: users.id }).from(users).where(like(users.email, `${SEED_PREFIX}%@seed.speedjob.at`));
-  for (const oldUser of oldSeedUsers) {
-    await db.delete(users).where(eq(users.id, oldUser.id));
-  }
+  // Bestehende Starter-Nutzer anhand ihrer (festen, index-basierten) E-Mail wiederfinden,
+  // statt sie bei jedem Serverstart zu löschen und neu anzulegen. Ein Neuanlegen würde
+  // jedes Mal ein frisches createdAt setzen und damit echte, neu erstellte Nutzerprofile
+  // aus der "Neueste Profile"-Sortierung verdrängen.
+  const existingUsers = await db
+    .select({ id: users.id, email: users.email })
+    .from(users)
+    .where(like(users.email, `${SEED_PREFIX}%@seed.speedjob.at`));
+  const existingIdByEmail = new Map(existingUsers.map((user) => [user.email, user.id]));
 
   const passwordHash = await hashPassword(randomBytes(32).toString("hex"));
+  let created = 0;
+  let updated = 0;
 
-  for (const entry of entries) {
+  for (const [index, entry] of entries.entries()) {
+    const existingUserId = existingIdByEmail.get(entry.internalEmail);
+    const createdAt = seedCreatedAt(index);
+
+    if (existingUserId) {
+      await db
+        .update(profiles)
+        .set({
+          firstName: entry.firstName,
+          lastName: entry.lastName,
+          description: entry.description,
+          services: entry.services,
+          regions: entry.regions,
+          availablePeriods: entry.availablePeriods,
+          isAvailable: entry.isAvailable,
+          createdAt,
+          updatedAt: new Date(),
+        })
+        .where(eq(profiles.userId, existingUserId));
+      updated += 1;
+      continue;
+    }
+
     const insertedUsers = await db.insert(users).values({
       email: entry.internalEmail,
       password: passwordHash,
@@ -280,11 +318,13 @@ async function main() {
       socialMedia: null,
       availablePeriods: entry.availablePeriods,
       isAvailable: entry.isAvailable,
-      profileImage: null
+      profileImage: null,
+      createdAt,
     });
+    created += 1;
   }
 
-  console.log(`Starter-Profile abgeschlossen: ${entries.length} persönliche Profile erstellt.`);
+  console.log(`Starter-Profile abgeschlossen: ${created} neu erstellt, ${updated} aktualisiert (Erstellungsdatum unverändert).`);
 }
 
 main()
