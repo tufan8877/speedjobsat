@@ -7,7 +7,7 @@ import { promisify } from "util";
 import { eq } from "drizzle-orm";
 import nodemailer from "nodemailer";
 import { storage } from "./storage";
-import { db } from "./db";
+import { db, pool } from "./db";
 import { jobListings } from "@shared/schema";
 import type { User as AppUser } from "@shared/schema";
 
@@ -21,7 +21,70 @@ type PendingRegistration = {
   attempts: number;
 };
 
-const pendingRegistrations = new Map<string, PendingRegistration>();
+// Offene Registrierungen (E-Mail-Code) werden in Postgres statt im
+// Arbeitsspeicher gehalten: Der Prozess kann zwischen "Code angefordert"
+// und "Code eingegeben" neu starten (z.B. Render-Free-Spindown/Deploy),
+// eine Map würde diesen Zustand sonst verlieren.
+let pendingRegistrationsTableReady: Promise<void> | null = null;
+function ensurePendingRegistrationsTable() {
+  if (!pendingRegistrationsTableReady) {
+    pendingRegistrationsTableReady = pool
+      .query(`
+        CREATE TABLE IF NOT EXISTS pending_registrations (
+          email TEXT PRIMARY KEY,
+          password_hash TEXT NOT NULL,
+          code TEXT NOT NULL,
+          expires_at TIMESTAMPTZ NOT NULL,
+          attempts INTEGER NOT NULL DEFAULT 0,
+          created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+        )
+      `)
+      .then(() => undefined)
+      .catch((error) => {
+        pendingRegistrationsTableReady = null;
+        throw error;
+      });
+  }
+  return pendingRegistrationsTableReady;
+}
+
+async function getPendingRegistration(email: string): Promise<PendingRegistration | null> {
+  await ensurePendingRegistrationsTable();
+  const result = await pool.query(
+    `SELECT email, password_hash AS "passwordHash", code, expires_at AS "expiresAt", attempts
+     FROM pending_registrations WHERE email = $1`,
+    [email],
+  );
+  const row = result.rows[0];
+  if (!row) return null;
+  return { ...row, expiresAt: new Date(row.expiresAt).getTime() };
+}
+
+async function savePendingRegistration(pending: PendingRegistration) {
+  await ensurePendingRegistrationsTable();
+  await pool.query(
+    `INSERT INTO pending_registrations (email, password_hash, code, expires_at, attempts)
+     VALUES ($1, $2, $3, $4, $5)
+     ON CONFLICT (email) DO UPDATE SET
+       password_hash = EXCLUDED.password_hash,
+       code = EXCLUDED.code,
+       expires_at = EXCLUDED.expires_at,
+       attempts = EXCLUDED.attempts`,
+    [pending.email, pending.passwordHash, pending.code, new Date(pending.expiresAt), pending.attempts],
+  );
+}
+
+async function deletePendingRegistration(email: string) {
+  await ensurePendingRegistrationsTable();
+  await pool.query(`DELETE FROM pending_registrations WHERE email = $1`, [email]);
+}
+
+const REGISTRATION_CODE_TTL_MS = 15 * 60 * 1000;
+const REGISTRATION_RESEND_COOLDOWN_MS = 60 * 1000;
+
+function msSinceCodeIssued(pending: PendingRegistration) {
+  return REGISTRATION_CODE_TTL_MS - (pending.expiresAt - Date.now());
+}
 
 export async function hashPassword(password: string) {
   const salt = randomBytes(16).toString("hex");
@@ -352,12 +415,17 @@ export function setupAuth(app: Express) {
       if (await storage.getBannedEmail(normalizedEmail)) return res.status(403).json({ message: "Diese E-Mail-Adresse ist gesperrt" });
       if (await storage.getUserByEmail(normalizedEmail)) return res.status(400).json({ message: "Ein Benutzer mit dieser E-Mail-Adresse existiert bereits" });
 
+      const existingPending = await getPendingRegistration(normalizedEmail);
+      if (existingPending && msSinceCodeIssued(existingPending) < REGISTRATION_RESEND_COOLDOWN_MS) {
+        return res.status(429).json({ message: "Es wurde bereits ein Code angefordert. Bitte prüfen Sie Ihr Postfach oder warten Sie kurz." });
+      }
+
       const code = createRegistrationCode();
-      pendingRegistrations.set(normalizedEmail, {
+      await savePendingRegistration({
         email: normalizedEmail,
         passwordHash: await hashPassword(password),
         code,
-        expiresAt: Date.now() + 15 * 60 * 1000,
+        expiresAt: Date.now() + REGISTRATION_CODE_TTL_MS,
         attempts: 0,
       });
 
@@ -376,18 +444,22 @@ export function setupAuth(app: Express) {
   app.post("/api/resend-registration-code", async (req: Request, res: Response) => {
     try {
       const normalizedEmail = String(req.body?.email || "").trim().toLowerCase();
-      const pending = pendingRegistrations.get(normalizedEmail);
+      const pending = await getPendingRegistration(normalizedEmail);
       if (!pending) return res.status(404).json({ message: "Keine offene Registrierung für diese E-Mail-Adresse gefunden" });
       if (await storage.getUserByEmail(normalizedEmail)) {
-        pendingRegistrations.delete(normalizedEmail);
+        await deletePendingRegistration(normalizedEmail);
         return res.status(400).json({ message: "Ein Benutzer mit dieser E-Mail-Adresse existiert bereits" });
+      }
+
+      if (msSinceCodeIssued(pending) < REGISTRATION_RESEND_COOLDOWN_MS) {
+        return res.status(429).json({ message: "Bitte warten Sie kurz, bevor Sie einen neuen Code anfordern." });
       }
 
       const code = createRegistrationCode();
       pending.code = code;
-      pending.expiresAt = Date.now() + 15 * 60 * 1000;
+      pending.expiresAt = Date.now() + REGISTRATION_CODE_TTL_MS;
       pending.attempts = 0;
-      pendingRegistrations.set(normalizedEmail, pending);
+      await savePendingRegistration(pending);
 
       await sendRegistrationCode(normalizedEmail, code);
       return res.json({ message: "Ein neuer Code wurde per E-Mail gesendet." });
@@ -401,32 +473,32 @@ export function setupAuth(app: Express) {
     try {
       const normalizedEmail = String(req.body?.email || "").trim().toLowerCase();
       const code = String(req.body?.code || "").trim();
-      const pending = pendingRegistrations.get(normalizedEmail);
+      const pending = await getPendingRegistration(normalizedEmail);
 
       if (!pending) return res.status(404).json({ message: "Keine offene Registrierung gefunden. Bitte registrieren Sie sich erneut." });
       if (pending.expiresAt < Date.now()) {
-        pendingRegistrations.delete(normalizedEmail);
+        await deletePendingRegistration(normalizedEmail);
         return res.status(400).json({ message: "Der Code ist abgelaufen. Bitte registrieren Sie sich erneut." });
       }
 
       pending.attempts += 1;
       if (pending.attempts > 5) {
-        pendingRegistrations.delete(normalizedEmail);
+        await deletePendingRegistration(normalizedEmail);
         return res.status(429).json({ message: "Zu viele falsche Versuche. Bitte registrieren Sie sich erneut." });
       }
 
       if (pending.code !== code) {
-        pendingRegistrations.set(normalizedEmail, pending);
+        await savePendingRegistration(pending);
         return res.status(400).json({ message: "Der eingegebene Code ist falsch" });
       }
 
       if (await storage.getUserByEmail(normalizedEmail)) {
-        pendingRegistrations.delete(normalizedEmail);
+        await deletePendingRegistration(normalizedEmail);
         return res.status(400).json({ message: "Ein Benutzer mit dieser E-Mail-Adresse existiert bereits" });
       }
 
       const newUser = await storage.createUser({ email: normalizedEmail, password: pending.passwordHash, status: "active", isAdmin: false });
-      pendingRegistrations.delete(normalizedEmail);
+      await deletePendingRegistration(normalizedEmail);
 
       req.login(newUser, (err) => {
         if (err) return next(err);
