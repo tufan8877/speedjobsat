@@ -44,6 +44,9 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formatDate } from "@/lib/utils";
+import type { User, Profile, Review, BannedEmail, JobListing } from "@shared/schema";
+
+type AdminUser = Omit<User, "password">;
 
 const banEmailSchema = z.object({
   email: z.string().email("Bitte geben Sie eine gültige E-Mail-Adresse ein"),
@@ -70,28 +73,28 @@ export default function AdminDashboard() {
   });
   
   // Fetch all users
-  const { 
+  const {
     data: users,
     isLoading: isLoadingUsers
-  } = useQuery({
+  } = useQuery<AdminUser[]>({
     queryKey: ["/api/admin/users"],
     enabled: activeTab === "users",
   });
-  
+
   // Fetch all profiles
   const {
     data: profiles,
     isLoading: isLoadingProfiles
-  } = useQuery({
+  } = useQuery<Profile[]>({
     queryKey: ["/api/admin/profiles"],
     enabled: activeTab === "profiles",
   });
-  
+
   // Fetch reviews
   const {
     data: reviews,
     isLoading: isLoadingReviews
-  } = useQuery({
+  } = useQuery<Review[]>({
     queryKey: ["/api/admin/reviews"],
     enabled: activeTab === "reviews",
   });
@@ -100,7 +103,7 @@ export default function AdminDashboard() {
   const {
     data: bannedEmails,
     isLoading: isLoadingBannedEmails
-  } = useQuery({
+  } = useQuery<BannedEmail[]>({
     queryKey: ["/api/admin/banned-emails"],
     enabled: activeTab === "banned",
   });
@@ -109,16 +112,11 @@ export default function AdminDashboard() {
   const {
     data: jobs,
     isLoading: isLoadingJobs
-  } = useQuery({
+  } = useQuery<JobListing[]>({
     queryKey: ["/api/admin/jobs"],
     enabled: activeTab === "jobs",
   });
 
-  // Debug: Log jobs data
-  if (jobs) {
-    console.log("Empfangene Jobs-Daten:", jobs);
-  }
-  
   // Ban user mutation
   const banUserMutation = useMutation({
     mutationFn: async ({ userId, reason }: { userId: number, reason: string }) => {
@@ -334,36 +332,25 @@ export default function AdminDashboard() {
   const userColumns = [
     { header: "ID", accessorKey: "id" },
     { header: "E-Mail", accessorKey: "email" },
-    { 
-      header: "Passwort", 
-      accessorKey: "password",
-      cell: (user) => (
-        <div className="max-w-[200px] overflow-x-auto">
-          <span className="font-mono text-xs break-all whitespace-nowrap">
-            {user.password}
-          </span>
-        </div>
-      )
-    },
-    { 
-      header: "Status", 
-      cell: (user) => (
+    {
+      header: "Status",
+      cell: (user: AdminUser) => (
         <Badge
           variant={
-            user.status === "active" ? "success" : 
-            user.status === "suspended" ? "destructive" : 
+            user.status === "active" ? "success" :
+            user.status === "suspended" ? "destructive" :
             "secondary"
           }
         >
-          {user.status === "active" ? "Aktiv" : 
-           user.status === "suspended" ? "Gesperrt" : 
+          {user.status === "active" ? "Aktiv" :
+           user.status === "suspended" ? "Gesperrt" :
            "Gelöscht"}
         </Badge>
       )
     },
     {
       header: "Admin",
-      cell: (user) => (
+      cell: (user: AdminUser) => (
         user.isAdmin ? (
           <Badge variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-300">
             <ShieldCheck className="h-3 w-3 mr-1" />
@@ -374,11 +361,11 @@ export default function AdminDashboard() {
     },
     {
       header: "Registriert",
-      cell: (user) => formatDate(user.createdAt)
+      cell: (user: AdminUser) => formatDate(user.createdAt)
     },
     {
       header: "Aktionen",
-      cell: (user) => (
+      cell: (user: AdminUser) => (
         <div className="flex space-x-2">
           {user.status === "active" ? (
             <Button

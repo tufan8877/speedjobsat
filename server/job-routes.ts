@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from "express";
 import { isAuthenticated } from "./auth";
 import { sqliteDb } from "./sqlite-db";
-import { jobListings } from "@shared/sqlite-schema";
+import { jobListings, jobStatuses } from "@shared/sqlite-schema";
 import { eq, and, desc } from "drizzle-orm";
 import { upload } from "./upload";
 import { sqliteStorage } from "./sqlite-storage";
@@ -95,8 +95,8 @@ export function setupJobRoutes(app: Express) {
       let query = sqliteDb.select().from(jobListings);
       const conditions = [];
 
-      if (status) {
-        conditions.push(eq(jobListings.status, status as string));
+      if (status && (jobStatuses as readonly string[]).includes(status as string)) {
+        conditions.push(eq(jobListings.status, status as (typeof jobStatuses)[number]));
       }
 
       if (category) {

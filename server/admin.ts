@@ -6,7 +6,7 @@ export function setupAdmin(app: Express) {
   app.get("/api/admin/users", isAdmin, async (_req, res, next) => {
     try {
       const users = await storage.getAllUsers();
-      res.json(users);
+      res.json(users.map(({ password, ...safeUser }) => safeUser));
     } catch (error) {
       console.error("Fehler beim Abrufen der Admin-Benutzer:", error);
       next(error);
