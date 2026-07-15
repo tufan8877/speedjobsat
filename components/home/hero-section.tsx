@@ -65,40 +65,35 @@ export default function HeroSection() {
           </div>
 
           <div className="relative mx-auto w-full max-w-xl lg:mt-4">
-            {/* Mobil: Sprechblase als Banner über dem Bild statt frei schwebend */}
-            <div className="mb-4 rounded-2xl bg-primary px-5 py-4 text-center shadow-[0_12px_28px_rgba(7,43,76,0.25)] sm:hidden">
-              <p className="text-sm font-bold leading-snug text-white">
-                Für Studenten, Selbstständige &amp; Dienstleister aller Branchen
-              </p>
-            </div>
-
             <div className="relative overflow-hidden rounded-[2rem] bg-slate-100 shadow-[0_30px_70px_rgba(7,43,76,0.18)]">
               <img
                 src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=85"
                 alt="Junger Dienstleister arbeitet am Laptop"
                 className="h-[380px] w-full object-cover object-center sm:h-[460px]"
               />
-            </div>
 
-            {/* Mobil: kompakte Kartenreihe statt frei schwebender Karten */}
-            <div className="mt-4 grid grid-cols-3 gap-2 sm:hidden">
-              <div className="rounded-2xl border border-slate-100 bg-white p-3 text-center shadow-sm">
-                <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-accent text-secondary">
-                  <Users className="h-4 w-4" />
-                </div>
-                <p className="mt-1.5 text-xs font-bold leading-tight text-primary">Tausende zufriedene Kunden</p>
+              {/* Mobil: Highlight + Trust-Badges direkt auf dem Bild */}
+              <div className="absolute left-3 top-3 max-w-[68%] rounded-2xl bg-primary/95 px-4 py-3 shadow-lg backdrop-blur sm:hidden">
+                <p className="text-[13px] font-bold leading-snug text-white">
+                  Für Studenten, Selbstständige &amp; Dienstleister aller Branchen
+                </p>
               </div>
-              <div className="rounded-2xl border border-slate-100 bg-white p-3 text-center shadow-sm">
-                <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-accent text-amber-500">
-                  <Star className="h-4 w-4 fill-current" />
+
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-primary/90 via-primary/50 to-transparent px-3 pb-3 pt-10 sm:hidden">
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="flex flex-col items-center text-center">
+                    <Users className="h-4 w-4 text-white" />
+                    <p className="mt-1 text-[11px] font-bold leading-tight text-white">Tausende zufriedene Kunden</p>
+                  </div>
+                  <div className="flex flex-col items-center text-center">
+                    <Star className="h-4 w-4 fill-current text-amber-300" />
+                    <p className="mt-1 text-[11px] font-bold leading-tight text-white">Bewertungen 5.0</p>
+                  </div>
+                  <div className="flex flex-col items-center text-center">
+                    <ShieldCheck className="h-4 w-4 text-emerald-300" />
+                    <p className="mt-1 text-[11px] font-bold leading-tight text-white">Sicher &amp; vertrauensvoll</p>
+                  </div>
                 </div>
-                <p className="mt-1.5 text-xs font-bold leading-tight text-primary">Bewertungen 5.0</p>
-              </div>
-              <div className="rounded-2xl border border-slate-100 bg-white p-3 text-center shadow-sm">
-                <div className="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
-                  <ShieldCheck className="h-4 w-4" />
-                </div>
-                <p className="mt-1.5 text-xs font-bold leading-tight text-primary">Sicher &amp; vertrauensvoll</p>
               </div>
             </div>
 
