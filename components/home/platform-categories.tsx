@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "wouter";
 import {
   BookOpen,
-  Briefcase,
   CheckCircle2,
   Globe2,
   HeartHandshake,
@@ -39,36 +38,24 @@ export default function PlatformCategories() {
     staleTime: 60_000,
   });
 
-  const { data: activeJobs } = useQuery<unknown[]>({
-    queryKey: ["/api/jobs", "count", "active"],
-    queryFn: async () => {
-      const res = await fetch("/api/jobs?status=active", { credentials: "include" });
-      if (!res.ok) throw new Error("Aufträge konnten nicht geladen werden");
-      return res.json();
-    },
-    staleTime: 60_000,
-  });
-
   const stats = [
     {
       icon: Users,
       value: profileCounts ? `${profileCounts.totalProfiles}` : "–",
       label: "Registrierte Dienstleister",
-    },
-    {
-      icon: Briefcase,
-      value: activeJobs ? `${activeJobs.length}` : "–",
-      label: "Aktive Aufträge",
+      href: null,
     },
     {
       icon: MapPin,
       value: "Ganz Österreich",
       label: "Wien, Graz, Linz & mehr",
+      href: null,
     },
     {
       icon: CheckCircle2,
       value: "100% Kostenlos",
       label: "Jetzt Profil erstellen",
+      href: "/auth?tab=register",
     },
   ];
 
@@ -93,18 +80,30 @@ export default function PlatformCategories() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-y-6 border-t border-slate-100 bg-accent/60 px-5 py-7 sm:grid-cols-4 sm:px-8">
-            {stats.map(({ icon: Icon, value, label }) => (
-              <div key={label} className="flex items-center gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-secondary shadow-sm">
-                  <Icon className="h-5 w-5" />
+          <div className="grid grid-cols-1 gap-y-6 border-t border-slate-100 bg-accent/60 px-5 py-7 sm:grid-cols-3 sm:px-8">
+            {stats.map(({ icon: Icon, value, label, href }) => {
+              const content = (
+                <>
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-secondary shadow-sm">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <p className="font-title text-lg font-black leading-tight text-primary">{value}</p>
+                    <p className="text-xs text-slate-500">{label}</p>
+                  </div>
+                </>
+              );
+
+              return href ? (
+                <Link key={label} href={href} className="group flex items-center gap-3">
+                  {content}
+                </Link>
+              ) : (
+                <div key={label} className="flex items-center gap-3">
+                  {content}
                 </div>
-                <div>
-                  <p className="font-title text-lg font-black leading-tight text-primary">{value}</p>
-                  <p className="text-xs text-slate-500">{label}</p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
