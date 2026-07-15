@@ -3,6 +3,7 @@ import { Link, useLocation } from "wouter";
 import { X } from "lucide-react";
 import { User } from "@shared/schema";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import BrandLogo from "./brand-logo";
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -34,25 +35,25 @@ export default function MobileMenu({ isOpen, onClose, user, onLogout }: MobileMe
         { href: "/profil", label: "Mein Profil" },
         { href: "/profil?tab=settings", label: "Einstellungen" },
         { href: "/favoriten", label: "Meine Favoriten" },
-        { href: "/suche", label: "Dienstleistungen" },
+        { href: "/suche", label: "Für Dienstleister" },
+        { href: "/auftraege", label: "Für Auftraggeber" },
+        { href: "/hilfe-faq", label: "So funktioniert's" },
         { href: "/ueber-uns", label: "Über uns" },
         { href: "/support", label: "Support" },
-        { href: "/hilfe-faq", label: "Hilfe & FAQ" },
       ]
     : [
-        { href: "/suche", label: "Dienstleistungen" },
+        { href: "/suche", label: "Für Dienstleister" },
+        { href: "/auftraege", label: "Für Auftraggeber" },
+        { href: "/hilfe-faq", label: "So funktioniert's" },
         { href: "/ueber-uns", label: "Über uns" },
         { href: "/support", label: "Support" },
-        { href: "/hilfe-faq", label: "Hilfe & FAQ" },
       ];
 
   return (
     <div className="fixed inset-0 bg-white z-40 p-4 overflow-y-auto">
       <div className="flex justify-between items-center mb-8">
         <Link href="/" className="flex items-center space-x-2" onClick={goHome}>
-          <span className="text-primary text-2xl font-bold font-title">
-            speedjob<span className="text-secondary">.at</span>
-          </span>
+          <BrandLogo />
         </Link>
         <Button variant="ghost" size="icon" onClick={onClose}>
           <X className="h-6 w-6" />
@@ -110,7 +111,7 @@ export default function MobileMenu({ isOpen, onClose, user, onLogout }: MobileMe
               </Button>
             </Link>
             <Link href="/auth?tab=register" onClick={onClose} className="w-full">
-              <Button className="w-full bg-primary text-white">
+              <Button className="w-full bg-secondary text-white hover:bg-secondary/90">
                 Registrieren
               </Button>
             </Link>
