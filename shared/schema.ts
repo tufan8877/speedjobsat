@@ -32,6 +32,9 @@ export const serviceCategories = [
   "Bodenlegerarbeiten",
   "Montagearbeiten",
   "Reparaturarbeiten",
+  "Design & Medien",
+  "Musik & Kunst",
+  "Sprachen & Übersetzung",
   "Sonstige Dienstleistungen",
 ] as const;
 
@@ -62,6 +65,9 @@ export const serviceCategoryLabels: Record<(typeof serviceCategories)[number], s
   Bodenlegerarbeiten: "Bodenlegerarbeiten",
   Montagearbeiten: "Montagearbeiten",
   Reparaturarbeiten: "Reparaturarbeiten",
+  "Design & Medien": "Design & Mediengestaltung",
+  "Musik & Kunst": "Musik- & Kunstunterricht",
+  "Sprachen & Übersetzung": "Sprachunterricht & Übersetzung",
   "Sonstige Dienstleistungen": "Sonstige Dienstleistungen",
 };
 

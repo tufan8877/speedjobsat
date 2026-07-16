@@ -17,11 +17,11 @@ import {
 const categories = [
   { icon: BookOpen, label: "Nachhilfe & Unterricht", href: "/suche?group=nachhilfe-unterricht" },
   { icon: Laptop, label: "IT & Technik", href: "/suche?group=it-technik" },
-  { icon: PenTool, label: "Design & Medien", href: "/suche" },
+  { icon: PenTool, label: "Design & Medien", href: "/suche?service=Design%20%26%20Medien" },
   { icon: Wrench, label: "Handwerk & Technik", href: "/suche?group=handwerk-technik" },
-  { icon: Music2, label: "Musik & Kunst", href: "/suche" },
+  { icon: Music2, label: "Musik & Kunst", href: "/suche?service=Musik%20%26%20Kunst" },
   { icon: HeartHandshake, label: "Haushalt & Betreuung", href: "/suche?group=haushalt-betreuung" },
-  { icon: Globe2, label: "Sprachen & Übersetzung", href: "/suche" },
+  { icon: Globe2, label: "Sprachen & Übersetzung", href: "/suche?service=Sprachen%20%26%20%C3%9Cbersetzung" },
   { icon: MoreHorizontal, label: "Und viele mehr", href: "/suche" },
 ];
 
