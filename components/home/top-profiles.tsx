@@ -57,7 +57,7 @@ const categoryConfig: Record<Category, { label: string; empty: string }> = {
 };
 
 export default function TopProfiles() {
-  const [category, setCategory] = useState<Category>("topRated");
+  const [category, setCategory] = useState<Category>("newest");
   const { data, isLoading, error } = useQuery<TopProfilesResponse>({
     queryKey: ["/api/top-profiles"],
     queryFn: async () => {
@@ -79,7 +79,7 @@ export default function TopProfiles() {
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent text-secondary">
                 <Award className="h-5 w-5" />
               </div>
-              <h2 className="font-title text-2xl font-black text-primary sm:text-3xl">Top-Dienstleistungen</h2>
+              <h2 className="font-title text-2xl font-black text-primary sm:text-3xl">Top Profile</h2>
             </div>
             <p className="text-slate-600 mt-2">Entdecke gut bewertete, häufig angesehene und neue Profile.</p>
           </div>
