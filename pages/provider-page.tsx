@@ -16,11 +16,7 @@ export default function ProviderPage() {
   });
 
   const goBack = () => {
-    if (window.history.length > 1) {
-      window.history.back();
-    } else {
-      setLocation("/suche");
-    }
+    setLocation(sessionStorage.getItem("lastSearchUrl") || "/suche");
   };
 
   return (
