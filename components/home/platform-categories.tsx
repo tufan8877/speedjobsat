@@ -65,7 +65,7 @@ export default function PlatformCategories() {
         <div className="overflow-hidden rounded-[1.75rem] border border-slate-100 bg-white shadow-[0_18px_50px_rgba(7,43,76,0.08)]">
           <div className="px-5 py-8 sm:px-8 sm:py-10">
             <h2 className="font-title text-center text-2xl font-black text-primary sm:text-3xl">
-              Für jeden Wunsch ein <span className="text-secondary">passendes Profil</span>
+              Finde das <span className="text-secondary">passende Profil</span>
             </h2>
 
             <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 lg:grid-cols-8">
