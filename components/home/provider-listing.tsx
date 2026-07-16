@@ -154,7 +154,7 @@ export default function ProviderListing() {
                           {provider.email ? <div className="text-xs sm:text-sm text-slate-600 break-all">✉️ {provider.email}</div> : <div className="text-xs sm:text-sm text-slate-600">Kontakt über Profil</div>}
                         </div>
                       ) : (
-                        <div className="text-xs sm:text-sm text-slate-600">📋 Registrierung erforderlich, um die E-Mail-Adresse zu sehen</div>
+                        <div className="text-xs sm:text-sm text-slate-600">📋 Registrierung erforderlich, um die Kontaktdaten zu sehen</div>
                       )}
                     </div>
 
