@@ -109,6 +109,7 @@ export default function TopProfiles() {
         ) : profiles.length === 0 ? (
           <Card className="rounded-2xl border-slate-100"><CardContent className="p-6 text-center text-slate-600">{categoryConfig[category].empty}</CardContent></Card>
         ) : (
+          <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {profiles.map((profile) => {
               const services = safeArray(profile.services);
@@ -139,6 +140,12 @@ export default function TopProfiles() {
               );
             })}
           </div>
+          <div className="mt-6 text-center">
+            <Link href="/suche" className="inline-flex items-center gap-1 font-bold text-secondary hover:text-secondary/80">
+              Alle anzeigen →
+            </Link>
+          </div>
+          </>
         )}
       </div>
     </section>
