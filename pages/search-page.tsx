@@ -1,9 +1,17 @@
+import { useEffect } from "react";
+import { useSearch } from "wouter";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import SearchForm from "@/components/search/search-form";
 import SearchResults from "@/components/search/search-results";
 
 export default function SearchPage() {
+  const search = useSearch();
+
+  useEffect(() => {
+    sessionStorage.setItem("lastSearchUrl", search ? `/suche?${search}` : "/suche");
+  }, [search]);
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
