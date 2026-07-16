@@ -3,13 +3,11 @@ import { Link } from "wouter";
 import {
   BookOpen,
   CheckCircle2,
-  Globe2,
   HeartHandshake,
   Laptop,
   MapPin,
   MoreHorizontal,
-  Music2,
-  PenTool,
+  Truck,
   Users,
   Wrench,
 } from "lucide-react";
@@ -17,11 +15,9 @@ import {
 const categories = [
   { icon: BookOpen, label: "Nachhilfe & Unterricht", href: "/suche?group=nachhilfe-unterricht" },
   { icon: Laptop, label: "IT & Technik", href: "/suche?group=it-technik" },
-  { icon: PenTool, label: "Design & Medien", href: "/suche?service=Design%20%26%20Medien" },
   { icon: Wrench, label: "Handwerk & Technik", href: "/suche?group=handwerk-technik" },
-  { icon: Music2, label: "Musik & Kunst", href: "/suche?service=Musik%20%26%20Kunst" },
+  { icon: Truck, label: "Transport & Umzug", href: "/suche?group=transport-umzug" },
   { icon: HeartHandshake, label: "Haushalt & Betreuung", href: "/suche?group=haushalt-betreuung" },
-  { icon: Globe2, label: "Sprachen & Übersetzung", href: "/suche?service=Sprachen%20%26%20%C3%9Cbersetzung" },
   { icon: MoreHorizontal, label: "Und viele mehr", href: "/suche" },
 ];
 
@@ -68,7 +64,7 @@ export default function PlatformCategories() {
               Finde das <span className="text-secondary">passende Profil</span>
             </h2>
 
-            <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-4 lg:grid-cols-8">
+            <div className="mt-8 grid grid-cols-2 gap-x-4 gap-y-8 sm:grid-cols-3 lg:grid-cols-6">
               {categories.map(({ icon: Icon, label, href }) => (
                 <Link key={label} href={href} className="group flex flex-col items-center text-center">
                   <div className="flex h-16 w-16 items-center justify-center rounded-full bg-accent text-primary transition-colors group-hover:bg-secondary group-hover:text-white">

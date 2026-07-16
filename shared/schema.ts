@@ -79,8 +79,16 @@ export function getServiceCategoryLabel(service: string) {
 // Dienstleistungen zusammen, damit z.B. "Haushalt & Betreuung" nicht nur
 // Kinderbetreuung, sondern auch Pflege, Seniorenbetreuung etc. findet.
 export const categoryGroups = [
-  { key: "nachhilfe-unterricht", label: "Nachhilfe & Unterricht", services: ["Nachhilfe"] },
-  { key: "it-technik", label: "IT & Technik", services: ["Computer & IT"] },
+  {
+    key: "nachhilfe-unterricht",
+    label: "Nachhilfe & Unterricht",
+    services: ["Nachhilfe", "Sprachen & Übersetzung", "Musik & Kunst"],
+  },
+  {
+    key: "it-technik",
+    label: "IT & Technik",
+    services: ["Computer & IT", "Design & Medien"],
+  },
   {
     key: "handwerk-technik",
     label: "Handwerk & Technik",
@@ -97,6 +105,11 @@ export const categoryGroups = [
       "Montagearbeiten",
       "Reparaturarbeiten",
     ],
+  },
+  {
+    key: "transport-umzug",
+    label: "Transport & Umzug",
+    services: ["Transport", "Umzug"],
   },
   {
     key: "haushalt-betreuung",
