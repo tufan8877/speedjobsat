@@ -9,7 +9,7 @@ import { ChevronDown, Loader2, MapPin, Clock, Mail, Share2 } from "lucide-react"
 import { useSearch } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
-import { getServiceCategoryLabel } from "@shared/schema";
+import { getServiceCategoryLabel, getCategoryGroupServices, getCategoryGroupLabel } from "@shared/schema";
 
 interface SearchResultsProps {
   initialPage?: number;
@@ -34,8 +34,10 @@ export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
   const { user } = useAuth();
 
   const service = searchParams.get("service") || undefined;
+  const group = searchParams.get("group") || undefined;
   const region = searchParams.get("region") || undefined;
   const name = searchParams.get("name") || undefined;
+  const groupServices = !service && group ? getCategoryGroupServices(group) : [];
 
   const [sortBy, setSortBy] = useState<string>("newest");
   const [currentPage, setCurrentPage] = useState(initialPage);
@@ -49,7 +51,7 @@ export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [service, region, name, sortBy]);
+  }, [service, group, region, name, sortBy]);
 
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -61,6 +63,7 @@ export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
       try {
         const params = new URLSearchParams();
         if (service) params.append("service", service);
+        else if (groupServices.length > 0) groupServices.forEach((s) => params.append("services", s));
         if (region) params.append("region", region);
         if (name) params.append("name", name);
         params.append("sort", sortBy || "newest");
@@ -133,6 +136,7 @@ export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
           </h2>
           <p className="mt-1 min-h-5 text-sm text-gray-600">
             {service && `Dienstleistung: ${getServiceCategoryLabel(service)}`}
+            {!service && group && `Kategorie: ${getCategoryGroupLabel(group) || group}`}
             {region && ` | Region: ${region}`}
             {name && ` | Filter: ${name}`}
           </p>
