@@ -31,6 +31,9 @@ const desiredCounts: Record<(typeof serviceCategories)[number], number> = {
   Bodenlegerarbeiten: 1,
   Montagearbeiten: 1,
   Reparaturarbeiten: 1,
+  "Design & Medien": 0,
+  "Musik & Kunst": 0,
+  "Sprachen & Übersetzung": 0,
   "Sonstige Dienstleistungen": 1,
 };
 
