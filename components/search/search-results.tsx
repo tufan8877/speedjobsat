@@ -10,6 +10,7 @@ import { useSearch } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
 import { getServiceCategoryLabel, getCategoryGroupServices, getCategoryGroupLabel } from "@shared/schema";
+import GroupFilterChips from "@/components/search/group-filter-chips";
 
 interface SearchResultsProps {
   initialPage?: number;
@@ -129,6 +130,7 @@ export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
 
   return (
     <div>
+      <GroupFilterChips />
       <div className="mb-6 flex min-h-[7.5rem] flex-col justify-between gap-4 md:min-h-12 md:flex-row md:items-center">
         <div className="min-w-0">
           <h2 className="text-xl font-bold">
