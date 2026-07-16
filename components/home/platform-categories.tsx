@@ -13,11 +13,11 @@ import {
 } from "lucide-react";
 
 const categories = [
-  { icon: BookOpen, label: "Nachhilfe & Unterricht", href: "/suche?group=nachhilfe-unterricht" },
-  { icon: Laptop, label: "IT & Technik", href: "/suche?group=it-technik" },
   { icon: Wrench, label: "Handwerk & Technik", href: "/suche?group=handwerk-technik" },
+  { icon: BookOpen, label: "Nachhilfe & Unterricht", href: "/suche?group=nachhilfe-unterricht" },
   { icon: Truck, label: "Transport & Umzug", href: "/suche?group=transport-umzug" },
   { icon: HeartHandshake, label: "Haushalt & Betreuung", href: "/suche?group=haushalt-betreuung" },
+  { icon: Laptop, label: "IT & Technik", href: "/suche?group=it-technik" },
   { icon: MoreHorizontal, label: "Und viele mehr", href: "/suche" },
 ];
 
