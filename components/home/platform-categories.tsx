@@ -15,12 +15,12 @@ import {
 } from "lucide-react";
 
 const categories = [
-  { icon: BookOpen, label: "Nachhilfe & Unterricht", href: "/suche?service=Nachhilfe" },
-  { icon: Laptop, label: "IT & Technik", href: "/suche?service=Computer%20%26%20IT" },
+  { icon: BookOpen, label: "Nachhilfe & Unterricht", href: "/suche?group=nachhilfe-unterricht" },
+  { icon: Laptop, label: "IT & Technik", href: "/suche?group=it-technik" },
   { icon: PenTool, label: "Design & Medien", href: "/suche" },
-  { icon: Wrench, label: "Handwerk & Technik", href: "/suche?service=Handwerker" },
+  { icon: Wrench, label: "Handwerk & Technik", href: "/suche?group=handwerk-technik" },
   { icon: Music2, label: "Musik & Kunst", href: "/suche" },
-  { icon: HeartHandshake, label: "Haushalt & Betreuung", href: "/suche?service=Haushaltshilfe" },
+  { icon: HeartHandshake, label: "Haushalt & Betreuung", href: "/suche?group=haushalt-betreuung" },
   { icon: Globe2, label: "Sprachen & Übersetzung", href: "/suche" },
   { icon: MoreHorizontal, label: "Und viele mehr", href: "/suche" },
 ];

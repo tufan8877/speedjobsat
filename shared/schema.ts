@@ -69,6 +69,44 @@ export function getServiceCategoryLabel(service: string) {
   return serviceCategoryLabels[service as keyof typeof serviceCategoryLabels] || service;
 }
 
+// Themengruppen für die Startseiten-Kacheln: fassen mehrere verwandte
+// Dienstleistungen zusammen, damit z.B. "Haushalt & Betreuung" nicht nur
+// Kinderbetreuung, sondern auch Pflege, Seniorenbetreuung etc. findet.
+export const categoryGroups = [
+  { key: "nachhilfe-unterricht", label: "Nachhilfe & Unterricht", services: ["Nachhilfe"] },
+  { key: "it-technik", label: "IT & Technik", services: ["Computer & IT"] },
+  {
+    key: "handwerk-technik",
+    label: "Handwerk & Technik",
+    services: [
+      "Handwerker",
+      "Elektriker",
+      "Installateur",
+      "Schlosser",
+      "Maler",
+      "Dachdecker",
+      "Bauarbeiten",
+      "Fliesenlegerarbeiten",
+      "Bodenlegerarbeiten",
+      "Montagearbeiten",
+      "Reparaturarbeiten",
+    ],
+  },
+  {
+    key: "haushalt-betreuung",
+    label: "Haushalt & Betreuung",
+    services: ["Haushaltshilfe", "Pflege", "Kinderbetreuung", "Seniorenbetreuung", "Reinigung", "Gartenpflege"],
+  },
+] as const satisfies { key: string; label: string; services: (typeof serviceCategories)[number][] }[];
+
+export function getCategoryGroupServices(key: string): string[] {
+  return categoryGroups.find((group) => group.key === key)?.services ?? [];
+}
+
+export function getCategoryGroupLabel(key: string): string | undefined {
+  return categoryGroups.find((group) => group.key === key)?.label;
+}
+
 export const availabilityPeriods = ["Vormittag","Nachmittag","Abend","Wochenende","Feiertag"] as const;
 export const userStatuses = ["active", "suspended", "deleted"] as const;
 export const jobStatuses = ["active", "completed", "cancelled"] as const;

@@ -162,6 +162,9 @@ export function setupProfileViewRoutes(app: Express) {
   app.get("/api/ranked-profiles", async (req: Request, res: Response) => {
     try {
       const service = String(req.query.service || "");
+      const servicesParam = req.query.services;
+      const services = (Array.isArray(servicesParam) ? servicesParam : servicesParam ? [servicesParam] : [])
+        .map((value) => String(value));
       const region = String(req.query.region || "");
       const name = String(req.query.name || "");
       const sort = String(req.query.sort || "newest");
@@ -175,6 +178,11 @@ export function setupProfileViewRoutes(app: Express) {
         profiles = profiles.filter((profile: any) =>
           (profile.services || []).some((item: string) => normalizeSearchText(item) === normalizedService) ||
           normalizeSearchText(profile.customServices).includes(normalizedService),
+        );
+      } else if (services.length > 0) {
+        const normalizedServices = services.map((value) => normalizeSearchText(value));
+        profiles = profiles.filter((profile: any) =>
+          (profile.services || []).some((item: string) => normalizedServices.includes(normalizeSearchText(item))),
         );
       }
 
