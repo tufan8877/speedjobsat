@@ -1,4 +1,5 @@
 import express, { type Request, Response, NextFunction } from "express";
+import compression from "compression";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import path from "path";
@@ -15,6 +16,11 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
   exposedHeaders: ["Set-Cookie"],
 }));
+
+// Komprimiert Antworten (gzip). Ohne das wurde bisher jede JS/CSS/HTML/JSON-
+// Antwort unkomprimiert übertragen - bei den Frontend-Bundles ca. 3x mehr
+// Daten als nötig.
+app.use(compression());
 
 // Sicherheits-Header für Browser und Security-Scanner
 app.use((req, res, next) => {
@@ -41,9 +47,9 @@ app.use((req, res, next) => {
       "frame-ancestors 'none'",
       "object-src 'none'",
       scriptSource,
-      "style-src 'self' 'unsafe-inline'",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "img-src 'self' data: blob: https:",
-      "font-src 'self' data:",
+      "font-src 'self' data: https://fonts.gstatic.com",
       connectSource,
       "media-src 'self' blob: https:",
       "worker-src 'self' blob:",
