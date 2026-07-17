@@ -8,10 +8,17 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { PlusCircle, Home, ChevronRight } from "lucide-react";
 import { JobListing } from "@shared/sqlite-schema";
+import { useSeo } from "@/hooks/use-seo";
 
 export default function JobsPage() {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState(user ? "my-jobs" : "all-jobs");
+
+  useSeo({
+    title: "Aufträge in Österreich finden | speedjob.at",
+    description: "Durchsuche aktuelle Aufträge in Österreich oder erstelle kostenlos deinen eigenen Auftrag auf speedjob.at.",
+    path: "/auftraege",
+  });
 
   const { data: myJobs } = useQuery<JobListing[]>({
     queryKey: ["/api/my-jobs"],

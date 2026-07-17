@@ -5,6 +5,7 @@ import { LoginForm, RegisterForm } from "@/components/auth/auth-forms";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
+import { useSeo } from "@/hooks/use-seo";
 
 export default function AuthPage() {
   const { user } = useAuth();
@@ -13,6 +14,20 @@ export default function AuthPage() {
   const searchParams = new URLSearchParams(search);
   const initialTab = searchParams.get("tab") === "register" ? "register" : "login";
   const [activeTab, setActiveTab] = useState(initialTab);
+
+  useSeo(
+    initialTab === "register"
+      ? {
+          title: "Kostenlos registrieren als Dienstleister | speedjob.at",
+          description: "Erstelle in wenigen Minuten dein kostenloses Dienstleisterprofil auf speedjob.at und werde von Kunden in ganz Österreich gefunden.",
+          path: "/auth?tab=register",
+        }
+      : {
+          title: "Anmelden | speedjob.at",
+          description: "Melde dich bei speedjob.at an, um dein Dienstleisterprofil zu verwalten.",
+          path: "/auth",
+        },
+  );
   
   // Update URL when tab changes
   const handleTabChange = (value: string) => {

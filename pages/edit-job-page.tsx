@@ -13,6 +13,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ArrowLeft, Loader2 } from "lucide-react";
+import { useSeo } from "@/hooks/use-seo";
 
 const categories = [
   "Reinigung", "Gartenpflege", "Umzug", "Handwerk", "Transport",
@@ -25,6 +26,7 @@ export default function EditJobPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [, navigate] = useLocation();
+  useSeo({ title: "Auftrag bearbeiten | speedjob.at", noindex: true });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     title: "",

@@ -4,7 +4,10 @@ export default function AboutPage() {
   const contactEmail = "kontakt@speedjob.at";
 
   return (
-    <StaticPage title="Über uns">
+    <StaticPage
+      title="Über uns"
+      description="Erfahre, wie speedjob.at Privatpersonen und Dienstleister in ganz Österreich zusammenbringt."
+    >
       <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-5">
         <p className="font-semibold text-red-600 text-sm md:text-base">
           WICHTIGER HINWEIS: speedjob.at ist ausschließlich eine Vermittlungsplattform und übernimmt keinerlei 

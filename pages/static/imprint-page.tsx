@@ -5,7 +5,10 @@ export default function ImprintPage() {
   const street = "Heiligenstädterstraße 152";
 
   return (
-    <StaticPage title="Impressum">
+    <StaticPage
+      title="Impressum"
+      description="Impressum und Anbieterkennzeichnung von speedjob.at gemäß österreichischem Mediengesetz."
+    >
       <p className="mb-6 font-semibold">Angaben gemäß österreichischem E-Commerce-Gesetz</p>
 
       <div className="mb-6">

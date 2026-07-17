@@ -3,7 +3,10 @@ import { ShieldCheck, AlertCircle, ThumbsUp } from "lucide-react";
 
 export default function SafetyTipsPage() {
   return (
-    <StaticPage title="Sicherheitstipps">
+    <StaticPage
+      title="Sicherheitstipps"
+      description="Tipps für eine sichere Nutzung von speedjob.at beim Beauftragen und Anbieten von Dienstleistungen."
+    >
       <div className="mb-6">
         <div className="bg-red-50 border border-red-200 rounded-md p-3 mb-4">
           <p className="font-semibold text-red-600 text-sm md:text-base">

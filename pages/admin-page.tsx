@@ -7,10 +7,13 @@ import AdminDashboard from "@/components/admin/admin-dashboard";
 import ProfileVerificationPanel from "@/components/admin/profile-verification-panel";
 import { AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { useSeo } from "@/hooks/use-seo";
 
 export default function AdminPage() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
+
+  useSeo({ title: "Admin | speedjob.at", noindex: true });
 
   useEffect(() => {
     if (user && !user.isAdmin) {

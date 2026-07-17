@@ -5,7 +5,10 @@ import { Link } from "wouter";
 
 export default function SupportPage() {
   return (
-    <StaticPage title="Support">
+    <StaticPage
+      title="Support"
+      description="Hilfe und Unterstützung rund um dein speedjob.at-Konto und deine Profile."
+    >
       <div className="mb-8">
         <p className="mb-4">
           Über den Support können Sie Fragen zu Ihrem Konto, technischen Problemen, Profilen, Aufträgen, Bewertungen oder verdächtigem Verhalten melden. speedjob.at unterstützt bei der Nutzung der Plattform, ist jedoch nicht Partei von Vereinbarungen zwischen Nutzern.

@@ -10,7 +10,10 @@ export default function HelpFaqPage() {
   const contactEmail = "kontakt@speedjob.at";
 
   return (
-    <StaticPage title="Hilfe & FAQ">
+    <StaticPage
+      title="Hilfe & FAQ"
+      description="Antworten auf häufige Fragen zur Nutzung, Registrierung und Profilerstellung auf speedjob.at."
+    >
       <p className="mb-6">
         Hier finden Sie Antworten auf häufige Fragen zu speedjob.at. speedjob.at ist eine Plattform zur Kontaktvermittlung und nicht selbst Anbieter oder Auftraggeber der angebotenen Leistungen.
       </p>

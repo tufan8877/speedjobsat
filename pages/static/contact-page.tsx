@@ -3,7 +3,10 @@ import { Mail } from "lucide-react";
 
 export default function ContactPage() {
   return (
-    <StaticPage title="Kontakt">
+    <StaticPage
+      title="Kontakt"
+      description="So erreichst du das speedjob.at-Team bei Fragen, Anregungen oder Problemen."
+    >
       <div className="flex flex-col items-center mb-8">
         <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
           <Mail className="h-8 w-8 text-primary" />

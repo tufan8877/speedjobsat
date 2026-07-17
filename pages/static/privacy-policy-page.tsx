@@ -4,7 +4,10 @@ export default function PrivacyPolicyPage() {
   const contactEmail = "kontakt@speedjob.at";
 
   return (
-    <StaticPage title="Datenschutzerklärung">
+    <StaticPage
+      title="Datenschutzerklärung"
+      description="Wie speedjob.at personenbezogene Daten erhebt, verarbeitet und schützt."
+    >
       <p className="mb-6 font-semibold">Letzte Aktualisierung: 28. Juni 2026</p>
 
       <div className="mb-6">

@@ -198,6 +198,31 @@ export function setupProfileRoutes(app: Express) {
     }
   });
 
+  // Liefert das Profilbild als echte Bild-URL (statt der data:-URL aus der DB),
+  // damit Social-Media-Link-Vorschauen (og:image) es laden können - die meisten
+  // Crawler folgen keinen data:-URLs.
+  app.get("/api/profiles/:id/image", async (req: Request, res: Response) => {
+    try {
+      const profileId = Number(req.params.id);
+      if (!Number.isFinite(profileId)) {
+        return res.status(400).send("Ungültige Profil-ID");
+      }
+
+      const profile = await storage.getProfile(profileId);
+      const match = profile?.profileImage?.match(/^data:(image\/(?:jpeg|png|webp));base64,(.+)$/);
+      if (!match) {
+        return res.status(404).send("Kein Profilbild vorhanden");
+      }
+
+      const [, contentType, base64Data] = match;
+      res.setHeader("Cache-Control", "public, max-age=3600");
+      res.type(contentType).send(Buffer.from(base64Data, "base64"));
+    } catch (error) {
+      console.error("Fehler beim Abrufen des Profilbilds:", error);
+      res.status(500).send("Serverfehler beim Abrufen des Profilbilds");
+    }
+  });
+
   app.delete("/api/my-profile", isAuthenticated, async (req: Request, res: Response) => {
     try {
       const userId = req.user!.id;
