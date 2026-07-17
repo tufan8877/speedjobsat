@@ -1,5 +1,19 @@
 node_modules/
 dist/
+
+# Capacitor native build output (keep the ios/ and android/ project
+# files themselves, just not their generated build artifacts)
+android/app/build/
+android/build/
+android/.gradle/
+android/captures/
+android/local.properties
+ios/App/Pods/
+ios/App/build/
+ios/App/App.xcworkspace/xcuserdata/
+ios/App/App.xcodeproj/xcuserdata/
+ios/App/App/public/
+android/app/src/main/assets/public/
 *.db
 *.db-journal
 .env

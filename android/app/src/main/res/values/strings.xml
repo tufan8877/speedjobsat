@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">speedjob.at</string>
+    <string name="title_activity_main">speedjob.at</string>
+    <string name="package_name">at.speedjob.app</string>
+    <string name="custom_url_scheme">at.speedjob.app</string>
+</resources>
