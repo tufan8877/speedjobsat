@@ -52,7 +52,7 @@ const MALE_FIRST_NAMES = new Set([
 // Berufsfeldern, bleibt aber überall gemischt (keine Kategorie ist zu 100% einem
 // Geschlecht vorbehalten, außer bei sehr kleinen Stückzahlen von 1-2 Profilen).
 const categoryGenderCounts: Record<string, { female: number; male: number }> = {
-  Installateur: { female: 9, male: 13 },
+  Installateur: { female: 7, male: 11 },
   Elektriker: { female: 5, male: 7 },
   Reinigung: { female: 7, male: 0 },
   Umzug: { female: 2, male: 3 },
@@ -62,7 +62,7 @@ const categoryGenderCounts: Record<string, { female: number; male: number }> = {
   Pflege: { female: 4, male: 0 },
   Kinderbetreuung: { female: 4, male: 0 },
   Seniorenbetreuung: { female: 3, male: 1 },
-  Haustierbetreuung: { female: 0, male: 0 },
+  Haustierbetreuung: { female: 2, male: 2 },
   Nachhilfe: { female: 3, male: 1 },
   "Computer & IT": { female: 2, male: 3 },
   Handwerker: { female: 0, male: 3 },
