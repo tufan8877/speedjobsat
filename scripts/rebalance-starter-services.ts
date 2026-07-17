@@ -1,40 +1,67 @@
 import { asc, eq, like } from "drizzle-orm";
 import { db, pool } from "../server/db";
-import { profiles, users, serviceCategories } from "../shared/schema";
+import { profiles, users } from "../shared/schema";
 
 const SEED_PREFIX = "starter-profile-";
 
-const desiredCounts: Record<(typeof serviceCategories)[number], number> = {
-  Installateur: 22,
-  Elektriker: 12,
-  Reinigung: 7,
-  Umzug: 5,
-  Transport: 6,
-  Gartenpflege: 6,
-  Haushaltshilfe: 5,
-  Pflege: 4,
-  Kinderbetreuung: 4,
-  Seniorenbetreuung: 4,
-  Nachhilfe: 4,
-  "Computer & IT": 5,
-  Handwerker: 3,
-  Maler: 3,
-  Dachdecker: 2,
-  Automechaniker: 3,
-  Schlosser: 2,
-  Masseur: 2,
-  Gastronomie: 2,
-  "Koch- & Küchenhilfe": 2,
-  "Service & Kellnerarbeiten": 2,
-  Bauarbeiten: 2,
-  Fliesenlegerarbeiten: 1,
-  Bodenlegerarbeiten: 1,
-  Montagearbeiten: 1,
-  Reparaturarbeiten: 1,
-  "Design & Medien": 0,
-  "Musik & Kunst": 0,
-  "Sprachen & Übersetzung": 0,
-  "Sonstige Dienstleistungen": 1,
+// Die Vornamen aus scripts/seed-starter-profiles.ts, aufgeteilt nach Geschlecht.
+// Wird verwendet, um Dienstleistungen realistisch zu verteilen (z.B. Pflege eher
+// weiblich, Bauarbeiten eher männlich besetzt), ohne starr auf 0% oder 100% zu gehen.
+// Wichtig: Wenn die Namensliste im Seed-Skript geändert wird, muss diese Liste
+// mitgepflegt werden - die Prüfung unten (Warteschlangenlänge) schlägt sonst fehl.
+const FEMALE_FIRST_NAMES = new Set([
+  "Sarah", "Miriam", "Nina", "Julia", "Selina", "Aylin", "Lea", "Sophie", "Elif", "Katharina",
+  "Anna", "Melanie", "Lisa", "Zeynep", "Vanessa", "Laura", "Esra", "Jasmin", "Nicole", "Derya",
+  "Sandra", "Carina", "Ebru", "Bianca", "Elena", "Nadja", "Christina", "Gizem", "Tamara", "Verena",
+  "Leyla", "Daniela", "Isabella", "Fatma", "Eva", "Claudia", "Merve", "Patricia", "Viktoria", "Seda",
+  "Alina", "Monika", "Denise", "Corinna", "Sabrina", "Helena", "Dilara", "Simone", "Marlene", "Nesrin",
+  "Lena", "Iris", "Ayse", "Maja", "Theresa", "Klara",
+]);
+
+const MALE_FIRST_NAMES = new Set([
+  "Daniel", "Emre", "Lukas", "Mehmet", "David", "Markus", "Thomas", "Kerem", "Michael", "Florian",
+  "Can", "Stefan", "Yusuf", "Patrick", "Martin", "Burak", "Christian", "Alexander", "Onur", "Sebastian",
+  "Philipp", "Murat", "Andreas", "Dominik", "Hakan", "Manuel", "Serkan", "Kevin", "Roman", "Ahmet",
+  "Mario", "Fabian", "Cem", "Rene", "Simon", "Kaan", "Marcel", "Oliver", "Tolga", "Benjamin",
+  "Johannes", "Okan", "Gregor", "Sinan", "Matthias", "Umut", "Robert", "Niklas", "Eren", "Tobias",
+  "Georg", "Baris", "Samuel", "Christoph", "Deniz", "Harun",
+]);
+
+// Anzahl Profile je Dienstleistung, aufgeteilt in weiblich/männlich besetzte Plätze.
+// Die Verteilung orientiert sich an typischen Geschlechteranteilen in den jeweiligen
+// Berufsfeldern, bleibt aber überall gemischt (keine Kategorie ist zu 100% einem
+// Geschlecht vorbehalten, außer bei sehr kleinen Stückzahlen von 1-2 Profilen).
+const categoryGenderCounts: Record<string, { female: number; male: number }> = {
+  Installateur: { female: 9, male: 13 },
+  Elektriker: { female: 5, male: 7 },
+  Reinigung: { female: 7, male: 0 },
+  Umzug: { female: 2, male: 3 },
+  Transport: { female: 2, male: 4 },
+  Gartenpflege: { female: 2, male: 4 },
+  Haushaltshilfe: { female: 5, male: 0 },
+  Pflege: { female: 4, male: 0 },
+  Kinderbetreuung: { female: 4, male: 0 },
+  Seniorenbetreuung: { female: 3, male: 1 },
+  Nachhilfe: { female: 3, male: 1 },
+  "Computer & IT": { female: 2, male: 3 },
+  Handwerker: { female: 0, male: 3 },
+  Maler: { female: 1, male: 2 },
+  Dachdecker: { female: 0, male: 2 },
+  Automechaniker: { female: 1, male: 2 },
+  Schlosser: { female: 0, male: 2 },
+  Masseur: { female: 1, male: 1 },
+  Gastronomie: { female: 1, male: 1 },
+  "Koch- & Küchenhilfe": { female: 1, male: 1 },
+  "Service & Kellnerarbeiten": { female: 1, male: 1 },
+  Bauarbeiten: { female: 0, male: 2 },
+  Fliesenlegerarbeiten: { female: 0, male: 1 },
+  Bodenlegerarbeiten: { female: 0, male: 1 },
+  Montagearbeiten: { female: 0, male: 1 },
+  Reparaturarbeiten: { female: 1, male: 0 },
+  "Design & Medien": { female: 0, male: 0 },
+  "Musik & Kunst": { female: 0, male: 0 },
+  "Sprachen & Übersetzung": { female: 0, male: 0 },
+  "Sonstige Dienstleistungen": { female: 1, male: 0 },
 };
 
 const serviceDescriptions: Record<string, string[]> = {
@@ -191,33 +218,100 @@ const endings = [
   "Ich bin in der angegebenen Region und in der näheren Umgebung unterwegs.",
 ];
 
-function buildServicePool() {
-  const servicePool: string[] = [];
-  for (const service of serviceCategories) {
-    for (let i = 0; i < desiredCounts[service]; i += 1) {
-      servicePool.push(service);
-    }
-  }
-  if (servicePool.length !== 112) {
-    throw new Error(`Dienstleistungsverteilung ergibt ${servicePool.length} statt 112 Profile.`);
-  }
-  return servicePool;
-}
+// Mindestens so viele Einträge wie die größte Kategorie (Installateur: 22 Profile),
+// damit innerhalb jeder Kategorie jedes Profil einen anderen Satz bekommt und sich
+// dadurch keine zwei Beschreibungen im gesamten Bestand wortgleich wiederholen.
+const personalNotes = [
+  "Ich mache diese Tätigkeit bereits seit einigen Jahren und kenne die typischen Abläufe gut.",
+  "Rückfragen vorab sind für mich selbstverständlich, damit von Anfang an klar ist, was zu tun ist.",
+  "Ich bringe eigenes Werkzeug beziehungsweise die notwendige Ausstattung mit, sofern das sinnvoll ist.",
+  "Kurze Absprachen per Telefon oder Nachricht reichen mir meist, um einen Termin zu vereinbaren.",
+  "Ich lege Wert auf offene Kommunikation, falls sich während der Arbeit etwas ändert.",
+  "Mir ist es wichtig, den vereinbarten Zeitrahmen möglichst genau einzuhalten.",
+  "Ich arbeite eigenständig, bespreche größere Entscheidungen aber immer vorher.",
+  "Über die Jahre habe ich gelernt, auch bei kurzfristigen Anfragen flexibel zu bleiben.",
+  "Ein realistischer Zeitplan ist mir wichtiger als überstürztes Arbeiten.",
+  "Ich gebe ehrlich Rückmeldung, wenn etwas außerhalb meiner Möglichkeiten liegt.",
+  "Kleinere Zusatzwünsche lassen sich meistens unkompliziert mit einplanen.",
+  "Mir gefällt an dieser Tätigkeit besonders der direkte Kontakt mit den Kundinnen und Kunden.",
+  "Ich halte mich an das, was vorab besprochen wurde, und vermeide unnötige Überraschungen.",
+  "Bei größeren Aufgaben bespreche ich vorab, welche Schritte notwendig sind.",
+  "Ich reagiere in der Regel innerhalb kurzer Zeit auf Anfragen.",
+  "Auch bei mehreren Anfragen versuche ich, jede in Ruhe zu beantworten.",
+  "Sauberkeit während und nach der Arbeit ist mir grundsätzlich wichtig.",
+  "Ich bespreche den ungefähren Aufwand nach Möglichkeit schon vor dem ersten Termin.",
+  "Mir ist es lieber, ehrlich Nein zu sagen, als eine Aufgabe zu übernehmen, die ich nicht gut erledigen kann.",
+  "Ich freue mich über klare Angaben, damit ich mich gut vorbereiten kann.",
+  "Nach getaner Arbeit räume ich meinen Bereich ordentlich wieder auf.",
+  "Für wiederkehrende Termine finde ich meistens eine passende, regelmäßige Lösung.",
+  "Ich informiere rechtzeitig, falls sich ein Termin doch einmal verschieben sollte.",
+  "Erfahrungsgemäß hilft ein kurzes Vorgespräch, um Missverständnisse zu vermeiden.",
+  "Ich schätze einen freundlichen und respektvollen Umgang auf beiden Seiten.",
+];
 
-function buildDescription(service: string, index: number) {
+function buildDescription(service: string, categoryLocalIndex: number, globalIndex: number) {
   const variants = serviceDescriptions[service];
   if (!variants?.length) {
     throw new Error(`Für die Dienstleistung "${service}" fehlt eine passende Beschreibung.`);
   }
 
-  const serviceText = variants[index % variants.length];
-  return `${intros[index % intros.length]} ${serviceText} ${endings[(index * 2 + 1) % endings.length]}`;
+  const intro = intros[globalIndex % intros.length];
+  const serviceText = variants[categoryLocalIndex % variants.length];
+  const personalNote = personalNotes[categoryLocalIndex % personalNotes.length];
+  const ending = endings[(globalIndex * 3 + 2) % endings.length];
+  return `${intro} ${serviceText} ${personalNote} ${ending}`;
+}
+
+function buildAssignments(femaleQueue: { id: number; email: string }[], maleQueue: { id: number; email: string }[]) {
+  const assignments: { id: number; email: string; service: string; description: string }[] = [];
+  let femaleCursor = 0;
+  let maleCursor = 0;
+  let globalIndex = 0;
+
+  for (const [service, counts] of Object.entries(categoryGenderCounts)) {
+    let categoryLocalIndex = 0;
+
+    for (let i = 0; i < counts.female; i += 1) {
+      const user = femaleQueue[femaleCursor];
+      femaleCursor += 1;
+      assignments.push({
+        id: user.id,
+        email: user.email,
+        service,
+        description: buildDescription(service, categoryLocalIndex, globalIndex),
+      });
+      categoryLocalIndex += 1;
+      globalIndex += 1;
+    }
+
+    for (let i = 0; i < counts.male; i += 1) {
+      const user = maleQueue[maleCursor];
+      maleCursor += 1;
+      assignments.push({
+        id: user.id,
+        email: user.email,
+        service,
+        description: buildDescription(service, categoryLocalIndex, globalIndex),
+      });
+      categoryLocalIndex += 1;
+      globalIndex += 1;
+    }
+  }
+
+  if (femaleCursor !== femaleQueue.length || maleCursor !== maleQueue.length) {
+    throw new Error(
+      `Warteschlangen nicht vollständig verbraucht (weiblich: ${femaleCursor}/${femaleQueue.length}, männlich: ${maleCursor}/${maleQueue.length}).`,
+    );
+  }
+
+  return assignments;
 }
 
 async function main() {
   const starterUsers = await db
-    .select({ id: users.id, email: users.email })
+    .select({ id: users.id, email: users.email, firstName: profiles.firstName })
     .from(users)
+    .innerJoin(profiles, eq(profiles.userId, users.id))
     .where(like(users.email, `${SEED_PREFIX}%@seed.speedjob.at`))
     .orderBy(asc(users.email));
 
@@ -225,34 +319,45 @@ async function main() {
     throw new Error(`Es wurden ${starterUsers.length} statt 112 Starter-Nutzer gefunden.`);
   }
 
-  const servicePool = buildServicePool();
+  const femaleQueue = starterUsers.filter((user) => user.firstName && FEMALE_FIRST_NAMES.has(user.firstName));
+  const maleQueue = starterUsers.filter((user) => user.firstName && MALE_FIRST_NAMES.has(user.firstName));
 
-  for (let index = 0; index < starterUsers.length; index += 1) {
-    const service = servicePool[index];
-    const description = buildDescription(service, index);
+  if (femaleQueue.length !== 56 || maleQueue.length !== 56) {
+    throw new Error(
+      `Geschlechterzuordnung unvollständig (weiblich erkannt: ${femaleQueue.length}, männlich erkannt: ${maleQueue.length}, erwartet: 56/56).`,
+    );
+  }
 
+  const totalDesired = Object.values(categoryGenderCounts).reduce((sum, c) => sum + c.female + c.male, 0);
+  if (totalDesired !== 112) {
+    throw new Error(`Dienstleistungsverteilung ergibt ${totalDesired} statt 112 Profile.`);
+  }
+
+  const assignments = buildAssignments(femaleQueue, maleQueue);
+
+  for (const assignment of assignments) {
     const updated = await db
       .update(profiles)
       .set({
-        services: [service],
-        description,
+        services: [assignment.service],
+        description: assignment.description,
         updatedAt: new Date(),
       })
-      .where(eq(profiles.userId, starterUsers[index].id))
+      .where(eq(profiles.userId, assignment.id))
       .returning({ services: profiles.services, description: profiles.description });
 
     const saved = updated[0];
-    if (!saved || saved.services?.length !== 1 || saved.services[0] !== service) {
-      throw new Error(`Dienstleistung konnte für ${starterUsers[index].email} nicht korrekt gespeichert werden.`);
+    if (!saved || saved.services?.length !== 1 || saved.services[0] !== assignment.service) {
+      throw new Error(`Dienstleistung konnte für ${assignment.email} nicht korrekt gespeichert werden.`);
     }
-
-    const serviceVariants = serviceDescriptions[service];
-    if (!serviceVariants.some((variant) => saved.description?.includes(variant))) {
-      throw new Error(`Beschreibung passt bei ${starterUsers[index].email} nicht zur Dienstleistung ${service}.`);
+    if (saved.description !== assignment.description) {
+      throw new Error(`Beschreibung konnte für ${assignment.email} nicht korrekt gespeichert werden.`);
     }
   }
 
-  console.log("Alle 112 Starterprofile wurden geprüft: Jede Beschreibung passt exakt zur gespeicherten Dienstleistung.");
+  console.log(
+    `Alle 112 Starterprofile wurden neu verteilt: Dienstleistungen orientieren sich an typischen Geschlechteranteilen, jede Beschreibung ist eindeutig.`,
+  );
 }
 
 main()
