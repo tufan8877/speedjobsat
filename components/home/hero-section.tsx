@@ -70,6 +70,10 @@ export default function HeroSection() {
                 src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=85"
                 alt="Junger Dienstleister arbeitet am Laptop"
                 className="h-[380px] w-full object-cover object-center sm:h-[460px]"
+                width={1200}
+                height={460}
+                fetchPriority="high"
+                loading="eager"
               />
 
               {/* Mobil: Highlight + Trust-Badges direkt auf dem Bild */}

@@ -207,6 +207,7 @@ export default function SearchResults({ initialPage = 1 }: SearchResultsProps) {
                           <AvatarImage
                             src={profile.profileImage}
                             alt={`${profile.firstName || ""} ${profile.lastName || ""}`}
+                            loading="lazy"
                           />
                           <AvatarFallback className="bg-primary text-white">
                             {profile.firstName?.[0] || "D"}{profile.lastName?.[0] || String(index + 1)}

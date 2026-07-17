@@ -76,6 +76,7 @@ export function JobListingCard({ job, onDelete, showActions = true }: JobListing
                   src={imagePath}
                   alt={`Auftragsbild ${index + 1}`}
                   className="w-full h-20 object-cover rounded border"
+                  loading="lazy"
                 />
               ))}
             </div>

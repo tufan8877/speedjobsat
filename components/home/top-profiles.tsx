@@ -119,7 +119,7 @@ export default function TopProfiles() {
                   <CardContent className="p-5">
                     <div className="flex items-start gap-3">
                       <Avatar className="h-14 w-14 flex-shrink-0">
-                        <AvatarImage src={profile.profileImage || undefined} />
+                        <AvatarImage src={profile.profileImage || undefined} loading="lazy" />
                         <AvatarFallback className="bg-primary text-white">{profile.firstName?.[0] || "D"}{profile.lastName?.[0] || ""}</AvatarFallback>
                       </Avatar>
                       <div className="min-w-0 flex-1">

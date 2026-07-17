@@ -44,7 +44,7 @@ export default function ProfileGallery({ profileId }: { profileId: number }) {
                 onClick={() => setSelectedImage(image)}
                 aria-label={`Arbeitsbild ${index + 1} vergrößern`}
               >
-                <img src={image.imageData} alt={`Arbeitsbild ${index + 1}`} className="h-full w-full object-cover transition-transform hover:scale-105" />
+                <img src={image.imageData} alt={`Arbeitsbild ${index + 1}`} className="h-full w-full object-cover transition-transform hover:scale-105" loading="lazy" />
               </button>
             ))}
           </div>
