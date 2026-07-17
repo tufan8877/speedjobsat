@@ -1,8 +1,28 @@
+import { existsSync, readFileSync } from "fs";
+import path from "path";
 import { asc, eq, like } from "drizzle-orm";
 import { db, pool } from "../server/db";
 import { profiles, users } from "../shared/schema";
 
 const SEED_PREFIX = "starter-profile-";
+
+// Ein Teil der Starterprofile bekommt ein Avatar-Bild (Initialen auf farbigem
+// Hintergrund, keine echten oder KI-generierten Gesichter - siehe
+// scripts/assets/starter-avatars/README.md), damit die Suche nicht wirkt, als
+// hätte kein einziges Profil ein Bild, aber auch nicht wie 112 identische Fotos.
+const AVATAR_DIR = path.join(process.cwd(), "scripts", "assets", "starter-avatars");
+
+function loadAvatarDataUrl(emailIndex: number): string | null {
+  const filePath = path.join(AVATAR_DIR, `${String(emailIndex).padStart(3, "0")}.png`);
+  if (!existsSync(filePath)) return null;
+  return `data:image/png;base64,${readFileSync(filePath).toString("base64")}`;
+}
+
+function emailIndexOf(email: string): number {
+  const match = email.match(/starter-profile-(\d+)@/);
+  if (!match) throw new Error(`Konnte Index aus E-Mail "${email}" nicht lesen.`);
+  return Number(match[1]);
+}
 
 // Die Vornamen aus scripts/seed-starter-profiles.ts, aufgeteilt nach Geschlecht.
 // Wird verwendet, um Dienstleistungen realistisch zu verteilen (z.B. Pflege eher
@@ -263,7 +283,7 @@ function buildDescription(service: string, categoryLocalIndex: number, globalInd
 }
 
 function buildAssignments(femaleQueue: { id: number; email: string }[], maleQueue: { id: number; email: string }[]) {
-  const assignments: { id: number; email: string; service: string; description: string }[] = [];
+  const assignments: { id: number; email: string; service: string; description: string; profileImage: string | null }[] = [];
   let femaleCursor = 0;
   let maleCursor = 0;
   let globalIndex = 0;
@@ -279,6 +299,7 @@ function buildAssignments(femaleQueue: { id: number; email: string }[], maleQueu
         email: user.email,
         service,
         description: buildDescription(service, categoryLocalIndex, globalIndex),
+        profileImage: loadAvatarDataUrl(emailIndexOf(user.email)),
       });
       categoryLocalIndex += 1;
       globalIndex += 1;
@@ -292,6 +313,7 @@ function buildAssignments(femaleQueue: { id: number; email: string }[], maleQueu
         email: user.email,
         service,
         description: buildDescription(service, categoryLocalIndex, globalIndex),
+        profileImage: loadAvatarDataUrl(emailIndexOf(user.email)),
       });
       categoryLocalIndex += 1;
       globalIndex += 1;
@@ -334,6 +356,7 @@ async function main() {
   }
 
   const assignments = buildAssignments(femaleQueue, maleQueue);
+  let withAvatar = 0;
 
   for (const assignment of assignments) {
     const updated = await db
@@ -341,10 +364,11 @@ async function main() {
       .set({
         services: [assignment.service],
         description: assignment.description,
+        profileImage: assignment.profileImage,
         updatedAt: new Date(),
       })
       .where(eq(profiles.userId, assignment.id))
-      .returning({ services: profiles.services, description: profiles.description });
+      .returning({ services: profiles.services, description: profiles.description, profileImage: profiles.profileImage });
 
     const saved = updated[0];
     if (!saved || saved.services?.length !== 1 || saved.services[0] !== assignment.service) {
@@ -353,10 +377,14 @@ async function main() {
     if (saved.description !== assignment.description) {
       throw new Error(`Beschreibung konnte für ${assignment.email} nicht korrekt gespeichert werden.`);
     }
+    if (saved.profileImage !== assignment.profileImage) {
+      throw new Error(`Profilbild konnte für ${assignment.email} nicht korrekt gespeichert werden.`);
+    }
+    if (assignment.profileImage) withAvatar += 1;
   }
 
   console.log(
-    `Alle 112 Starterprofile wurden neu verteilt: Dienstleistungen orientieren sich an typischen Geschlechteranteilen, jede Beschreibung ist eindeutig.`,
+    `Alle 112 Starterprofile wurden neu verteilt: Dienstleistungen orientieren sich an typischen Geschlechteranteilen, jede Beschreibung ist eindeutig, ${withAvatar} Profile haben ein Avatar-Bild.`,
   );
 }
 
