@@ -3,10 +3,13 @@ import { useAuth } from "@/hooks/use-auth";
 import { Button } from "@/components/ui/button";
 import { Link, useLocation } from "wouter";
 import { ArrowLeft } from "lucide-react";
+import { useSeo } from "@/hooks/use-seo";
 
 export default function CreateJobPage() {
   const { user } = useAuth();
   const [, navigate] = useLocation();
+
+  useSeo({ title: "Auftrag erstellen | speedjob.at", path: "/auftrag-erstellen", noindex: true });
 
   if (!user) {
     navigate("/auth?redirect=/auftrag-erstellen");

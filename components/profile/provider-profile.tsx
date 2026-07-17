@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 import { FavoriteButton } from "@/components/favorites/favorite-button";
 import { formatDate } from "@/lib/utils";
 import { getServiceCategoryLabel, type Profile } from "@shared/schema";
+import { useSeo, SITE_URL, DEFAULT_OG_IMAGE } from "@/hooks/use-seo";
 
 interface ProviderProfileProps {
   profileId: number;
@@ -87,6 +88,38 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
     ? reviews.reduce((sum: number, review: any) => sum + Number(review.rating || 0), 0) / reviews.length
     : null;
 
+  const displayName = `${profile.firstName || ""} ${profile.lastName || ""}`.trim() || "Dienstleister";
+  const region = regions[0];
+  const seoDescription = (profile.description || `${displayName} bietet ${mainService}${region ? ` in ${region}` : ""} auf speedjob.at an.`)
+    .slice(0, 155);
+  const seoImage = profile.profileImage ? `${SITE_URL}/api/profiles/${profile.id}/image` : DEFAULT_OG_IMAGE;
+
+  useSeo({
+    title: `${displayName} – ${mainService}${region ? ` in ${region}` : ""} | speedjob.at`,
+    description: seoDescription,
+    path: `/anbieter/${profile.id}`,
+    image: seoImage,
+    type: "profile",
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      name: displayName,
+      jobTitle: mainService,
+      url: `${SITE_URL}/anbieter/${profile.id}`,
+      image: profile.profileImage ? seoImage : undefined,
+      address: region ? { "@type": "PostalAddress", addressRegion: region, addressCountry: "AT" } : undefined,
+      ...(averageRating
+        ? {
+            aggregateRating: {
+              "@type": "AggregateRating",
+              ratingValue: averageRating.toFixed(1),
+              reviewCount,
+            },
+          }
+        : {}),
+    },
+  });
+
   const handleShare = async () => {
     const shareData = {
       title: `${profile.firstName || ""} ${profile.lastName || ""} auf speedjob.at`.trim(),
@@ -151,7 +184,7 @@ export default function ProviderProfile({ profileId }: ProviderProfileProps) {
             <div className="md:w-2/3 md:pl-8">
               <div className="hidden md:block">
                 <div className="flex flex-wrap items-center gap-3">
-                  <h1 className="text-3xl font-bold">{profile.firstName} {profile.lastName}</h1>
+                  <p className="text-3xl font-bold" aria-hidden="true">{profile.firstName} {profile.lastName}</p>
                   <VerifiedBadge profileId={profile.id} compact />
                 </div>
                 <p className="text-primary font-medium text-lg mt-1">{mainService}</p>

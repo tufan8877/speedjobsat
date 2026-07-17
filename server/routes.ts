@@ -9,8 +9,10 @@ import { setupProfileViewRoutes } from "./profile-view-routes";
 import { setupProfileVerificationRoutes } from "./profile-verification-routes";
 import { setupProfileGalleryRoutes } from "./profile-gallery-routes";
 import { setupAdmin } from "./admin";
+import { setupSeoRoutes } from "./seo-routes";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  setupSeoRoutes(app);
   setupAuth(app);
   setupJobRoutes(app);
   setupFavoritesRoutes(app);

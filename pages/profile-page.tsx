@@ -14,6 +14,7 @@ import Footer from "@/components/layout/footer";
 import AutoEmailProfileForm from "@/components/profile/auto-email-profile-form";
 import ProfileViewStats from "@/components/profile/profile-view-stats";
 import { AccountSettings } from "@/components/settings/settings-forms";
+import { useSeo } from "@/hooks/use-seo";
 
 export default function ProfilePage() {
   const { user, logout } = useAuth();
@@ -22,6 +23,8 @@ export default function ProfilePage() {
   const searchParams = new URLSearchParams(search);
   const initialTab = searchParams.get("tab") === "settings" ? "settings" : "profile";
   const [activeTab, setActiveTab] = useState(initialTab);
+
+  useSeo({ title: "Mein Profil | speedjob.at", noindex: true });
 
   const handleTabChange = (value: string) => {
     setActiveTab(value);

@@ -4,7 +4,10 @@ export default function TermsOfServicePage() {
   const contactEmail = "kontakt@speedjob.at";
 
   return (
-    <StaticPage title="Nutzungsbedingungen">
+    <StaticPage
+      title="Nutzungsbedingungen"
+      description="Die Nutzungsbedingungen für die Vermittlungsplattform speedjob.at."
+    >
       <p className="mb-4 text-sm text-gray-500">Letzte Aktualisierung: 28. Juni 2026</p>
 
       <div className="mb-5">

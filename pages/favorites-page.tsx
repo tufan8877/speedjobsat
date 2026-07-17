@@ -11,10 +11,13 @@ import { FavoriteButton } from "@/components/favorites/favorite-button";
 import { Link } from "wouter";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
+import { useSeo } from "@/hooks/use-seo";
 
 export default function FavoritesPage() {
   const { user } = useAuth();
   const [, navigate] = useLocation();
+
+  useSeo({ title: "Meine Favoriten | speedjob.at", noindex: true });
 
   if (!user) {
     navigate("/auth?redirect=/favoriten");

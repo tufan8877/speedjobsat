@@ -1,16 +1,27 @@
 import { ReactNode } from "react";
+import { useLocation } from "wouter";
 import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
+import { useSeo } from "@/hooks/use-seo";
 
 interface StaticPageProps {
   title: string;
+  description?: string;
   children: ReactNode;
 }
 
 /**
  * Basiskomponente für alle statischen Seiten
  */
-export default function StaticPage({ title, children }: StaticPageProps) {
+export default function StaticPage({ title, description, children }: StaticPageProps) {
+  const [path] = useLocation();
+
+  useSeo({
+    title: `${title} | speedjob.at`,
+    description: description ?? `${title} auf speedjob.at, der Vermittlungsplattform für Dienstleister in Österreich.`,
+    path,
+  });
+
   return (
     <>
       <Header />

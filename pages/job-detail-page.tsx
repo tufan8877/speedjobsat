@@ -14,6 +14,7 @@ import Header from "@/components/layout/header";
 import Footer from "@/components/layout/footer";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
+import { useSeo } from "@/hooks/use-seo";
 
 export default function JobDetailPage() {
   const [, navigate] = useLocation();
@@ -67,6 +68,14 @@ export default function JobDetailPage() {
   }, [jobId, navigate, toast]);
 
   const isOwner = !!user && !!job && (Number(user.id) === Number(job.userId) || user.isAdmin === true);
+
+  useSeo({
+    title: job ? `${job.title} – ${job.location} | speedjob.at` : "Auftrag | speedjob.at",
+    description: job
+      ? (job.description || `${job.title} in ${job.location}. Auftrag auf speedjob.at ansehen.`).slice(0, 155)
+      : "Auftragsdetails auf speedjob.at.",
+    path: isNaN(jobId) ? "/auftraege" : `/auftraege/${jobId}`,
+  });
 
   const handleDeleteJob = async () => {
     if (!job || isDeleting) return;
