@@ -62,6 +62,7 @@ const categoryGenderCounts: Record<string, { female: number; male: number }> = {
   Pflege: { female: 4, male: 0 },
   Kinderbetreuung: { female: 4, male: 0 },
   Seniorenbetreuung: { female: 3, male: 1 },
+  Haustierbetreuung: { female: 0, male: 0 },
   Nachhilfe: { female: 3, male: 1 },
   "Computer & IT": { female: 2, male: 3 },
   Handwerker: { female: 0, male: 3 },
@@ -134,6 +135,11 @@ const serviceDescriptions: Record<string, string[]> = {
     "Ich begleite ältere Menschen bei Spaziergängen, Einkäufen und Terminen und leiste gerne Gesellschaft.",
     "Ich biete geduldige und verlässliche Unterstützung für Seniorinnen und Senioren im Alltag.",
     "Ich helfe bei kleinen Erledigungen und begleite Menschen, die sich Unterstützung und Gesellschaft wünschen.",
+  ],
+  Haustierbetreuung: [
+    "Ich übernehme Gassi-Runden, Fütterung und Gesellschaft für Hunde und Katzen, wenn es zeitlich mal eng wird.",
+    "Ich biete Tierbetreuung bei Urlaub oder Arbeit an, inklusive Spaziergängen und Grundversorgung im gewohnten Zuhause.",
+    "Ich bin tierlieb und zuverlässig und kümmere mich gerne stundenweise oder tageweise um Ihr Haustier.",
   ],
   Nachhilfe: [
     "Ich gebe verständliche Nachhilfe und erkläre den Stoff in ruhigem Tempo mit passenden Beispielen.",

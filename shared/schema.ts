@@ -16,6 +16,7 @@ export const serviceCategories = [
   "Pflege",
   "Kinderbetreuung",
   "Seniorenbetreuung",
+  "Haustierbetreuung",
   "Nachhilfe",
   "Computer & IT",
   "Handwerker",
@@ -49,6 +50,7 @@ export const serviceCategoryLabels: Record<(typeof serviceCategories)[number], s
   Pflege: "Pflege & Betreuung",
   Kinderbetreuung: "Kinderbetreuung",
   Seniorenbetreuung: "Seniorenbetreuung",
+  Haustierbetreuung: "Haustierbetreuung",
   Nachhilfe: "Nachhilfe",
   "Computer & IT": "Computer & IT-Service",
   Handwerker: "Handwerksarbeiten",
@@ -114,7 +116,7 @@ export const categoryGroups = [
   {
     key: "haushalt-betreuung",
     label: "Haushalt & Betreuung",
-    services: ["Haushaltshilfe", "Pflege", "Kinderbetreuung", "Seniorenbetreuung", "Reinigung", "Gartenpflege"],
+    services: ["Haushaltshilfe", "Pflege", "Kinderbetreuung", "Seniorenbetreuung", "Haustierbetreuung", "Reinigung", "Gartenpflege"],
   },
 ] as const satisfies { key: string; label: string; services: (typeof serviceCategories)[number][] }[];
 
