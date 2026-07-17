@@ -114,6 +114,11 @@ const serviceTexts: Record<string, string[]> = {
     "Geduld und Verlässlichkeit sind mir besonders wichtig. Ich biete alltagsnahe Unterstützung für Seniorinnen und Senioren.",
     "Ich helfe bei kleinen Erledigungen und verbringe Zeit mit Menschen, die sich Begleitung im Alltag wünschen."
   ],
+  Haustierbetreuung: [
+    "Ich übernehme Gassi-Runden, Fütterung und Gesellschaft für Hunde und Katzen, wenn es zeitlich mal eng wird.",
+    "Ich biete Tierbetreuung bei Urlaub oder Arbeit an, inklusive Spaziergängen und Grundversorgung im gewohnten Zuhause.",
+    "Ich bin tierlieb und zuverlässig und kümmere mich gerne stundenweise oder tageweise um Ihr Haustier."
+  ],
   Nachhilfe: [
     "Ich gebe verständliche Nachhilfe und erkläre den Stoff in ruhigem Tempo mit passenden Beispielen.",
     "Ich unterstütze Schülerinnen und Schüler bei Hausübungen, Prüfungsvorbereitung und beim Schließen von Wissenslücken.",
